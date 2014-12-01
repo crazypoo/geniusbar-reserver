@@ -1,7 +1,6 @@
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-import multiprocessing
-from multiprocessing import Process
+from multiprocessing import Process, Manager
 import threading
 import time
 from ui_taskdlg import Ui_TaskDialog
@@ -26,26 +25,26 @@ class TaskDLG(QtGui.QDialog):
         self.ui.lbVerifyCodePic.resize(size)
         self.ui.lbVerifyCodePic.setPixmap(qpixmap)
         self.taskId = taskId
-        self.result = multiprocessing.Queue(1)
         self.appleGeniusBarReservation = AppleGeniusBarReservation()
         self.signalTaskCompleted.connect(self.finished)
         self.signalUpdateTaskProgress.connect(self.updataProcess)
 
     def startTask(self):
+        self.taskStatus = Manager().dict()
+        self.taskStatus['verifyCodeData'] = None
+        self.taskStatus['taskProgress'] = 0
         self.ui.pBStartTask.setEnabled(False)
         task = Process(target=self.appleGeniusBarReservation.jump_login_page,
-                       args=(self.enterUrl, self.result))
+                       args=(self.enterUrl, self.taskStatus))
 
-        status = multiprocessing.Queue(1)
-        polling = threading.Thread(target=self.polling,
-                                             args=(status, ))
+        polling = threading.Thread(target=self.polling, args=())
         task.start()
         polling.start()
 
     def finished(self):
-        verfiyData = self.result.get()
-        if verfiyData:
-            image = QtGui.QImage.fromData(verfiyData)
+        verifyCodeData = self.taskStatus['verifyCodeData']
+        if verifyCodeData:
+            image = QtGui.QImage.fromData(verifyCodeData)
             pixmap = QtGui.QPixmap(image)
             size = QtCore.QSize(pixmap.width(), pixmap.height())
             self.ui.lbVerifyCodePic.resize(size)
@@ -53,21 +52,20 @@ class TaskDLG(QtGui.QDialog):
         else:
             debug.info('verifyData is none')
 
-    def updataProcess(self, process):
-        self.ui.progressBar.setValue(process)
+    def updataProcess(self, progress):
+        val = self.ui.progressBar.value()
+        if not val == progress:
+            self.ui.progressBar.setValue(progress)
+            print('updataProcess %s' % progress)
 
-    def polling(self, result):
-        self.appleGeniusBarReservation.isCompleted(result)
-        res = result.get()
-        self.signalUpdateTaskProgress.emit(res[1])
-        while not res[0]:
-            print('startus %s process %s' % (res[0], res[1]))
-            self.signalTaskCompleted.emit()
-            self.signalUpdateTaskProgress.emit(res[1])
-            time.sleep(1)
-            self.appleGeniusBarReservation.isCompleted(result)
-            res = result.get()
-
+    def polling(self):
+        progress = self.taskStatus['taskProgress']
+        while progress < 100:
+            self.signalUpdateTaskProgress.emit(progress)
+            time.sleep(2)
+            progress = self.taskStatus['taskProgress']
+        self.signalUpdateTaskProgress.emit(progress)
+        self.signalTaskCompleted.emit()
 
     def onOk(self):
         print('on accept')

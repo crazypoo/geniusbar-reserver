@@ -8,7 +8,7 @@ from utils import debug, Writefile
 class AppleGeniusBarReservation(object):
     stores = None
     host = 'http://www.apple.com'
-    def __init__(self):
+    def __init__(self, verifyData = None, progress=None, status=None):
 
         self.appleid = None
         self.passwd = None
@@ -17,9 +17,7 @@ class AppleGeniusBarReservation(object):
         self.authUrl = "https://idmsa.apple.com/IDMSWebAuth/authenticate"
         self.govUrlFormat = "https://concierge.apple.com/geniusbar/%s/governmentID"
         self.supportUrl = None
-        self.verifyData = None
-        self.status = None
-        self.progress = 0
+        self.verifyData = verifyData
         GeniusbarPage._init_headers()
 
     @classmethod
@@ -47,7 +45,7 @@ class AppleGeniusBarReservation(object):
                 support_url = href.get('href')
                 break
         return support_url
-    
+
     def post_reserv_page(self, prePage):
         debug.debug('post %s' % self.reservationUrl)
         postData = {}
@@ -104,53 +102,57 @@ class AppleGeniusBarReservation(object):
         page = GeniusbarPage(url)
         return page
 
-    def jump_login_page(self, supporturl, result=None):
-        self.progress = 10
+    def update_progress(self, progress):
+        if self.taskStatus:
+            self.taskStatus['taskProgress'] = progress
+
+    def jump_login_page(self, supporturl, taskStatus=None):
+        self.taskStatus = taskStatus
+        self.update_progress(10)
         supportPage = self.get_techsupport_page(supporturl)
-        self.progress = 20
+        self.update_progress(20)
         # get selected store
         self.post_reserv_page(supportPage)
         # ###
-        self.progress = 30
+        self.update_progress(30)
         getGeniusbarPage = self.get_geniusbar_page(supportPage)
-        self.progress = 40
+        self.update_progress(40)
 
         postGeniusPage = self.post_geniusbar_page(getGeniusbarPage)
-        self.progress = 50
+        self.update_progress(50)
         # # auth
         authPage = self.post_anth_page(postGeniusPage)
-        self.progress = 60
+        self.update_progress(60)
 
         # ## send governmentId
         governmentUrl = self.govUrlFormat % GeniusbarPage.storeNumber
         govPage = self.post_governmenid(governmentUrl, authPage)
-        self.progress = 70
+        self.update_progress(70)
 
         smschallengePage = self.post_smschallenge(govPage)
         Writefile('tmp/smschallengepage.html', smschallengePage.get_data())
-        self.progress = 80
-        # validity check<div autocomplete="off" id="SmsCode.ID142" type="text" name="SmsCode" class="ValidatedField SmsCode"
-        if not smschallengePage.check('div', {'class': "ValidatedField SmsCode"}):
+        self.update_progress(80)
+        attrs = {'class': "ValidatedField SmsCode"}
+        if not smschallengePage.check('div', attrs):
             # get validcode picture
             self.verifyData = smschallengePage.get_verification_code_pic()
-            # f = open('data/verifyCode.jpg', 'wb')
-            # f.write(self.verifyData)
-            # f.close()
-            self.progress = 90
+            f = open('tmp/verifyCode.jpg', 'wb')
+            f.write(self.verifyData)
+            f.close()
+            self.update_progress(90)
             if self.verifyData:
+                self.taskStatus['verifyCodeData'] = self.verifyData
+                self.update_progress(100)
+
                 debug.info('Successful')
-                self.status = True
-                if result:
-                    result.put(self.verifyData)
             else:
-                self.status = False
                 debug.error('verfyData error')
-            self.progress = 100
+            self.update_progress(100)
             return self.verifyData
-        else:
-            debug.error('not finished')
-            self.progress = 100
-            return None
+
+        debug.error('not finished')
+        self.update_progress(100)
+        return None
 
     def post_governmenid(self, url, prepage):
         debug.debug('post %s' % url)
@@ -182,9 +184,3 @@ class AppleGeniusBarReservation(object):
                                      urllib.urlencode(postData),
                                      headers=GeniusbarPage.headers)
         return smschallenge
-
-    def isCompleted(self, result=None):
-        if result:
-            result.put((self.status, self.progress))
-            return self.status
-        return self.status
