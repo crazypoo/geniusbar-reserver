@@ -31,12 +31,9 @@ class WebPage(object):
 
     def _read_page(self):
         self.init_cookie()
-        debug.debug('read %s' % self.url)
         req = urllib2.Request(self.url,
                               data=self.post_data,
                               headers=self.headers)
-        debug.debug('data %s' % self.post_data)
-        debug.debug('headers %s' % str(self.headers))
         res = urllib2.urlopen(req, data=None, timeout=self.timeout)
         return res.read()
 

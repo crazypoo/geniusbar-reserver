@@ -6,31 +6,35 @@ from utils import debug, Writefile
 
 
 class AppleGeniusBarReservation(object):
+    stores = None
+    host = 'http://www.apple.com'
     def __init__(self):
-        self.stores = {}
-        self.host = 'http://www.apple.com'
+
         self.appleid = None
         self.passwd = None
         self.governmentId = None
         self.reservationUrl = "http://concierge.apple.com/reservation/"
         self.authUrl = "https://idmsa.apple.com/IDMSWebAuth/authenticate"
+        self.govUrlFormat = "https://concierge.apple.com/geniusbar/%s/governmentID"
         self.supportUrl = None
+        self.verifyData = None
+        self.status = None
+        self.progress = 0
         GeniusbarPage._init_headers()
 
-    def init_stores_list(self):
+    @classmethod
+    def Init_stores_list(self):
         storeListurl = 'http://www.apple.com/cn/retail/storelist/'
         page = GeniusbarPage(storeListurl)
-        self.stores = page.get_store_list()
-        return self
+        AppleGeniusBarReservation.stores = page.get_store_list()
+        return AppleGeniusBarReservation.stores
 
-    def get_store_list(self):
-        return self.stores
+    @classmethod
+    def Get_store_url(self, suburl):
+        return AppleGeniusBarReservation.host + suburl
 
-    def get_store_url(self, suburl):
-        return self.host + suburl
-
-
-    def get_suppport_url(self, storeUrl):
+    @classmethod
+    def Get_suppport_url(self, storeUrl):
         page = GeniusbarPage(storeUrl)
         attrs = {'class': "nav hero-nav selfclear"}
         page_soup = page.get_soup()
@@ -55,7 +59,6 @@ class AppleGeniusBarReservation(object):
         postData['ruleType'] = 'TECHSUPPORT'
         page = GeniusbarPage(self.reservationUrl,
                              urllib.urlencode(postData))
-        Writefile('data/post_reserv_page.html', page.get_data())
         return page
 
     def get_geniusbar_page(self, prePage):
@@ -65,7 +68,6 @@ class AppleGeniusBarReservation(object):
         headers["Host"] = 'concierge.apple.com'
         geniusbarPage = GeniusbarPage(GeniusbarPage.get_geniusbar_url(),
                                       headers=headers)
-        Writefile('data/get_geniusbar_page.html', geniusbarPage.get_data())
         return geniusbarPage
 
     def post_geniusbar_page(self, prePage):
@@ -79,7 +81,6 @@ class AppleGeniusBarReservation(object):
         geniusbarPage = GeniusbarPage(GeniusbarPage.get_geniusbar_url(),
                                       data=urllib.urlencode(postData),
                                       headers=headers)
-        Writefile('data/geniusbarPage.html', geniusbarPage.get_data())
         return geniusbarPage
 
     def post_anth_page(self, prePage):
@@ -96,37 +97,66 @@ class AppleGeniusBarReservation(object):
         authPage = GeniusbarPage(self.authUrl,
                                  data=urllib.urlencode(postData),
                                  headers=headers)
-        Writefile('data/authPage.html', authPage.get_data())
         return authPage
 
     def get_techsupport_page(self, url):
         debug.debug('GET %s' % url)
         page = GeniusbarPage(url)
-        Writefile('data/support_page.htm', page.get_data())
         return page
 
-    def jump_login_page(self, supporturl):
+    def jump_login_page(self, supporturl, result=None):
+        self.progress = 10
         supportPage = self.get_techsupport_page(supporturl)
-
+        self.progress = 20
         # get selected store
-        reservPage = self.post_reserv_page(supportPage)
+        self.post_reserv_page(supportPage)
         # ###
+        self.progress = 30
         getGeniusbarPage = self.get_geniusbar_page(supportPage)
+        self.progress = 40
+
         postGeniusPage = self.post_geniusbar_page(getGeniusbarPage)
+        self.progress = 50
         # # auth
         authPage = self.post_anth_page(postGeniusPage)
+        self.progress = 60
+
         # ## send governmentId
-        governmentUrl = "https://concierge.apple.com/geniusbar/%s/governmentID" % GeniusbarPage.storeNumber
-        govpage = self.post_governmenid(governmentUrl, authPage)
-        getGeniusbarPage = self.get_geniusbar_page(postGeniusPage)
-        self.post_smschallenge(getGeniusbarPage)
+        governmentUrl = self.govUrlFormat % GeniusbarPage.storeNumber
+        govPage = self.post_governmenid(governmentUrl, authPage)
+        self.progress = 70
+
+        smschallengePage = self.post_smschallenge(govPage)
+        Writefile('tmp/smschallengepage.html', smschallengePage.get_data())
+        self.progress = 80
+        # validity check<div autocomplete="off" id="SmsCode.ID142" type="text" name="SmsCode" class="ValidatedField SmsCode"
+        if not smschallengePage.check('div', {'class': "ValidatedField SmsCode"}):
+            # get validcode picture
+            self.verifyData = smschallengePage.get_verification_code_pic()
+            # f = open('data/verifyCode.jpg', 'wb')
+            # f.write(self.verifyData)
+            # f.close()
+            self.progress = 90
+            if self.verifyData:
+                debug.info('Successful')
+                self.status = True
+                if result:
+                    result.put(self.verifyData)
+            else:
+                self.status = False
+                debug.error('verfyData error')
+            self.progress = 100
+            return self.verifyData
+        else:
+            debug.error('not finished')
+            self.progress = 100
+            return None
 
     def post_governmenid(self, url, prepage):
         debug.debug('post %s' % url)
         postData = prepage.build_governmentid_post_data()
         postData["_formToken"] = prepage.get_formtoken_value()
         postData['governmentID'] = GeniusbarPage.governmentId
-        print(postData['governmentID'])
         postData['governmentIDType'] = 'CN.PRCID'
         if not postData['clientTimezone']:
             postData['clientTimezone'] = 'Asia/Shanghai'
@@ -135,7 +165,6 @@ class AppleGeniusBarReservation(object):
         gnPage = GeniusbarPage(url,
                                urllib.urlencode(postData),
                                headers)
-        Writefile('data/aftergovernmentid.html', gnPage.get_data())
         return gnPage
 
     def post_smschallenge(self, prePage):
@@ -146,11 +175,16 @@ class AppleGeniusBarReservation(object):
         "serviceType_Mac"
         '''
         debug.debug('post %s' % GeniusbarPage.get_geniusbar_url())
-        postData = prePage.build_smschallenge_post_data("serviceType_iPhone")
+        postData = prePage.build_smschallenge_post_data("serviceType_Mac")
         headers = GeniusbarPage.headers
         headers['Referer'] = GeniusbarPage.get_geniusbar_url()
         smschallenge = GeniusbarPage(GeniusbarPage.get_geniusbar_url(),
                                      urllib.urlencode(postData),
                                      headers=GeniusbarPage.headers)
-        Writefile('data/smschallenge.html',smschallenge.get_data())
         return smschallenge
+
+    def isCompleted(self, result=None):
+        if result:
+            result.put((self.status, self.progress))
+            return self.status
+        return self.status

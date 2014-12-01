@@ -36,7 +36,7 @@ def get_value(soup,idname, tagname='input', attrs=None):
         result = soup.find(tagname, attrs=tmpattrs)
         return result.get('value')
     except AttributeError as e:
-        debug.error('tagname %s %s' % (tagname, str(e)))
+        debug.info('tagname %s %s' % (tagname, str(e)))
 
 
 def build_post_data(soup, build_items):
@@ -44,7 +44,7 @@ def build_post_data(soup, build_items):
     post_data = {}
     for tag in build_items:
         post_data[tag] = get_value(soup, tag)
-
+        print('%s , %s', tag, post_data[tag])
     return post_data
 
 
@@ -85,6 +85,7 @@ def test_login_page():
     for href in hrefs:
         suburl = href.get('href')
         storeName = href.getString().encode('utf-8', 'ignore')
+        break
 
     storeurl = baseUrl + suburl
     debug.debug('%s: %s' % (storeName, storeurl))
@@ -196,6 +197,7 @@ def test_login_page():
     tokentag = page_soup.find('input', attrs=attrs)
     post_data["_formToken"] = tokentag.get('value')
     attrs = {'class': 'NSCSSStateHidden value', "name": "id"}
+    
     spantag = page_soup.find('span', attrs=attrs)
     post_data['id'] = spantag.text
     postbar = 'http://concierge.apple.com/geniusbar/R401'
