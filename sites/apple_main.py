@@ -3,7 +3,7 @@ import sys
 sys.path.append('../')
 import urllib
 from apple_genius_bar.store_page import GeniusbarPage
-from utils import debug, Writefile
+from utils import debug
 
 
 class AppleGeniusBarReservation(object):
