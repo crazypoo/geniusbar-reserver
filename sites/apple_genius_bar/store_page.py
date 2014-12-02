@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from utils import debug
 from utils.webpage import WebPage
 import time
@@ -9,9 +10,6 @@ class StorePage(WebPage):
     storeNumber = None
     headers = {}
     postData = {}
-    appleId = ''
-    accountPassword = ''
-    governmentId = ''
 
     def __init__(self, url, data=None,
                  headers={},
@@ -25,14 +23,9 @@ class StorePage(WebPage):
             tag = soup.find(tagLabel, attrs=attrs)
             return tag.get('value')
         except AttributeError as e:
+            debug.info('%s' % str(attrs))
             debug.info('info cannot find %s %s' % (tagLabel, str(e)))
             return ''
-
-    @classmethod
-    def set_user_data(self, appleId, passwd, governmentId):
-        StorePage.accountPassword = passwd
-        StorePage.appleId = appleId
-        StorePage.governmentId = governmentId
 
     @classmethod
     def _init_headers(self):
@@ -69,10 +62,10 @@ class GeniusbarPage(StorePage):
             suburl = None
             storeName = None
             data = {}
-            index = 1
+            index = 0
             for href in hrefs:
                 suburl = href.get('href').encode('utf-8')
-                storeName = href.text.encode('gbk', 'ignore')
+                storeName = href.text
                 data[index] = (storeName, suburl)
                 index += 1
             return data
@@ -112,21 +105,22 @@ class GeniusbarPage(StorePage):
         return postData
 
     def get_verification_code_pic(self):
-        getData = {}
-        getData['key'] = self.get_tag_value("input", {'id': 'captchaKey'})
-        getData['format'] = self.get_tag_value("input",
-                                               {'id': "captchaFormat"})
-        getData['t'] = str(time.time()).replace('.', '')
-        url = "%s/captcha?&%s" % (self.get_geniusbar_url(),
-                                  urllib.urlencode(getData))
-        headers = GeniusbarPage.headers
-        headers['Accept'] = 'image/png,image/*;q=0.8,*/*;q=0.5'
-        headers['Accept-Encoding'] = 'gzip, deflate'
-        request = urllib2.Request(url, headers=headers)
-
-        return urllib2.urlopen(request).read()
-        verifyCodePage = GeniusbarPage(url, headers=headers)
-        return verifyCodePage.get_data()
+        try:
+            getData = {}
+            getData['key'] = self.get_tag_value("input", {'id': 'captchaKey'})
+            getData['format'] = self.get_tag_value("input",
+                                                   {'id': "captchaFormat"})
+            timeStamp = str(time.time()).replace('.', '')
+            getData['t'] = timeStamp
+            url = "%s/captcha?&%s" % (self.get_geniusbar_url(),
+                                      urllib.urlencode(getData))
+            headers = GeniusbarPage.headers
+            headers['Accept'] = 'image/png,image/*;q=0.8,*/*;q=0.5'
+            headers['Accept-Encoding'] = 'gzip, deflate'
+            request = urllib2.Request(url, headers=headers)
+            return (urllib2.urlopen(request).read(), timeStamp)
+        except Exception as e:
+            debug.error(str(e))
 
     def check(self, tagname, attrs):
         tag = self.get_soup().findAll(tagname, atts=attrs)

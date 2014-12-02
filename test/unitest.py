@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import sys
 if '../' not in sys.path:
     sys.path.append('../')
@@ -227,5 +228,11 @@ def test_login_page():
     f= open('data/img.jpg', 'wb')
     f.write(data)
     f.close
-test_login_page()
-
+# test_login_page()
+import shelve
+data = shelve.open('testshelve.usr')
+#data['name'] = 'username'
+#data['passwd'] = 'passwd'
+#data.close()
+print(data['name'])
+print(data['passwd'])

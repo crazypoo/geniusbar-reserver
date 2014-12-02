@@ -1,0 +1,25 @@
+_formToken=eCkIGGn2d/RDakJgygdd9GjGYQ0=
+captchaAnswer=slgl
+captchaBackToText=返回文本模式
+captchaFormat=IMAGE
+captchaKey=t5ILbfTVeVSbVWSUhUP79/ZTSwfbgxElHHKnXLlUiLMBm//kpDN4Ssf6xDnDGpAsMrGNZMepSbPiS+WD7ie7Fqa9r+hRV748EV8zIuDbl5k=
+captchaTryNewAudio=换一个试试
+captchaTryNewImg=换一张图像试试
+captchaVisionImpaired=视力障碍
+clientTimezone=Asia/Shanghai
+countryISDCode=86
+forty1Parameter=TF1;016;;;;;;;;;;;;;;;;;;;;;;Mozilla;Netscape;5.0%20%28Windows%29;20100101;undefined;true;Windows%20NT%206.1%3B%20WOW64;true;Win32;undefined;Mozilla/5.0%20%28Windows%20NT%206.1%3B%20WOW64%3B%20rv%3A33.0%29%20Gecko/20100101%20Firefox/33.0;zh-CN;undefined;concierge.apple.com;undefined;undefined;undefined;undefined;false;false;1417484257201;8;2005/6/7%20%u4E0B%u53489%3A33%3A44;1920;1080;;15.0;;10.51.2;;2013;1;-480;-480;2014/12/2%20%u4E0A%u53489%3A37%3A37;24;1920;1040;0;0;Adobe%20Acrobat%7CAdobe%20PDF%20Plug-In%20For%20Firefox%20and%20Netscape%2011.0.9;;;;;Shockwave%20Flash%7CShockwave%20Flash%2015.0%20r0;;;;;;;;;Silverlight%20Plug-In%7C5.1.30514.0;;;;18;;;;;;;
+phoneNumber=13982045200
+smsCode=feafea
+
+
+
+POST /geniusbar/R401/smschallenge HTTP/1.1
+Host: concierge.apple.com
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: zh-cn,zh;q=0.8,en-us;q=0.5,en;q=0.3
+Accept-Encoding: gzip, deflate
+Referer: https://concierge.apple.com/geniusbar/R401/smschallenge
+Cookie: s_fid=2D1591A5DD744CA9-1DEE947502A07C51; s_vnum_n2_us=97|1,21|8,0|7,4|1,20|7; s_vi=[CS]v1|2A3ACB3005194114-60000610C0001BF4[CE]; dssid2=16b9971d-9676-4eaa-81d5-7d0fb5903101; dssf=1; optimizelySegments=%7B%22382310072%22%3A%22false%22%2C%22381740105%22%3A%22none%22%2C%22381100110%22%3A%22ff%22%2C%22382310071%22%3A%22referral%22%7D; pxro=1; s_cc=true; s_sq=devapple%3D%2526pid%253Dconcierge%252520appleid%252520signin%252520%2526pidt%253D1%2526oid%253D%2525E4%2525B8%25258B%2525E4%2525B8%252580%2525E6%2525AD%2525A5%2526oidt%253D3%2526ot%253DSUBMIT; ccl=jEC3pm1xPKDvpCB9laOAmQ==; geo=CN; s_vnum_n2_cn=20%7C10; JSESSIONID=6AD578EB6040E1AB012BA0A73D1D61F7; James=true; NSC_MCWT_dpodjfshf_80_443_Dijob=ffffffff122a743b45525d5f4f58455e445a4a4229fd; s_ria=Flash%2015%7C; dslang=CN-ZH; ds01_a=7bbb75e1809af8c24c30e75d5d3ede721f6b7f6c2b1aae569d1d04f474c4fec51cc62ebf4303d87af85ed6c09bb2681bab3c5027a1869d15d51ed9a7da79eb819c2558607e14f2bffcf3f47488cba3ac8a84534065f7e98e7b832ee36980d7fdGZVX; POD=cn~zh; site=CHN; myacinfo=DAWTKNV2e7b98544d74de534bbb1bb91e914ac133d2ea02831ee17432c07b74e43ba21829259933f299496a36b4ae46b27facba7bd7cb74b8b16c6b8ff2ce4828eb77d999de02ca06767a196ebfb3f129f4101e64d273188c493b132844d7126a8c4161f28126ace2227383691e28f6496216c621caef3a57e695996fd2be563b9848c9d43849226241fb0b541ac8843fba3affa2abad066f082a11abb28d02a3c7905e69b735e3ba44f4a668473bdc7f1093865b1b42831e6cb10cd6a8405e94707ccb9511a69310b7be1993c1c1217109dff6ceab72f84f1fea5cc374661f34d9e99f5d08677f129bcd74b0ae008b6e4f1aa1fdb7f83e301452b3a26617d9a8768b6a6e05708169b0aa905415dca94c29774fe75731910d2fb500ce4c478a400730bf1MVRYV2; s_orientation=%5B%5BB%5D%5D; s_orientationHeight=1154; s_ppv=concierge%2520-%2520genius%2520bar%2520-%2520SMSChallenge%2C100%2C71%2C1321%2C100%3A3%7C200%3A%3E%7C300%3A%3E%7C400%3A%3E%7C500%3A%3E%7C600%3A%3E%7C700%3A%3E%7C800%3A%3E%7C900%3A%3E%7C1000%3A9%7C1100%3A6%7C1200%3A6%7C1300%3A6%7C1400%3A6; s_pathLength=retail.concierge%3D6%2Cretailstore%3D2%2Cretail.concierge%20%3D1%2C; s_invisit_n2_us=21%2C0; s_invisit_n2_cn=20; s_pv=concierge%20-%20genius%20bar%20-%20SMSChallenge; cwh_cache=/reservation/cn/zh/R401/techsupport
+Connection: keep-alive

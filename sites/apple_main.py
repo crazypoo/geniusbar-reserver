@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import sys
 sys.path.append('../')
 import urllib
@@ -8,7 +9,8 @@ from utils import debug, Writefile
 class AppleGeniusBarReservation(object):
     stores = None
     host = 'http://www.apple.com'
-    def __init__(self, verifyData = None, progress=None, status=None):
+
+    def __init__(self, loginData):
 
         self.appleid = None
         self.passwd = None
@@ -17,7 +19,7 @@ class AppleGeniusBarReservation(object):
         self.authUrl = "https://idmsa.apple.com/IDMSWebAuth/authenticate"
         self.govUrlFormat = "https://concierge.apple.com/geniusbar/%s/governmentID"
         self.supportUrl = None
-        self.verifyData = verifyData
+        self.loginData = loginData
         GeniusbarPage._init_headers()
 
     @classmethod
@@ -84,11 +86,10 @@ class AppleGeniusBarReservation(object):
     def post_anth_page(self, prePage):
         debug.debug('POST %s' % self.authUrl)
         postData = prePage.build_auth_post_data()
-        GeniusbarPage.set_user_data(appleId='zhonghui944oe@163.com',
-                                    passwd='Qq654123',
-                                    governmentId='610102196103120670')
-        postData['accountPassword'] = 'Qq654123'
-        postData['appleId'] = 'zhonghui944oe@163.com'
+        # 'Qq654123'
+        postData['accountPassword'] = self.loginData['accountPassword']
+        postData['appleId'] = self.loginData['appleId']
+        # 'zhonghui944oe@163.com'
         headers = GeniusbarPage.headers
         headers['Host'] = "concierge.apple.com"
         headers['Referer'] = prePage.get_url()
@@ -130,25 +131,25 @@ class AppleGeniusBarReservation(object):
         self.update_progress(70)
 
         smschallengePage = self.post_smschallenge(govPage)
-        Writefile('tmp/smschallengepage.html', smschallengePage.get_data())
+        # Writefile('tmp/smschallengepage.html', smschallengePage.get_data())
         self.update_progress(80)
         attrs = {'class': "ValidatedField SmsCode"}
         if not smschallengePage.check('div', attrs):
             # get validcode picture
-            self.verifyData = smschallengePage.get_verification_code_pic()
-            f = open('tmp/verifyCode.jpg', 'wb')
-            f.write(self.verifyData)
+            verifyData, tSt = smschallengePage.get_verification_code_pic()
+            f = open('tmp/%s.jpg' % tSt, 'wb')
+            f.write(verifyData)
             f.close()
             self.update_progress(90)
-            if self.verifyData:
-                self.taskStatus['verifyCodeData'] = self.verifyData
+            if verifyData:
+                self.taskStatus['verifyCodeData'] = verifyData
                 self.update_progress(100)
 
                 debug.info('Successful')
             else:
                 debug.error('verfyData error')
             self.update_progress(100)
-            return self.verifyData
+            return verifyData
 
         debug.error('not finished')
         self.update_progress(100)
@@ -158,8 +159,9 @@ class AppleGeniusBarReservation(object):
         debug.debug('post %s' % url)
         postData = prepage.build_governmentid_post_data()
         postData["_formToken"] = prepage.get_formtoken_value()
-        postData['governmentID'] = GeniusbarPage.governmentId
-        postData['governmentIDType'] = 'CN.PRCID'
+        postData['governmentID'] = self.loginData['governmentID']
+        postData['governmentIDType'] = self.loginData['governmentIDType']
+        #'CN.PRCID'
         if not postData['clientTimezone']:
             postData['clientTimezone'] = 'Asia/Shanghai'
         headers = GeniusbarPage.headers
@@ -177,7 +179,8 @@ class AppleGeniusBarReservation(object):
         "serviceType_Mac"
         '''
         debug.debug('post %s' % GeniusbarPage.get_geniusbar_url())
-        postData = prePage.build_smschallenge_post_data("serviceType_Mac")
+        reservType = self.loginData['reservType']
+        postData = prePage.build_smschallenge_post_data(reservType)
         headers = GeniusbarPage.headers
         headers['Referer'] = GeniusbarPage.get_geniusbar_url()
         smschallenge = GeniusbarPage(GeniusbarPage.get_geniusbar_url(),

@@ -12,7 +12,10 @@ class TaskDLG(QtGui.QDialog):
     signalTaskCompleted = QtCore.pyqtSignal()
     signalUpdateTaskProgress = QtCore.pyqtSignal(int)
 
-    def __init__(self, enterUrl, taskId=1, parent=None):
+    def __init__(self, enterUrl,
+                 loginData,
+                 taskId=1, parent=None):
+
         super(TaskDLG, self).__init__(parent)
         self.enterUrl = enterUrl
         self.ui = Ui_TaskDialog()
@@ -25,9 +28,22 @@ class TaskDLG(QtGui.QDialog):
         self.ui.lbVerifyCodePic.resize(size)
         self.ui.lbVerifyCodePic.setPixmap(qpixmap)
         self.taskId = taskId
-        self.appleGeniusBarReservation = AppleGeniusBarReservation()
+        self.loginData = loginData
+        self.initLoginDataUi()
+        self.appleGeniusBarReservation = AppleGeniusBarReservation(loginData)
         self.signalTaskCompleted.connect(self.finished)
         self.signalUpdateTaskProgress.connect(self.updataProcess)
+        print(self.loginData)
+
+    def initLoginDataUi(self):
+        self.ui.combServType.addItem(self.loginData['reservType'])
+        storename = unicode(self.loginData['storeName'], 'utf8', 'ignore')
+        self.ui.combStore.addItem(QtCore.QString(storename))
+        self.ui.lEGovId.setText(self.loginData['governmentID'])
+        self.ui.lEPhoneNumber.setText(self.loginData['phoneNumber'])
+        self.ui.lEPasswd.setText(self.loginData['accountPassword'])
+        self.ui.lEUserName.setText(self.loginData['appleId'])
+        self.ui.lEReservCode.setText(self.loginData['reservCode'])
 
     def startTask(self):
         self.taskStatus = Manager().dict()
