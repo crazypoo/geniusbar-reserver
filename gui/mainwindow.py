@@ -1,24 +1,18 @@
 # -*- coding: utf-8 -*-
+import os
 import PyQt4.QtGui as QtGui
-import sys
-if '../' not in sys.path:
-    sys.path.append('../')
-reload(sys)
-sys.setdefaultencoding('utf-8')
-from utils import debug
-debug.setLevel(10)
+import PyQt4.QtCore as QtCore
+from uidesigner.ui_mainwindow import Ui_MainWindow
 from addaccountdlg import AddAccountDLG
 from taskdlg import TaskDLG
 from newtaskdlg import NewTaskDLG
-from ui_mainwindow import Ui_MainWindow
 from sites.apple_main import AppleGeniusBarReservation
-from multiprocessing import freeze_support
-
-
 stores = AppleGeniusBarReservation.Init_stores_list()
 
 
 class MainWindow(QtGui.QMainWindow):
+    signalViewTask = QtCore.pyqtSignal(int)
+
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.ui = Ui_MainWindow()
@@ -33,8 +27,32 @@ class MainWindow(QtGui.QMainWindow):
                             "serviceType_iPod",
                             "serviceType_Mac"]
         self.loginData = {}
+        currentdir = os.path.abspath(os.getcwd())
+        self.account_dir = os.path.join(currentdir, 'res/accounts/accounts.dat')
+        self.tasksInfo = {}
+        self.initTaskIdsConnection()
+        self.newtaskDLG = None
 
+    def initTaskIdsConnection(self):
+        self.ui.pBViewAccount_1.__dict__['taskid'] = '1'
+        
+
+    def viewTask(self):
+        #self.tasksInfo[taskid].show()
+        print(str(self.sender().text()).encode('GBK'))
+        print(self.sender().__dict__['taskid'])
+
+        
     def newTask(self):
+        if not self.newtaskDLG:
+            self.newtaskDLG = NewTaskDLG(self.storelist, self.reservTypes, parent=self)
+            #ret = newtaskDLG.exec_()
+        if not self.newtaskDLG.isVisible():
+            self.newtaskDLG.show()
+        else:
+            self.newtaskDLG.hide()
+
+    def newTask1(self):
         newtaskDLG = NewTaskDLG(self.storelist, self.reservTypes, parent=self)
         ret = newtaskDLG.exec_()
         if not ret:
@@ -54,12 +72,5 @@ class MainWindow(QtGui.QMainWindow):
         self.index += 1
 
     def addAccount(self):
-        addAccountDLG = AddAccountDLG()
+        addAccountDLG = AddAccountDLG(self.account_dir)
         addAccountDLG.exec_()
-
-if __name__ == '__main__':
-    freeze_support()
-    app = QtGui.QApplication(sys.argv)
-    main = MainWindow()
-    main.show()
-    app.exec_()

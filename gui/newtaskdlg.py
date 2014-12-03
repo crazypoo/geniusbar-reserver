@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
-from ui_newtaskdlg import Ui_NewTaskDialog
+from uidesigner.ui_newtaskdlg import Ui_NewTaskDialog
 from utils import debug
 
 

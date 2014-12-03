@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'accountdlg.ui'
+# Form implementation generated from reading ui file 'uidesigner_res/accountdlg.ui'
 #
-# Created: Tue Dec 02 15:49:21 2014
+# Created: Wed Dec 03 18:11:47 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -85,8 +85,8 @@ class Ui_AccountDialog(object):
         QtCore.QMetaObject.connectSlotsByName(AccountDialog)
 
     def retranslateUi(self, AccountDialog):
-        AccountDialog.setWindowTitle(_translate("AccountDialog", "用户添加", None))
-        self.label.setText(_translate("AccountDialog", "用户名：", None))
+        AccountDialog.setWindowTitle(_translate("AccountDialog", "账户添加", None))
+        self.label.setText(_translate("AccountDialog", "账户ID:", None))
         self.label_2.setText(_translate("AccountDialog", "密码：", None))
         self.label_3.setText(_translate("AccountDialog", "身份证号：", None))
         self.label_4.setText(_translate("AccountDialog", "手机号：", None))

@@ -3,7 +3,7 @@ import PyQt4.QtCore as QtCore
 from multiprocessing import Process, Manager
 import threading
 import time
-from ui_taskdlg import Ui_TaskDialog
+from uidesigner.ui_taskdlg import Ui_TaskDialog
 from sites.apple_main import AppleGeniusBarReservation
 from utils import debug
 
@@ -49,6 +49,7 @@ class TaskDLG(QtGui.QDialog):
         self.taskStatus = Manager().dict()
         self.taskStatus['verifyCodeData'] = None
         self.taskStatus['taskProgress'] = 0
+        self.taskStatus['prompInfo'] = None
         self.ui.pBStartTask.setEnabled(False)
         task = Process(target=self.appleGeniusBarReservation.jump_login_page,
                        args=(self.enterUrl, self.taskStatus))
@@ -65,6 +66,7 @@ class TaskDLG(QtGui.QDialog):
             size = QtCore.QSize(pixmap.width(), pixmap.height())
             self.ui.lbVerifyCodePic.resize(size)
             self.ui.lbVerifyCodePic.setPixmap(pixmap)
+            self.ui.pTSm
         else:
             debug.info('verifyData is none')
 
@@ -72,7 +74,6 @@ class TaskDLG(QtGui.QDialog):
         val = self.ui.progressBar.value()
         if not val == progress:
             self.ui.progressBar.setValue(progress)
-            print('updataProcess %s' % progress)
 
     def polling(self):
         progress = self.taskStatus['taskProgress']

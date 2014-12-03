@@ -13,10 +13,17 @@ class ProxyPage(WebPage):
                                         charset,
                                         timeout)
 
+    def get_proxyservers(self):
+        servers = []
+        soup = self.get_soup()
+        return servers
+
 
 class ProxyFinder():
     def __init__(self, urls):
         self.urls = urls
 
-    def getAvailableProxyIp(self):
-        pass
+
+    def get_available_proxys(self):
+        ips = []
+        return ips

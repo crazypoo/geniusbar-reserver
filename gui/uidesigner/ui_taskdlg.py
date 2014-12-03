@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'taskdlg.ui'
+# Form implementation generated from reading ui file 'uidesigner_res/taskdlg.ui'
 #
-# Created: Tue Dec 02 15:49:22 2014
+# Created: Wed Dec 03 18:11:48 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!

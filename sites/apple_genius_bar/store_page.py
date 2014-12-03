@@ -39,8 +39,10 @@ NT 6.1; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0"
 application/xml;q=0.9,*/*;q=0.8'
         StorePage.headers["Connection"] = 'keep-alive'
 
+
 class GeniusbarPage(StorePage):
     geniusbarBaseUril = "http://concierge.apple.com/geniusbar/"
+
     def __init__(self, url, data=None,
                  headers={},
                  charset='utf-8',
@@ -119,8 +121,26 @@ class GeniusbarPage(StorePage):
             headers['Accept-Encoding'] = 'gzip, deflate'
             request = urllib2.Request(url, headers=headers)
             return (urllib2.urlopen(request).read(), timeStamp)
+
         except Exception as e:
             debug.error(str(e))
+
+    def get_smschalleng_steps(self, data=None):
+        soup = self.get_soup(data)
+        tag = soup.find('div', {'class': "info"})
+        if not tag:
+            return None
+        try:
+            text = tag.getText().replace(' ', '')
+            pos = text.find(u'第1步')
+            pose = text.find(u'第2步')
+            text = text[pos: pose]
+            text = text[text.find(':'):]
+            text = text.replace(':', '\n').replace('：', '\n')
+            return text
+        except Exception as e:
+            debug.error('get_challeng_steps function: %s' % str(e))
+            return None
 
     def check(self, tagname, attrs):
         tag = self.get_soup().findAll(tagname, atts=attrs)

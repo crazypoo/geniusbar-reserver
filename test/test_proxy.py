@@ -1,7 +1,7 @@
 import urllib2
 proxyserver = '221.7.112.108:80'
 url = 'http://www.baidu.com'
-proxyserver = '120.137.170.199:80'
+#proxyserver = '120.137.170.199:80'
 
 
 def proxy1():

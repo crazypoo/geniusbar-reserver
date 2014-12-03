@@ -12,7 +12,7 @@ import sys
 base = 'Win32GUI' if sys.platform=='win32' else None
 
 executables = [
-    Executable('gui/main.py', base=base, targetName = 'GeniusBar.exe')
+    Executable('geniusbar.py', base=base, targetName = 'GeniusBar.exe')
 ]
 
 setup(name='xx',

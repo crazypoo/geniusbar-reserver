@@ -72,4 +72,34 @@ class CommandLine(object):
         return parser.parse_args()
 
 
+# ############################################
+import json
 
+
+class JsonHelper():
+    def __init__(self, jsonfile):
+        self.filename = jsonfile
+
+    def data(self):
+        try:
+            with open(self.filename, 'r') as f:
+                data = f.read()
+                return data
+        except Exception as e:
+            debug.info('Can not open %s' % self.filename)
+
+    def objs(self):
+        data = self.data()
+        if data:
+            objs = json.loads(data)
+        else:
+            objs = None
+        return objs
+
+    def write_objs(self, objs):
+        try:
+            with open(self.filename, 'w') as f:
+                enObjs = json.dumps(objs)
+                f.write(enObjs)
+        except Exception as e:
+            debug.error('Can not write %s ,%s' % (self.filename, str(e)))

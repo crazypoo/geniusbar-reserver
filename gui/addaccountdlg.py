@@ -1,44 +1,39 @@
 # -*- coding: utf-8 -*-
 import PyQt4.QtGui as QtGui
-from ui_accountdlg import Ui_AccountDialog
+from uidesigner.ui_accountdlg import Ui_AccountDialog
+from sites.apple_genius_bar.confhelper import ConfHelper
 from utils import debug
-import dbhash
-import shelve
-import os
 
 
 class AddAccountDLG(QtGui.QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, accountfile, parent=None):
         super(AddAccountDLG, self).__init__()
         self.ui = Ui_AccountDialog()
         self.ui.setupUi(self)
+        self.accountfile = accountfile
 
     def accept(self):
-        debug.info('enter accept')
-
-        account = str(self.ui.lEAccount.text())
-        # accountId = str(len(self.db.items()))
-        if not os.path.exists('accounts'):
-            os.mkdir('accounts')
-            debug.info('create accounts')
-        try:
-            item = shelve.open('accounts/%s.usr' % account.split('@')[0])
-            item['account'] = account
-            item['passwd'] = str(self.ui.lEPasswd.text())
-            item['governmentId'] = str(self.ui.lEGovId.text())
-            item['phonenumber'] = str(self.ui.lEPhoneNumber.text())
-            isOk = True
-            for key, val in item.items():
-                if not val:
-                    isOk = False
-                    debug.debug('Please type %s' % key)
-                    break
-                item.close()
-                if isOk:
-                    debug.info('exit accept')
-                    debug.debug('accept')
-                    super(AddAccountDLG, self).accept()
-                else:
-                    debug.error('empty field')
-        except Exception as e:
-            debug.info('exit accept without %s' % str(e))
+        confhelper = ConfHelper()
+        appleid = str(self.ui.lEAccount.text())
+        accounts = confhelper.getAccounts(self.accountfile)
+        account = {}
+        account['id'] = str(len(accounts)+1)
+        account['appleid'] = appleid
+        account['passwd'] = str(self.ui.lEPasswd.text())
+        account['governmentid'] = str(self.ui.lEGovId.text())
+        account['phonenumber'] = str(self.ui.lEPhoneNumber.text())
+        accounts[account['id']] = account
+        isOk = True
+        for key, val in account.items():
+            if not val:
+                isOk = False
+                debug.debug('Please type %s' % key)
+                QtGui.QMessageBox.warning(self, "Info",
+                                          "Please input %s" % key,
+                                          QtGui.QMessageBox.Yes)
+                break
+        if isOk:
+            confhelper.addAccounts(self.accountfile, accounts)
+            super(AddAccountDLG, self).accept()
+        else:
+            debug.error('empty field')

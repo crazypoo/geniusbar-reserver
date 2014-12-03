@@ -83,7 +83,6 @@ class WebPage(object):
         return self.soup
 
     def get_soup(self, data=None):
-
         if data:
             self.soup = BeautifulSoup(markup=data)
             return self.soup

@@ -133,25 +133,27 @@ class AppleGeniusBarReservation(object):
         smschallengePage = self.post_smschallenge(govPage)
         # Writefile('tmp/smschallengepage.html', smschallengePage.get_data())
         self.update_progress(80)
+        text = smschallengePage.get_smschalleng_steps()
+        if not text:
+            debug.error('Reserved failed')
+            return
+        self.taskStatus['prompInfo'] = text
+        self.update_progress(85)
         attrs = {'class': "ValidatedField SmsCode"}
         if not smschallengePage.check('div', attrs):
             # get validcode picture
+            self.update_progress(86)
             verifyData, tSt = smschallengePage.get_verification_code_pic()
-            f = open('tmp/%s.jpg' % tSt, 'wb')
-            f.write(verifyData)
-            f.close()
-            self.update_progress(90)
+            self.update_progress(87)
             if verifyData:
                 self.taskStatus['verifyCodeData'] = verifyData
-                self.update_progress(100)
-
-                debug.info('Successful')
+                self.update_progress(90)
+                # get the smschallenge info phone number
             else:
                 debug.error('verfyData error')
             self.update_progress(100)
             return verifyData
 
-        debug.error('not finished')
         self.update_progress(100)
         return None
 

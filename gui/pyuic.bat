@@ -1,4 +1,6 @@
-call pyuic4 -o ui_mainwindow.py mainwindow.ui
-call pyuic4 -o ui_accountdlg.py accountdlg.ui
-call pyuic4 -o ui_newtaskdlg.py newtaskdlg.ui
-call pyuic4 -o ui_taskdlg.py taskdlg.ui
+call pyuic4 -o uidesigner/ui_mainwindow.py uidesigner_res/mainwindow.ui
+call pyuic4 -o uidesigner/ui_accountdlg.py uidesigner_res/accountdlg.ui
+call pyuic4 -o uidesigner/ui_newtaskdlg.py uidesigner_res/newtaskdlg.ui
+call pyuic4 -o uidesigner/ui_taskdlg.py uidesigner_res/taskdlg.ui
+call pyuic4 -o uidesigner/ui_smschallengedlg.py uidesigner_res/smschallengedlg.ui
+call pyuic4 -o uidesigner/ui_itemwidget.py uidesigner_res/itemwidget.ui
