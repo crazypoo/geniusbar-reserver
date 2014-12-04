@@ -17,16 +17,6 @@ class StorePage(WebPage):
                  timeout=100):
         super(StorePage, self).__init__(url, data, headers, charset, timeout)
 
-    def get_tag_value(self, tagLabel, attrs):
-        soup = self.get_soup()
-        try:
-            tag = soup.find(tagLabel, attrs=attrs)
-            return tag.get('value')
-        except AttributeError as e:
-            debug.info('%s' % str(attrs))
-            debug.info('info cannot find %s %s' % (tagLabel, str(e)))
-            return ''
-
     @classmethod
     def _init_headers(self):
         StorePage.headers['Accept-Language'] = 'zh-cn,zh;q=0.8,en-us;q=0.5,\

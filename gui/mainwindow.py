@@ -9,7 +9,6 @@ from addaccountdlg import AddAccountDLG
 from taskdlg import TaskDLG
 from newtaskdlg import NewTaskDLG
 from sites.apple_main import AppleGeniusBarReservation
-stores = AppleGeniusBarReservation.Init_stores_list()
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -21,8 +20,9 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.setupUi(self)
         self.tasks = []
         self.index = 1
+        self.stores = AppleGeniusBarReservation.Init_stores_list()
         self.storelist = [store for store, url in
-                          [item for index, item in stores.items()]]
+                          [item for index, item in self.stores.items()]]
 
         self.reservTypes = ["serviceType_iPhone",
                             "serviceType_iPad",
@@ -59,7 +59,7 @@ class MainWindow(QtGui.QMainWindow):
         if not ret:
             return
         # get the store name
-        store = stores[newtaskDLG.storeIndex][1]
+        store = self.stores[newtaskDLG.storeIndex][1]
         store_url = AppleGeniusBarReservation.Get_store_url(store)
         supporturl = AppleGeniusBarReservation.Get_suppport_url(store_url)
         self.loginData = newtaskDLG.loginData

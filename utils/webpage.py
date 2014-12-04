@@ -13,7 +13,7 @@ class WebPage(object):
                  data=None,
                  headers={},
                  charset="utf-8",
-                 timeout=100):
+                 timeout=20):
 
         self.url = url
         self.timeout = timeout
@@ -31,6 +31,7 @@ class WebPage(object):
 
     def _read_page(self):
         self.init_cookie()
+        debug.debug('read %s' % self.url)
         req = urllib2.Request(self.url,
                               data=self.post_data,
                               headers=self.headers)
@@ -53,7 +54,7 @@ class WebPage(object):
             return
         WebPage.cookie = cookielib.LWPCookieJar('tmpcookie')
         cookie_support = urllib2.HTTPCookieProcessor(WebPage.cookie)
-        WebPage.opener = urllib2.build_opener(cookie_support)#, urllib2.HTTPRedirectHandler)
+        WebPage.opener = urllib2.build_opener(cookie_support)
         urllib2.install_opener(WebPage.opener)
 
     def get_data(self):
@@ -90,3 +91,25 @@ class WebPage(object):
             return self.soup
         self.soup = BeautifulSoup(markup=self.get_data())
         return self.soup
+
+    def get_tag_value(self, tagLabel, attrs):
+        soup = self.get_soup()
+        try:
+            tag = soup.find(tagLabel, attrs=attrs)
+            return tag.get('value')
+        except AttributeError as e:
+            debug.info('info cannot find %s %s' % (tagLabel, str(e)))
+            return ''
+
+    def get_tag_text(self, taglabel, attrs):
+        soup = self.get_soup()
+        try:
+            tag = soup.find(taglabel, attrs=attrs)
+            return tag.text
+        except AttributeError as e:
+            debug.error('cannot find %s %s %s' %
+                        (taglabel, str(attrs), str(e)))
+
+    def get_tags(self, tagLabel, attrs):
+        soup = self.get_soup()
+        return soup.findAll(tagLabel, attrs=attrs)
