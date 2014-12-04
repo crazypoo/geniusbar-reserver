@@ -3,12 +3,12 @@ import sys
 from PyQt4 import QtGui
 from multiprocessing import freeze_support
 import mainwindow
-from itemwidget import WidgetItem
+from widgetitem import WidgetItem
 
 
 def main():
     freeze_support()
     app = QtGui.QApplication(sys.argv)
-    main = WidgetItem() # mainwindow.MainWindow()
+    main = WidgetItem()#mainwindow.MainWindow()
     main.show()
     app.exec_()

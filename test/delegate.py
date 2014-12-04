@@ -3,7 +3,7 @@ sys.path.append('..')
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import PyQt4.QtGui as QtGui
-from gui.itemwidget import WidgetItem
+from gui.widgetitem import WidgetItem
 
 
 def main():
@@ -45,25 +45,27 @@ class MyDelegate(QtGui.QStyledItemDelegate):
         print(type(model))
 
     def paint(self, painter, option, index):
-        painter.save()
         data = index.data()
         widgetItem = data.toPyObject()
         print(type(widgetItem))
+        
         # set background color
-        painter.setPen(QPen(Qt.NoPen))
-        if option.state & QStyle.State_Selected:
-            painter.setBrush(QBrush(Qt.red))
-        else:
-            painter.setBrush(QBrush(Qt.white))
-        print(widgetItem.ui.lineEdit.rect())
-        print(option.rect)
-        if isinstance(widgetItem, WidgetItem):
-            widgetItem.render(painter)
-        else:
-            super(MyDelegate, self).paint(painter, option, index)
-       # .QStyle().drawControl(QStyle.CT_LineEdit, option, painter, QtGui.QLineEdit())
-        #drawControl(QStyle.CE_ItemViewItem, item, painter)
-        painter.restore()
+        edit = QtGui.QLineEdit()
+        edit.rect = option.rect
+        opts=QStyleOptionProgressBarV2()
+        opts.rect=option.rect
+        opts.minimum=0
+        opts.maximum=100
+        opts.text=str('text')
+        opts.textVisible=True
+        opts.progress=int(80)
+
+        #edit = QStyleOptionLineEdit()
+        QApplication.style().drawControl(QStyle.CE_, edit,painter)
+
+        #QApplication.style().drawControl(QStyle.CE_ProgressBar, opts,painter)
+        
+        #QApplication.style().drawControl(QtGui.QStyle.CT_LineEdit,option, painter,edit)
 
 ####################################################################  
 class MyListModel(QAbstractListModel):  

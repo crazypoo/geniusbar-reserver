@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
+import sys
+sys.path.append('..')
 import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 from uidesigner.ui_mainwindow import Ui_MainWindow
@@ -34,15 +36,14 @@ class MainWindow(QtGui.QMainWindow):
         self.newtaskDLG = None
 
     def initTaskIdsConnection(self):
-        self.ui.pBViewAccount_1.__dict__['taskid'] = '1'
-        
+        #self.ui.pBViewAccount_1.__dict__['taskid'] = '1'
+        pass
 
     def viewTask(self):
         #self.tasksInfo[taskid].show()
         print(str(self.sender().text()).encode('GBK'))
         print(self.sender().__dict__['taskid'])
 
-        
     def newTask(self):
         if not self.newtaskDLG:
             self.newtaskDLG = NewTaskDLG(self.storelist, self.reservTypes, parent=self)

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uidesigner_res/taskdlg.ui'
 #
-# Created: Wed Dec 03 19:43:04 2014
+# Created: Thu Dec 04 15:27:26 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!

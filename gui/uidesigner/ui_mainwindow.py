@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uidesigner_res/mainwindow.ui'
 #
-# Created: Wed Dec 03 19:43:04 2014
+# Created: Thu Dec 04 15:27:26 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -248,9 +248,14 @@ class Ui_MainWindow(object):
         self.horizontalLayout_15.addItem(spacerItem3)
         self.verticalLayout_7.addLayout(self.horizontalLayout_15)
         self.verticalLayout_5.addWidget(self.groupBox_2)
-        self.listWidget = QtGui.QListWidget(self.centralwidget)
-        self.listWidget.setGeometry(QtCore.QRect(9, 354, 256, 192))
-        self.listWidget.setObjectName(_fromUtf8("listWidget"))
+        self.scrollArea = QtGui.QScrollArea(self.centralwidget)
+        self.scrollArea.setGeometry(QtCore.QRect(10, 350, 321, 271))
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
+        self.scrollAreaWidgetContents = QtGui.QWidget()
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 319, 269))
+        self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 723, 21))
