@@ -7,6 +7,7 @@ from uidesigner.ui_taskmanagedlg import Ui_TaskManageDLG
 from utils import debug
 from sites.apple_genius_bar.task import Task
 from functools import partial
+import pickle
 
 
 class TaskManageDLG(QtGui.QDialog):
@@ -24,7 +25,7 @@ class TaskManageDLG(QtGui.QDialog):
         self.tasks = {}
         self.conffile = conffile
         self.initUi(stores, reservType)
-
+        self.defultTask = None
         self.appContext = appconext
 
     def initUi(self, stores, reservType):
@@ -36,26 +37,55 @@ class TaskManageDLG(QtGui.QDialog):
         self.ui.lETaskName.setText('task1')
         self.ui.tWTasks.signalCellContextMenu.connect(self.taskCellContextMenuEvent)
 
+    def getDefaultTask(self):
+        if self.defultTask:
+            return self.defultTask
+        # read from dump file
+        try:
+            with open(self.appContext.defaultTaskdir, 'rb') as f:
+                self.defultTask = pickle.load(f)
+                return self.defultTask
+        except Exception:
+            pass
+        return None
 
     def _addAccount(self, item):
         ret = self.appContext.accountManagerDLG.exec_()
-        if 0==ret:
+        accounts = self.appContext.currentTaskList.getAccounts()
+
+        if 0 == ret:
             return
+        self.updataAccountsView(accounts)
 
     def _deleteTaskList(self, item):
         debug.debug('_deleteTaskList')
         pass
 
+    def _storeToDefault(self, task):
+        with open(self.appContext.defaultTaskdir, 'wb') as f:
+            pickle.dump(task, f)
+
     def taskCellContextMenuEvent(self, event):
         item = self.ui.tWTasks.itemAt(event.pos())
         if not item:
             return
+        taskName = str(item.text())
+        if taskName not in self.tasks.keys():
+            return
+        self.appContext.currentTaskList = self.tasks[taskName]
+
+        actfun = partial(self._storeToDefault, self.tasks[taskName])
+        self.act_storeTodefault = QAction(u'设置成默认', self, triggered=actfun)
         actfun = partial(self._addAccount, item)
         self.act_addAccount = QAction(u'添加账户', self, triggered=actfun)
-        actfun = partial(self._addAccount, item)
+
+        actfun = partial(self._deleteTaskList, item)
         self.act_delete = QAction(u'删除', self, triggered=actfun)
+
         popMenu = QMenu()
+        popMenu.addAction(self.act_storeTodefault)
         popMenu.addAction(self.act_addAccount)
+        popMenu.addAction(self.act_delete)
         popMenu.exec_(self.cursor().pos())
 
     def addTask(self):
@@ -73,6 +103,7 @@ class TaskManageDLG(QtGui.QDialog):
         self.updateTaskTableWidget()
 
     def taskCellClicked(self, row, col):
+        print('taskcellclicked')
         if 0 == col:
             item = self.ui.tWTasks.currentItem()
             task = self.tasks[str(item.text())]
@@ -81,7 +112,7 @@ class TaskManageDLG(QtGui.QDialog):
     def updataAccountsView(self, accounts):
         self.ui.lWAccounts.clear()
         for account in accounts:
-            self.ui.lWAccounts.addItem(account.userName)
+            self.ui.lWAccounts.addItem(account['appleid'])
 
     def updateTaskTableWidget(self):
         rowCount = len(self.tasks)

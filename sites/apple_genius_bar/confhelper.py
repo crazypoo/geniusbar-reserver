@@ -17,14 +17,22 @@ class ConfHelper():
 class AccountManager(object):
     def __init__(self, filename):
         self.fileName = filename
+        self.jsonhelper = JsonHelper(self.fileName)
+        self.accounts = self._getAccounts()
 
     def getAccounts(self):
-        jsonhelper = JsonHelper(self.fileName)
-        objs = jsonhelper.objs()
+        if self.accounts:
+            self.accounts
+        return self._getAccounts()
+
+    def _getAccounts(self):
+        objs = self.jsonhelper.objs()
         if objs:
             return objs
         return {}
 
     def addAccounts(self, accounts={}):
-        jsonhelper = JsonHelper(self.fileName)
-        jsonhelper.write_objs(accounts)
+        if not self.accounts:
+            self.accounts = self._getAccounts()
+        self.accounts = dict(self.accounts, **accounts)
+        self.jsonhelper.write_objs(self.accounts)

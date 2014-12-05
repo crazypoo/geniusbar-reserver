@@ -14,6 +14,9 @@ class AppContext():
         self.accountManagerDLG = None
         self.taskManageDLG = None
         self.proxyManagerDLG = None
+        self.defaultTaskdir = None
+        self.accountManager = None
+        self.currentTaskList = None
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -38,7 +41,10 @@ class MainWindow(QtGui.QMainWindow):
         account_dir = os.path.join(abscwd, 'res/accounts/account.dat')
         self.accountManager = AccountManager(account_dir)
         self.appContext = AppContext()
-        self.accountManagerDLG = AccountManagerDLG(self.accountManager)
+        defaulttaskdir = os.path.join(abscwd, 'res','task', 'defaulttask.dat')
+        self.appContext.defaultTaskdir = defaulttaskdir
+        self.appContext.accountManager = self.accountManager
+        self.accountManagerDLG = AccountManagerDLG(self.appContext)
         self.appContext.accountManagerDLG = self.accountManagerDLG
         self.taskManageDLG = TaskManageDLG(self.appContext,
                                            abscwd,
@@ -46,8 +52,37 @@ class MainWindow(QtGui.QMainWindow):
                                            self.reservTypes)
         self.appContext.taskManageDLG = self.taskManageDLG
 
+        self.initDefaultTask()
+
+    def initDefaultTask(self):
+        task = self.taskManageDLG.getDefaultTask()
+        if not task:
+            return
+        self.appContext.currentTaskList = task
+        counts = task.getAccounts()
+        rowCount = len(counts)
+        row = 0
+        self.ui.gBListName.setTitle(unicode(task.taskName))
+        for count in counts:
+            item = QtGui.QTableWidgetItem()
+            item.setText(count['appleid'])
+            self.ui.tWTaskList.setItem(row, 0, item)
+
+            item = QtGui.QTableWidgetItem()
+            item.setText(task.proxyServer)
+            self.ui.tWTaskList.setItem(row, 2, item)
+
+            item = QtGui.QTableWidgetItem()
+            item.setText(unicode(task.storeName))
+            self.ui.tWTaskList.setItem(row, 3, item)
+
+            item = QtGui.QTableWidgetItem()
+            item.setText(task.reservType)
+            self.ui.tWTaskList.setItem(row, 4, item)
+            row += 1
+
     def accountManage(self):
-        self.accountManagerDLG.show()
+        self.accountManagerDLG.exec_()
 
     def taskManage(self):
         self.taskManageDLG.exec_()

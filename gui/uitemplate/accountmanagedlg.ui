@@ -26,16 +26,6 @@
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
            <widget class="TaskTableWidget" name="tWAccounts">
-            <row>
-             <property name="text">
-              <string>新建行</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>新建行</string>
-             </property>
-            </row>
             <column>
              <property name="text">
               <string>AppleID</string>
@@ -148,6 +138,13 @@
            </layout>
           </item>
           <item>
+           <widget class="QPushButton" name="pBRandomGovernId">
+            <property name="text">
+             <string>随机</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <layout class="QHBoxLayout" name="horizontalLayout_5">
             <item>
              <widget class="QLabel" name="label_4">
@@ -188,23 +185,30 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="pBAdd">
             <property name="text">
              <string>添加</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_2">
+           <widget class="QPushButton" name="pBClear">
             <property name="text">
              <string>清空</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_3">
+           <widget class="QPushButton" name="pBOk">
             <property name="text">
              <string>确定</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pBCancel">
+            <property name="text">
+             <string>取消</string>
             </property>
            </widget>
           </item>
@@ -225,5 +229,91 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pBAdd</sender>
+   <signal>clicked()</signal>
+   <receiver>AccountDLG</receiver>
+   <slot>addAccount()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>334</x>
+     <y>324</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>277</x>
+     <y>178</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pBClear</sender>
+   <signal>clicked()</signal>
+   <receiver>AccountDLG</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>415</x>
+     <y>324</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>277</x>
+     <y>178</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pBOk</sender>
+   <signal>clicked()</signal>
+   <receiver>AccountDLG</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>496</x>
+     <y>324</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>277</x>
+     <y>178</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pBCancel</sender>
+   <signal>clicked()</signal>
+   <receiver>AccountDLG</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>496</x>
+     <y>324</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>277</x>
+     <y>178</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pBRandomGovernId</sender>
+   <signal>clicked()</signal>
+   <receiver>AccountDLG</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>304</x>
+     <y>273</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>277</x>
+     <y>178</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>addAccount()</slot>
+  <slot>clear()</slot>
+  <slot>randomGovernId()</slot>
+ </slots>
 </ui>

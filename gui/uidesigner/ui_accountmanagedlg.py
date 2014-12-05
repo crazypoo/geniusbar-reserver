@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/accountmanagedlg.ui'
 #
-# Created: Fri Dec 05 18:25:25 2014
+# Created: Fri Dec 05 22:36:01 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -40,11 +40,7 @@ class Ui_AccountDLG(object):
         self.tWAccounts = TaskTableWidget(self.groupBox)
         self.tWAccounts.setObjectName(_fromUtf8("tWAccounts"))
         self.tWAccounts.setColumnCount(4)
-        self.tWAccounts.setRowCount(2)
-        item = QtGui.QTableWidgetItem()
-        self.tWAccounts.setVerticalHeaderItem(0, item)
-        item = QtGui.QTableWidgetItem()
-        self.tWAccounts.setVerticalHeaderItem(1, item)
+        self.tWAccounts.setRowCount(0)
         item = QtGui.QTableWidgetItem()
         self.tWAccounts.setHorizontalHeaderItem(0, item)
         item = QtGui.QTableWidgetItem()
@@ -97,6 +93,9 @@ class Ui_AccountDLG(object):
         self.lEGovId.setObjectName(_fromUtf8("lEGovId"))
         self.horizontalLayout_4.addWidget(self.lEGovId)
         self.horizontalLayout_6.addLayout(self.horizontalLayout_4)
+        self.pBRandomGovernId = QtGui.QPushButton(self.gBTaskinfo)
+        self.pBRandomGovernId.setObjectName(_fromUtf8("pBRandomGovernId"))
+        self.horizontalLayout_6.addWidget(self.pBRandomGovernId)
         self.horizontalLayout_5 = QtGui.QHBoxLayout()
         self.horizontalLayout_5.setObjectName(_fromUtf8("horizontalLayout_5"))
         self.label_4 = QtGui.QLabel(self.gBTaskinfo)
@@ -117,29 +116,33 @@ class Ui_AccountDLG(object):
         self.horizontalLayout_7.setObjectName(_fromUtf8("horizontalLayout_7"))
         spacerItem2 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_7.addItem(spacerItem2)
-        self.pushButton = QtGui.QPushButton(self.groupBox_2)
-        self.pushButton.setObjectName(_fromUtf8("pushButton"))
-        self.horizontalLayout_7.addWidget(self.pushButton)
-        self.pushButton_2 = QtGui.QPushButton(self.groupBox_2)
-        self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
-        self.horizontalLayout_7.addWidget(self.pushButton_2)
-        self.pushButton_3 = QtGui.QPushButton(self.groupBox_2)
-        self.pushButton_3.setObjectName(_fromUtf8("pushButton_3"))
-        self.horizontalLayout_7.addWidget(self.pushButton_3)
+        self.pBAdd = QtGui.QPushButton(self.groupBox_2)
+        self.pBAdd.setObjectName(_fromUtf8("pBAdd"))
+        self.horizontalLayout_7.addWidget(self.pBAdd)
+        self.pBClear = QtGui.QPushButton(self.groupBox_2)
+        self.pBClear.setObjectName(_fromUtf8("pBClear"))
+        self.horizontalLayout_7.addWidget(self.pBClear)
+        self.pBOk = QtGui.QPushButton(self.groupBox_2)
+        self.pBOk.setObjectName(_fromUtf8("pBOk"))
+        self.horizontalLayout_7.addWidget(self.pBOk)
+        self.pBCancel = QtGui.QPushButton(self.groupBox_2)
+        self.pBCancel.setObjectName(_fromUtf8("pBCancel"))
+        self.horizontalLayout_7.addWidget(self.pBCancel)
         self.horizontalLayout_8.addLayout(self.horizontalLayout_7)
         self.verticalLayout_4.addWidget(self.groupBox_2)
         self.verticalLayout_5.addLayout(self.verticalLayout_4)
 
         self.retranslateUi(AccountDLG)
+        QtCore.QObject.connect(self.pBAdd, QtCore.SIGNAL(_fromUtf8("clicked()")), AccountDLG.addAccount)
+        QtCore.QObject.connect(self.pBClear, QtCore.SIGNAL(_fromUtf8("clicked()")), AccountDLG.clear)
+        QtCore.QObject.connect(self.pBOk, QtCore.SIGNAL(_fromUtf8("clicked()")), AccountDLG.accept)
+        QtCore.QObject.connect(self.pBCancel, QtCore.SIGNAL(_fromUtf8("clicked()")), AccountDLG.reject)
+        QtCore.QObject.connect(self.pBRandomGovernId, QtCore.SIGNAL(_fromUtf8("clicked()")), AccountDLG.accept)
         QtCore.QMetaObject.connectSlotsByName(AccountDLG)
 
     def retranslateUi(self, AccountDLG):
         AccountDLG.setWindowTitle(_translate("AccountDLG", "账户管理", None))
         self.groupBox.setTitle(_translate("AccountDLG", "账户", None))
-        item = self.tWAccounts.verticalHeaderItem(0)
-        item.setText(_translate("AccountDLG", "新建行", None))
-        item = self.tWAccounts.verticalHeaderItem(1)
-        item.setText(_translate("AccountDLG", "新建行", None))
         item = self.tWAccounts.horizontalHeaderItem(0)
         item.setText(_translate("AccountDLG", "AppleID", None))
         item = self.tWAccounts.horizontalHeaderItem(1)
@@ -152,9 +155,11 @@ class Ui_AccountDLG(object):
         self.label_2.setText(_translate("AccountDLG", "密码：", None))
         self.label.setText(_translate("AccountDLG", "账户ID:", None))
         self.label_3.setText(_translate("AccountDLG", "身份证号：", None))
+        self.pBRandomGovernId.setText(_translate("AccountDLG", "随机", None))
         self.label_4.setText(_translate("AccountDLG", "手机号：", None))
-        self.pushButton.setText(_translate("AccountDLG", "添加", None))
-        self.pushButton_2.setText(_translate("AccountDLG", "清空", None))
-        self.pushButton_3.setText(_translate("AccountDLG", "确定", None))
+        self.pBAdd.setText(_translate("AccountDLG", "添加", None))
+        self.pBClear.setText(_translate("AccountDLG", "清空", None))
+        self.pBOk.setText(_translate("AccountDLG", "确定", None))
+        self.pBCancel.setText(_translate("AccountDLG", "取消", None))
 
 from tasktablewidget import TaskTableWidget
