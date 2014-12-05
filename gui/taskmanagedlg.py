@@ -5,7 +5,7 @@ from PyQt4.QtGui import QMenu
 from PyQt4.QtGui import QAction
 from uidesigner.ui_taskmanagedlg import Ui_TaskManageDLG
 from utils import debug
-from apple_genius_bar.task import Task
+from sites.apple_genius_bar.task import Task
 from functools import partial
 
 

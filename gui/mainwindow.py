@@ -6,7 +6,7 @@ from uidesigner.ui_mainwindow import Ui_MainWindow
 from sites.apple_main import AppleGeniusBarReservation
 from taskmanagedlg import TaskManageDLG
 from accountmanagedlg import AccountManagerDLG
-from apple_genius_bar.confhelper import AccountManager
+from sites.apple_genius_bar.confhelper import AccountManager
 
 
 class AppContext():
