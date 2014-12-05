@@ -66,7 +66,6 @@ class TaskDLG(QtGui.QDialog):
             size = QtCore.QSize(pixmap.width(), pixmap.height())
             self.ui.lbVerifyCodePic.resize(size)
             self.ui.lbVerifyCodePic.setPixmap(pixmap)
-            self.ui.pTSm
         else:
             debug.info('verifyData is none')
 

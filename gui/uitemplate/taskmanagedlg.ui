@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TaskManageDLG</class>
+ <widget class="QDialog" name="TaskManageDLG">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>743</width>
+    <height>547</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>任务管理</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout_8">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="title">
+        <string>任务列表</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="TaskTableWidget" name="tWTasks">
+          <column>
+           <property name="text">
+            <string>任务名</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>零售商店</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>服务类型</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>代理</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox_4">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>171</height>
+        </size>
+       </property>
+       <property name="title">
+        <string>添加任务列表</string>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <widget class="QLabel" name="label">
+                <property name="maximumSize">
+                 <size>
+                  <width>44</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>任务名：</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lETaskName">
+                <property name="maximumSize">
+                 <size>
+                  <width>133</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="QLabel" name="label_2">
+                <property name="maximumSize">
+                 <size>
+                  <width>89</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>零售店：</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="cBStoreName"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QLabel" name="label_3">
+                <property name="maximumSize">
+                 <size>
+                  <width>89</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>服务类型：</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="cBReservType"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <item>
+               <widget class="QLabel" name="label_4">
+                <property name="maximumSize">
+                 <size>
+                  <width>33</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>代理：</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lEProxyIP">
+                <property name="maximumSize">
+                 <size>
+                  <width>144</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <widget class="QLabel" name="label_5">
+                <property name="maximumSize">
+                 <size>
+                  <width>33</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>端口：</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lEProxyPort">
+                <property name="maximumSize">
+                 <size>
+                  <width>144</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pBAdd">
+              <property name="maximumSize">
+               <size>
+                <width>75</width>
+                <height>23</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>添加</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pBCancel">
+              <property name="maximumSize">
+               <size>
+                <width>75</width>
+                <height>23</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>取消</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+       <zorder></zorder>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="maximumSize">
+      <size>
+       <width>292</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>列表成员</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_7">
+      <item>
+       <widget class="QListWidget" name="lWAccounts">
+        <property name="maximumSize">
+         <size>
+          <width>282</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <item>
+         <property name="text">
+          <string>账号1</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>账号2</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TaskTableWidget</class>
+   <extends>QTableWidget</extends>
+   <header location="global">tasktablewidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pBAdd</sender>
+   <signal>clicked()</signal>
+   <receiver>TaskManageDLG</receiver>
+   <slot>addTask()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>252</x>
+     <y>407</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>303</x>
+     <y>234</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tWTasks</sender>
+   <signal>cellClicked(int,int)</signal>
+   <receiver>TaskManageDLG</receiver>
+   <slot>taskCellClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>222</x>
+     <y>191</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>371</x>
+     <y>273</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>addTask()</slot>
+  <slot>deleteTask()</slot>
+  <slot>taskCellClicked()</slot>
+ </slots>
+</ui>

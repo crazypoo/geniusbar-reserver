@@ -1,7 +1,16 @@
 # -*- coding: utf-8 -*-
 import sys
 reload(sys)
+import os
 sys.setdefaultencoding('utf-8')
+cwd = os.path.abspath(os.getcwd())
+# sites
+sys.path.append(os.path.join(cwd, 'gui'))
+sys.path.append(os.path.join(cwd, 'proxy'))
+sys.path.append(os.path.join(cwd, 'sites'))
+sys.path.append(os.path.join(cwd, 'utils'))
+
+
 from utils import debug
 debug.setLevel(10)
 from gui import interface
