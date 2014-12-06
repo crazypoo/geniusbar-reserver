@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/mainwindow.ui'
 #
-# Created: Fri Dec 05 22:36:01 2014
+# Created: Sat Dec 06 12:21:06 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -241,8 +241,8 @@ class Ui_MainWindow(object):
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(4), self.dockWidget)
         self.action = QtGui.QAction(MainWindow)
         self.action.setObjectName(_fromUtf8("action"))
-        self.action_2 = QtGui.QAction(MainWindow)
-        self.action_2.setObjectName(_fromUtf8("action_2"))
+        self.action_start_task = QtGui.QAction(MainWindow)
+        self.action_start_task.setObjectName(_fromUtf8("action_start_task"))
         self.action_3 = QtGui.QAction(MainWindow)
         self.action_3.setObjectName(_fromUtf8("action_3"))
         self.action_4 = QtGui.QAction(MainWindow)
@@ -267,7 +267,7 @@ class Ui_MainWindow(object):
         self.action_12.setObjectName(_fromUtf8("action_12"))
         self.menu.addAction(self.action)
         self.menu.addAction(self.action_7)
-        self.menu_2.addAction(self.action_2)
+        self.menu_2.addAction(self.action_start_task)
         self.menu_2.addAction(self.action_3)
         self.menu_3.addAction(self.action_4)
         self.menu_4.addAction(self.action_task_manage)
@@ -285,6 +285,8 @@ class Ui_MainWindow(object):
         self.stackedWidget.setCurrentIndex(0)
         QtCore.QObject.connect(self.action_task_manage, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.taskManage)
         QtCore.QObject.connect(self.action_accountmanage, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.accountManage)
+        QtCore.QObject.connect(self.action_start_task, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.startTask)
+        QtCore.QObject.connect(self.tWTaskList, QtCore.SIGNAL(_fromUtf8("cellClicked(int,int)")), MainWindow.twTasklistCellClicked)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -332,7 +334,7 @@ class Ui_MainWindow(object):
         self.menu_4.setTitle(_translate("MainWindow", "管理", None))
         self.menu_5.setTitle(_translate("MainWindow", "帮助", None))
         self.action.setText(_translate("MainWindow", "配置", None))
-        self.action_2.setText(_translate("MainWindow", "开始任务", None))
+        self.action_start_task.setText(_translate("MainWindow", "开始任务", None))
         self.action_3.setText(_translate("MainWindow", "导入任务", None))
         self.action_4.setText(_translate("MainWindow", "任务列表", None))
         self.action_accountmanage.setText(_translate("MainWindow", "账号管理", None))

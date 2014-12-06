@@ -398,7 +398,7 @@
     <property name="title">
      <string>任务</string>
     </property>
-    <addaction name="action_2"/>
+    <addaction name="action_start_task"/>
     <addaction name="action_3"/>
    </widget>
    <widget class="QMenu" name="menu_3">
@@ -439,7 +439,7 @@
     <string>配置</string>
    </property>
   </action>
-  <action name="action_2">
+  <action name="action_start_task">
    <property name="text">
     <string>开始任务</string>
    </property>
@@ -534,10 +534,44 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_start_task</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>startTask()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>477</x>
+     <y>314</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>tWTaskList</sender>
+   <signal>cellClicked(int,int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>twTasklistCellClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>201</x>
+     <y>350</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>477</x>
+     <y>314</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onOk()</slot>
   <slot>taskManage()</slot>
   <slot>accountManage()</slot>
+  <slot>startTask()</slot>
+  <slot>twTasklistCellClicked()</slot>
  </slots>
 </ui>
