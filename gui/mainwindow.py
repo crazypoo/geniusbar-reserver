@@ -28,7 +28,8 @@ class ApplyTask(object):
 
 def Reserver(applyTask, taskStatus):
     name = multiprocessing.current_process().name
-    print(name)
+    debug.debug(name)
+    applyTask.apply(taskStatus)
     for i in range(6):
         taskStatus['taskProgress'] = str(i*20)
         time.sleep(1)
@@ -54,13 +55,26 @@ class ReserverResult:
 
 
 class AppContext():
-    def __init__(self):
+    def __init__(self, cwd):
+        self.configurefileDir = cwd
         self.accountManagerDLG = None
         self.taskManageDLG = None
         self.proxyManagerDLG = None
-        self.defaultTaskdir = None
         self.accountManager = None
         self.currentTaskList = None
+
+    def getDefaultTaskFile(self):
+        return os.path.join(self.configurefileDir,
+                            'res/task',
+                            'defaulttask.tkl')
+ 
+    def getAccountFile(self):
+        return os.path.join(self.configurefileDir,
+                            'res/accounts',
+                            'account.dat')
+
+    def getTaskStoreDir(self):
+        return os.path.join(self.configurefileDir, 'res', 'task')
 
     def getCurrentTask(self):
         return self.currentTaskList
@@ -80,29 +94,30 @@ class MainWindow(QtGui.QMainWindow):
         super(MainWindow, self).__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-
+        self.appContext = AppContext(abscwd)
         self.reserverResult = ReserverResult()
         self.preSelectedRow = None
         self.store_suburl = {}
         self.storelist = []
         self.initStoreData()
-        self.currentDir = abscwd
-        account_dir = os.path.join(abscwd, 'res/accounts/account.dat')
-        self.accountManager = AccountManager(account_dir)
-        self.appContext = AppContext()
-
-        defaulttaskdir = os.path.join(abscwd, 'res', 'task',
-                                      'defaulttask.dat')
-
-        self.appContext.defaultTaskdir = defaulttaskdir
+        self.accountManager = AccountManager(self.appContext.getAccountFile())
         self.appContext.accountManager = self.accountManager
+
         self.accountManagerDLG = AccountManagerDLG(self.appContext)
+
         self.appContext.accountManagerDLG = self.accountManagerDLG
+
         self.taskManageDLG = TaskManageDLG(self.appContext,
-                                           abscwd,
                                            self.storelist,
                                            self.reservTypes)
+
         self.appContext.taskManageDLG = self.taskManageDLG
+
+        # the apply process
+        self.applyTasks = []
+        self.signalUpdateProgress.connect(self.updateProgress)
+        self.signalStoreResult.connect(self.storeResult)
+        self.sigUpdateCurrentId.connect(self.updateCurrentApplIdProgress)
 
         # fillTaskView
         self.appleIdToProgresscell = {}  # = {id, item}
@@ -110,12 +125,6 @@ class MainWindow(QtGui.QMainWindow):
         if task:
             self.appContext.currentTaskList = task
             self.fillTaskView(task)
-
-        # the apply process
-        self.applyTasks = []
-        self.signalUpdateProgress.connect(self.updateProgress)
-        self.signalStoreResult.connect(self.storeResult)
-        self.sigUpdateCurrentId.connect(self.updateCurrentApplIdProgress)
 
     def initStoreData(self):
         # the store name of each url
@@ -163,9 +172,12 @@ class MainWindow(QtGui.QMainWindow):
 
     def accountManage(self):
         self.accountManagerDLG.exec_()
+        # TODO:
 
     def taskManage(self):
         self.taskManageDLG.exec_()
+        # TODO:
+        #check the action of taskmanager, 
 
     def twTasklistCellClicked(self, row, col):
         if col == 0:
@@ -291,3 +303,10 @@ class MainWindow(QtGui.QMainWindow):
             'smsMsg': smsMsg,
             'verifyData': verifyData}
         self.reserverResult.add(curTask, result)
+
+    def closeEvent(self, event):
+        '''
+        save the current task list
+        '''
+        task = self.appContext.getCurrentTask()
+        self.appContext.taskManageDLG._storeToDefault(task)

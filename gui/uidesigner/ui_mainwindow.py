@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/mainwindow.ui'
 #
-# Created: Sat Dec 06 12:21:06 2014
+# Created: Sat Dec 06 22:34:20 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -287,6 +287,7 @@ class Ui_MainWindow(object):
         QtCore.QObject.connect(self.action_accountmanage, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.accountManage)
         QtCore.QObject.connect(self.action_start_task, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.startTask)
         QtCore.QObject.connect(self.tWTaskList, QtCore.SIGNAL(_fromUtf8("cellClicked(int,int)")), MainWindow.twTasklistCellClicked)
+        QtCore.QObject.connect(MainWindow, QtCore.SIGNAL(_fromUtf8("destroyed()")), MainWindow.close)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

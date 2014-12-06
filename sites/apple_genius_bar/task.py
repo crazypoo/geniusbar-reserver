@@ -13,7 +13,6 @@ class Task(object):
         self.accounts = []
         self.proxyServer = proxyserver
         self.proxyPort = proxyport
-        self.id = None
 
     def addAccount(self, account):
         self.accounts.append(account)

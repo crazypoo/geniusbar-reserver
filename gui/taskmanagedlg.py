@@ -3,30 +3,31 @@ import PyQt4.QtGui as QtGui
 from PyQt4.QtCore import QString
 from PyQt4.QtGui import QMenu
 from PyQt4.QtGui import QAction
+from PyQt4.QtGui import QTableWidgetItem
 from uidesigner.ui_taskmanagedlg import Ui_TaskManageDLG
 from utils import debug
 from sites.apple_genius_bar.task import Task
 from functools import partial
 import pickle
+import os
+import glob
 
 
 class TaskManageDLG(QtGui.QDialog):
 
     def __init__(self,
                  appconext,
-                 conffile,
                  stores,
                  reservType,
                  parent=None):
 
         super(TaskManageDLG, self).__init__(parent)
+        self.appContext = appconext
         self.ui = Ui_TaskManageDLG()
         self.ui.setupUi(self)
         self.tasks = {}
-        self.conffile = conffile
         self.initUi(stores, reservType)
         self.defultTask = None
-        self.appContext = appconext
 
     def initUi(self, stores, reservType):
         self.ui.cBReservType.addItems(reservType)
@@ -35,18 +36,55 @@ class TaskManageDLG(QtGui.QDialog):
         self.ui.lEProxyIP.setText('')
         self.ui.lEProxyPort.setText('80')
         self.ui.lETaskName.setText('task1')
-        self.ui.tWTasks.signalCellContextMenu.connect(self.taskCellContextMenuEvent)
+        sig = self.ui.tWTasks.signalCellContextMenu
+        sig.connect(self.taskCellContextMenuEvent)
+
+        # get all task
+        taskdir = self.appContext.getTaskStoreDir()
+        taskfiles = glob.glob(os.path.join(taskdir, "*.tkl"))
+        self.tasks = self.getTasksFromdisk(taskfiles)
+
+        #update twTasklist
+        self.filltWTasksView(self.tasks)
+
+    def filltWTasksView(self, tasks):
+
+        rowCount = len(tasks)
+        self.ui.tWTasks.setRowCount(rowCount)
+        row = 0
+        for taskname, task in tasks.items():
+            item = QTableWidgetItem()
+            item.setText(task.taskName)
+            self.ui.tWTasks.setItem(row, 0, item)
+
+            item = QtGui.QTableWidgetItem()
+            item.setText(unicode(task.storeName))
+            self.ui.tWTasks.setItem(row, 1, item)
+
+            item = QtGui.QTableWidgetItem()
+            item.setText(task.reservType)
+            self.ui.tWTasks.setItem(row, 2, item)
+
+            item = QtGui.QTableWidgetItem()
+            item.setText(task.proxyServer)
+            self.ui.tWTasks.setItem(row, 3, item)
+
+            item = QtGui.QTableWidgetItem()
+            item.setText(task.proxyPort)
+            self.ui.tWTasks.setItem(row, 4, item)
+            row += 1
 
     def getDefaultTask(self):
         if self.defultTask:
             return self.defultTask
         # read from dump file
+        taskfile = self.appContext.getDefaultTaskFile()
         try:
-            with open(self.appContext.defaultTaskdir, 'rb') as f:
+            with open(taskfile, 'rb') as f:
                 self.defultTask = pickle.load(f)
                 return self.defultTask
-        except Exception:
-            pass
+        except Exception as e:
+            debug.error('can not found %s %s' % (taskfile, str(e)))
         return None
 
     def _addAccount(self, item):
@@ -62,8 +100,36 @@ class TaskManageDLG(QtGui.QDialog):
         pass
 
     def _storeToDefault(self, task):
-        with open(self.appContext.defaultTaskdir, 'wb') as f:
-            pickle.dump(task, f)
+        try:
+            taskfile = self.appContext.getDefaultTaskFile()
+            with open(taskfile, 'wb') as f:
+                pickle.dump(task, f)
+        except Exception as e:
+            debug.error('Error write %s %s' % (taskfile, str(e)))
+
+    def getTasksFromdisk(self, taskfiles):
+        debug.debug('read taskfiles %s' % taskfiles)
+        tasks = {}
+        for taskfile in taskfiles:
+            try:
+                with open(taskfile, 'rb') as f:
+                    task = pickle.load(f)
+                    tasks[task.taskName] = task
+            except Exception as e:
+                debug.error('can not found %s %s' % (taskfile, str(e)))
+        return tasks
+
+    def saveTask(self, tasks):
+        for task in tasks:
+            fileName = "%s.tkl" % task.taskName
+            debug.debug('save task %s' % fileName)
+            taskdir = self.appContext.getTaskStoreDir()
+            taskfile = os.path.join(taskdir, fileName)
+            try:
+                with open(taskfile, 'wb') as f:
+                    pickle.dump(task, f)
+            except Exception as e:
+                debug.error('Error write %s %s' % (taskfile, str(e)))
 
     def taskCellContextMenuEvent(self, event):
         item = self.ui.tWTasks.itemAt(event.pos())
@@ -103,11 +169,11 @@ class TaskManageDLG(QtGui.QDialog):
         self.updateTaskTableWidget()
 
     def taskCellClicked(self, row, col):
-        print('taskcellclicked')
-        if 0 == col:
-            item = self.ui.tWTasks.currentItem()
-            task = self.tasks[str(item.text())]
-            self.updataAccountsView(task.getAccounts())
+        item = self.ui.tWTasks.item(row, 0)
+        if not item:
+            return
+        task = self.tasks[str(item.text())]
+        self.updataAccountsView(task.getAccounts())
 
     def updataAccountsView(self, accounts):
         self.ui.lWAccounts.clear()
@@ -136,3 +202,11 @@ class TaskManageDLG(QtGui.QDialog):
             item.setText('%s:%s' % (task.proxyServer, task.proxyPort))
             self.ui.tWTasks.setItem(rowCount, 3, item)
             rowCount += 1
+
+    def accept(self):
+        '''
+        get the task list and save it use
+        '''
+        tasks = [task for name, task in self.tasks.items()]
+        self.saveTask(tasks)
+        super(TaskManageDLG, self).accept()
