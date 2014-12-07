@@ -14,8 +14,8 @@ class Task(object):
         self.proxyServer = proxyserver
         self.proxyPort = proxyport
 
-    def addAccount(self, account):
-        self.accounts.append(account)
+    def addAccount(self, accounts):
+        self.accounts.extend(accounts)
 
     def getAccounts(self):
         return self.accounts

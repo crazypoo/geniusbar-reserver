@@ -11,6 +11,12 @@ def Writefile(filename, data):
         f.write(data)
 
 
+def WriteVerifyPic(filename, data):
+    f = open(filename, 'wb')
+    f.write(data)
+    f.close()
+
+
 class Debug():
     '''
     Debug info print( and write the log into files

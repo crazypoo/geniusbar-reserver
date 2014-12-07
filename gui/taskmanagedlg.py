@@ -28,6 +28,8 @@ class TaskManageDLG(QtGui.QDialog):
         self.tasks = {}
         self.initUi(stores, reservType)
         self.defultTask = None
+        sig = self.ui.lWAccounts.signalCellContextMenu
+        sig.connect(self.contextMenuEvent)
 
     def initUi(self, stores, reservType):
         self.ui.cBReservType.addItems(reservType)
@@ -39,13 +41,40 @@ class TaskManageDLG(QtGui.QDialog):
         sig = self.ui.tWTasks.signalCellContextMenu
         sig.connect(self.taskCellContextMenuEvent)
 
+        taskfiles = self.getTaskfiles()
+        self.tasks = self.getTasksFromdisk(taskfiles)
+
+        # update twTasklist
+        self.filltWTasksView(self.tasks)
+
+    def _removeAccout(self, applid):
+        row = self.ui.tWTasks.currentRow()
+        item = self.ui.tWTasks.item(row, 0)
+        if not item:
+            return
+        task = self.tasks[str(item.text())]
+        for index, acount in enumerate(task.getAccounts()):
+            if applid in acount.values():
+                del task.accounts[index]
+        self.taskCellClicked(row, 0)
+
+    def contextMenuEvent(self, event):
+        item = self.ui.lWAccounts.itemAt(event.pos())
+        if not item:
+            return
+
+        actfun = partial(self._removeAccout, str(item.text()))
+        self.act_delete = QAction(u'删除', self, triggered=actfun)
+
+        popMenu = QMenu()
+        popMenu.addAction(self.act_delete)
+        popMenu.exec_(self.cursor().pos())
+
+    def getTaskfiles(self):
         # get all task
         taskdir = self.appContext.getTaskStoreDir()
         taskfiles = glob.glob(os.path.join(taskdir, "*.tkl"))
-        self.tasks = self.getTasksFromdisk(taskfiles)
-
-        #update twTasklist
-        self.filltWTasksView(self.tasks)
+        return taskfiles
 
     def filltWTasksView(self, tasks):
 
@@ -87,17 +116,33 @@ class TaskManageDLG(QtGui.QDialog):
             debug.error('can not found %s %s' % (taskfile, str(e)))
         return None
 
-    def _addAccount(self, item):
-        ret = self.appContext.accountManagerDLG.exec_()
-        accounts = self.appContext.currentTaskList.getAccounts()
-
+    def _addAccount(self, task):
+        ret = self.appContext.accountListDLG.exec_()
         if 0 == ret:
             return
-        self.updataAccountsView(accounts)
+        accounts = self.appContext.accountListDLG.getAccounts()
+        if not accounts:
+            return
 
-    def _deleteTaskList(self, item):
-        debug.debug('_deleteTaskList')
-        pass
+        appleids = [account['appleid'] for account in task.accounts]
+        for index, account in enumerate(accounts):
+            if account['appleid'] in appleids:
+                del accounts[index]
+
+        task.accounts.extend(accounts)
+        self.updataAccountsView(task.accounts)
+
+    def _deleteTaskList(self, taskName):
+        del self.tasks[taskName]
+        self.updateTaskTableWidget()
+        #del taskfile
+        filedir = self.appContext.getTaskStoreDir()
+        filedir = os.path.join(filedir, self.mkTaskListName(taskName))
+        try:
+            debug.debug('delete %s' % filedir)
+            os.remove(filedir)
+        except Exception as e:
+            debug.error('Can not del %s %s' % (filedir, str(e)))
 
     def _storeToDefault(self, task):
         try:
@@ -119,9 +164,12 @@ class TaskManageDLG(QtGui.QDialog):
                 debug.error('can not found %s %s' % (taskfile, str(e)))
         return tasks
 
+    def mkTaskListName(self, taskname):
+        return "%s.tkl" % taskname
+
     def saveTask(self, tasks):
         for task in tasks:
-            fileName = "%s.tkl" % task.taskName
+            fileName = self.mkTaskListName(task.taskName)
             debug.debug('save task %s' % fileName)
             taskdir = self.appContext.getTaskStoreDir()
             taskfile = os.path.join(taskdir, fileName)
@@ -138,14 +186,15 @@ class TaskManageDLG(QtGui.QDialog):
         taskName = str(item.text())
         if taskName not in self.tasks.keys():
             return
-        self.appContext.currentTaskList = self.tasks[taskName]
+        #self.appContext.currentTaskList = self.tasks[taskName]
 
         actfun = partial(self._storeToDefault, self.tasks[taskName])
         self.act_storeTodefault = QAction(u'设置成默认', self, triggered=actfun)
-        actfun = partial(self._addAccount, item)
+
+        actfun = partial(self._addAccount, self.tasks[taskName])
         self.act_addAccount = QAction(u'添加账户', self, triggered=actfun)
 
-        actfun = partial(self._deleteTaskList, item)
+        actfun = partial(self._deleteTaskList, taskName)
         self.act_delete = QAction(u'删除', self, triggered=actfun)
 
         popMenu = QMenu()
@@ -199,7 +248,7 @@ class TaskManageDLG(QtGui.QDialog):
             self.ui.tWTasks.setItem(rowCount, 2, item)
 
             item = QtGui.QTableWidgetItem()
-            item.setText('%s:%s' % (task.proxyServer, task.proxyPort))
+            item.setText('%s' % task.proxyServer)
             self.ui.tWTasks.setItem(rowCount, 3, item)
             rowCount += 1
 

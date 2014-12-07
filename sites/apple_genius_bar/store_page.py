@@ -40,7 +40,8 @@ class GeniusbarPage(StorePage):
         super(GeniusbarPage, self).__init__(url, data, headers,
                                             charset,
                                             timeout)
-
+        self.geniusbarUrl = None
+        self.pageHeader = None
 
     def get_formtoken_value(self):
         attrs = {'name': '_formToken'}
@@ -104,16 +105,26 @@ class GeniusbarPage(StorePage):
                                                    {'id': "captchaFormat"})
             timeStamp = str(time.time()).replace('.', '')
             getData['t'] = timeStamp
-            url = "%s/captcha?&%s" % (self.get_geniusbar_url(),
+            if not self.geniusbarUrl:
+                self.geniusbarUrl = self.get_geniusbar_url()
+
+            url = "%s/captcha?&%s" % (self.geniusbarUrl,
                                       urllib.urlencode(getData))
-            headers = GeniusbarPage.headers
+
+            if not self.pageHeader:
+                self.pageHeader = GeniusbarPage.headers
+            headers = self.pageHeader
             headers['Accept'] = 'image/png,image/*;q=0.8,*/*;q=0.5'
             headers['Accept-Encoding'] = 'gzip, deflate'
             request = urllib2.Request(url, headers=headers)
-            return (urllib2.urlopen(request).read(), timeStamp)
-
+            try:
+                data = urllib2.urlopen(request).read()
+            except:
+                debug.debug('read pic err')
+            return (data, timeStamp)
         except Exception as e:
             debug.error(str(e))
+            return (None, None)
 
     def get_smschalleng_steps(self, data=None):
         soup = self.get_soup(data)

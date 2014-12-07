@@ -255,7 +255,7 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
-           <widget class="QListWidget" name="lWAccounts">
+           <widget class="AccountListWidget" name="lWAccounts">
             <property name="maximumSize">
              <size>
               <width>237</width>
@@ -328,6 +328,11 @@
    <class>TaskTableWidget</class>
    <extends>QTableWidget</extends>
    <header location="global">tasktablewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>AccountListWidget</class>
+   <extends>QListWidget</extends>
+   <header location="global">accountlistwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

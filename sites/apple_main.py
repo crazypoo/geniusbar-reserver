@@ -3,7 +3,7 @@ import sys
 sys.path.append('../')
 import urllib
 from apple_genius_bar.store_page import GeniusbarPage
-from utils import debug
+from utils import debug, Writefile
 
 
 class AppleGeniusBarReservation(object):
@@ -12,14 +12,16 @@ class AppleGeniusBarReservation(object):
 
     def __init__(self, loginData):
 
-        self.appleid = None
-        self.passwd = None
-        self.governmentId = None
         self.reservationUrl = "http://concierge.apple.com/reservation/"
         self.authUrl = "https://idmsa.apple.com/IDMSWebAuth/authenticate"
         self.govUrlFormat = "https://concierge.apple.com/geniusbar/%s/governmentID"
-        self.supportUrl = None
         self.loginData = loginData
+        GeniusbarPage._init_headers()
+
+    def initUrls(self):
+        self.reservationUrl = "http://concierge.apple.com/reservation/"
+        self.authUrl = "https://idmsa.apple.com/IDMSWebAuth/authenticate"
+        self.govUrlFormat = "https://concierge.apple.com/geniusbar/%s/governmentID"
         GeniusbarPage._init_headers()
 
     @classmethod
@@ -100,14 +102,20 @@ class AppleGeniusBarReservation(object):
 
     def get_techsupport_page(self, url):
         debug.debug('GET %s' % url)
-        page = GeniusbarPage(url)
+        headers = GeniusbarPage.headers
+        print('heaader %s' % headers)
+        page = GeniusbarPage(url, headers=headers)
         return page
 
     def update_progress(self, progress):
         if self.taskStatus:
             self.taskStatus['taskProgress'] = progress
 
-    def jump_login_page(self, supporturl, taskStatus=None):
+    def debugstep(self):
+        self.update_progress(100)
+
+    def Jump_login_page(self, supporturl, taskStatus=None, namespace=None):
+        self.initUrls()
         self.taskStatus = taskStatus
         self.update_progress(10)
         supportPage = self.get_techsupport_page(supporturl)
@@ -129,14 +137,16 @@ class AppleGeniusBarReservation(object):
         governmentUrl = self.govUrlFormat % GeniusbarPage.storeNumber
         govPage = self.post_governmenid(governmentUrl, authPage)
         self.update_progress(70)
-
         smschallengePage = self.post_smschallenge(govPage)
         # Writefile('tmp/smschallengepage.html', smschallengePage.get_data())
         self.update_progress(80)
         text = smschallengePage.get_smschalleng_steps()
         if not text:
-            debug.error('Reserved failed')
-            return
+            msg = 'Reserved failed %s' % self.taskStatus['appleId']
+            debug.error(msg)
+            self.taskStatus['prompInfo'] = msg
+            self.update_progress(100)
+            return None
         self.taskStatus['prompInfo'] = text
         self.update_progress(85)
         attrs = {'class': "ValidatedField SmsCode"}
@@ -147,6 +157,7 @@ class AppleGeniusBarReservation(object):
             self.update_progress(87)
             if verifyData:
                 self.taskStatus['verifyCodeData'] = verifyData
+                self.taskStatus['verifyPage'] = smschallengePage
                 self.update_progress(90)
                 # get the smschallenge info phone number
             else:

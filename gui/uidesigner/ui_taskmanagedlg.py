@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/taskmanagedlg.ui'
 #
-# Created: Sat Dec 06 22:34:20 2014
+# Created: Sun Dec 07 16:02:48 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -138,7 +138,7 @@ class Ui_TaskManageDLG(object):
         self.groupBox_2.setObjectName(_fromUtf8("groupBox_2"))
         self.verticalLayout_5 = QtGui.QVBoxLayout(self.groupBox_2)
         self.verticalLayout_5.setObjectName(_fromUtf8("verticalLayout_5"))
-        self.lWAccounts = QtGui.QListWidget(self.groupBox_2)
+        self.lWAccounts = AccountListWidget(self.groupBox_2)
         self.lWAccounts.setMaximumSize(QtCore.QSize(237, 16777215))
         self.lWAccounts.setObjectName(_fromUtf8("lWAccounts"))
         item = QtGui.QListWidgetItem()
@@ -207,3 +207,4 @@ class Ui_TaskManageDLG(object):
         self.pBCancel.setText(_translate("TaskManageDLG", "取消", None))
 
 from tasktablewidget import TaskTableWidget
+from accountlistwidget import AccountListWidget
