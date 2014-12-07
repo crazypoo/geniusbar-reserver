@@ -12,6 +12,7 @@ def Writefile(filename, data):
 
 
 def WriteVerifyPic(filename, data):
+    debug.debug('write %s' % filename)
     f = open(filename, 'wb')
     f.write(data)
     f.close()

@@ -4,6 +4,7 @@ Thumbs.db
 #Ignore files build by Visual Studio
 build/
 res/
+tmp/
 debug/
 gui/tmp/
 *.pyc

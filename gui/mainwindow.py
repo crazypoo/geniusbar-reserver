@@ -3,7 +3,7 @@ import os
 import PyQt4.QtGui as QtGui
 from PyQt4.QtCore import pyqtSignal
 from PyQt4.QtCore import QSize
-from utils import debug
+from utils import debug, WriteVerifyPic
 from uidesigner.ui_mainwindow import Ui_MainWindow
 from sites.apple_main import AppleGeniusBarReservation
 from taskmanagedlg import TaskManageDLG
@@ -24,16 +24,16 @@ class ApplyTask(object):
         self.reser = AppleGeniusBarReservation(loginData)
         self.enterUrl = loginData['enterUrl']
 
-    def apply(self, taskStatus, namespace=None):
+    def apply(self, taskStatus):
         debug.debug('start %s' % taskStatus['appleId'])
         return self.reser.Jump_login_page(self.enterUrl,
-                                          taskStatus, namespace)
+                                          taskStatus)
 
 
-def Reserver(applyTask, taskStatus, namespace=None):
+def Reserver(applyTask, taskStatus):
     name = multiprocessing.current_process().name
     debug.debug(name)
-    return applyTask.apply(taskStatus, namespace)
+    return applyTask.apply(taskStatus)
 
 
 class ReserverResult:
@@ -44,14 +44,25 @@ class ReserverResult:
         self.result = {}
 
     def add(self, taskName, result):
+        '''
+        {taskname:[{applid,xx},{}]}
+        '''
         if taskName not in self.result.keys():
             self.result[taskName] = []
         self.result[taskName].append(result)
 
-    def getData(self, taskName):
+    def _getTaskResult(self, taskName):
         if taskName in self.result.keys():
             return self.result[taskName]
-        return None
+
+    def update(self, taskName, appleid, key, value):
+        result = self._getTaskResult(taskName)
+        for r in result:
+            if appleid in r.values():
+                r[key] = value
+
+    def getData(self, taskName):
+        return self._getTaskResult(taskName)
 
 
 class AppContext():
@@ -94,6 +105,7 @@ class MainWindow(QtGui.QMainWindow):
     signalUpdateProgress = pyqtSignal(str, str)
     signalStoreResult = pyqtSignal(str)
     sigUpdateCurrentId = pyqtSignal()
+    sigUpdateProgressBar = pyqtSignal(str)
 
     def __init__(self, abscwd, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -105,6 +117,7 @@ class MainWindow(QtGui.QMainWindow):
         self.store_suburl = {}
         self.storelist = []
         self.initStoreData()
+        self.running = False
         # ###################################
         accountfile = self.appContext.getAccountFile()
         self.appContext.accountManager = AccountManager(accountfile)
@@ -122,7 +135,7 @@ class MainWindow(QtGui.QMainWindow):
         self.signalUpdateProgress.connect(self.updateProgress)
         self.signalStoreResult.connect(self.storeResult)
         self.sigUpdateCurrentId.connect(self.updateCurrentApplIdProgress)
-
+        # self.sigUpdateProgressBar.connect(self.updateProgressBar)
         # fillTaskView
         self.appleIdToProgresscell = {}  # = {id, item}
         task = self.taskManageDLG.getDefaultTask()
@@ -198,6 +211,7 @@ class MainWindow(QtGui.QMainWindow):
             self.ui.progressBar.setValue(int(progress))
             if int(progress) == 100:
                 self.fillResultView(appleId)
+            self.preSelectedRow = row
 
     def getTasksInfo(self):
         taskName = self.ui.gBListName.title()
@@ -219,7 +233,6 @@ class MainWindow(QtGui.QMainWindow):
             loginData['reservType'] = reservType
             loginData['storeName'] = storeName
             loginData['enterUrl'] = supportUrl
-            #loginData['cookie'] = self.createOpener()
             loginDatas.append(loginData)
 
         return loginDatas
@@ -232,9 +245,11 @@ class MainWindow(QtGui.QMainWindow):
         return opener
 
     def startTask(self):
+        self.running = True
+        self.ui.action_start_task
         loginDatas = self.getTasksInfo()
         self.statusTasks = []
-        self.handler = []
+        self.finishedAppleId = Manager().list()
         pool = self.getTaskPool()
         for loginData in loginDatas:
             apy = ApplyTask(loginData)
@@ -243,8 +258,8 @@ class MainWindow(QtGui.QMainWindow):
             taskStatus['prompInfo'] = ''
             taskStatus['verifyCodeData'] = ''
             taskStatus['appleId'] = loginData['appleId']
-            taskStatus['verifyPage'] = ''
             taskStatus['taskProgress'] = '0'
+            taskStatus['taskCmd'] = ''
             self.statusTasks.append(taskStatus)
             # namespace = Manager().Namespace()
             # namespace.value = self.createOpener()
@@ -253,7 +268,8 @@ class MainWindow(QtGui.QMainWindow):
         pool.close()
         debug.debug('have %s task' % len(self.statusTasks))
         checking = threading.Thread(target=self.checking,
-                                    args=(self.statusTasks,))
+                                    args=(self.statusTasks,
+                                          self.finishedAppleId))
         checking.start()
 
     def updateProgress(self, appleId, progress):
@@ -277,13 +293,15 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.progressBar.setValue(progress)
         if progress == 100:
             print('current selected %s' % appleId)
-            time.sleep(1)
             self.fillResultView(appleId)
+            time.sleep(1)
 
     def fillResultView(self, appleId):
+        print('fill result view')
         currentTaskName = self.appContext.getCurrentTaskName()
         results = self.reserverResult.getData(currentTaskName)
         if not results:
+            print('can not find %s' % currentTaskName)
             return
         findResult = None
         for result in results:
@@ -312,32 +330,35 @@ class MainWindow(QtGui.QMainWindow):
         self.ui.lbVerifyCodePic.resize(size)
         self.ui.lbVerifyCodePic.setPixmap(pixmap)
 
-    def checking(self, statusTasks):
+    def checking(self, statusTasks, finished):
         while statusTasks:
             for index, statusTask in enumerate(statusTasks):
                 progress = str(statusTask['taskProgress'])
                 appleId = statusTask['appleId']
                 print('checking %s %s' % (appleId, progress))
-                self.signalUpdateProgress.emit(appleId, progress)
-                time.sleep(3)
                 if progress == '100':
+                    finished.append(statusTasks[index])
+                    time.sleep(1)
                     self.signalStoreResult.emit(appleId)
                     time.sleep(2)
                     del statusTasks[index]
+                self.signalUpdateProgress.emit(appleId, progress)
+                time.sleep(3)
 
             self.sigUpdateCurrentId.emit()
         print('terminal checking')
 
     def storeResult(self, appleId):
+        print('store result')
+        print(len(self.finishedAppleId))
         curTask = self.appContext.getCurrentTaskName()
-        debug.debug('save task %s %s' % (curTask, appleId))
-        for status in self.statusTasks:
+        for status in self.finishedAppleId:
             if status['appleId'] == appleId:
+                debug.debug('save task %s %s' % (curTask, appleId))
                 result = {
                     'appleId': appleId,
                     'smsMsg': status['prompInfo'],
-                    'verifyCodeData': status['verifyCodeData'],
-                    'verifyPage': status['verifyPage']}
+                    'verifyCodeData': status['verifyCodeData']}
                 self.reserverResult.add(curTask, result)
 
     def closeEvent(self, event):
@@ -356,23 +377,35 @@ class MainWindow(QtGui.QMainWindow):
             self.fillTaskView(tasks[0])
             self.appContext.setCurrentTask(tasks[0])
 
-    def refresh(self):
+    def _getCurrentAppleId(self):
         row = self.ui.tWTaskList.currentRow()
         if row == -1:
-            return
+            row = self.preSelectedRow
         appleid = self.ui.tWTaskList.item(row, 0).text()
-        print('appleid %s' % appleid)
-        task = self.appContext.getCurrentTask()
-        # get task results
-        data = self.reserverResult.getData(task.taskName)
-        for taskinfo in data:
-            if appleid in taskinfo.values():
-                page = taskinfo['verifyPage']
-                print(page)
-                #page.init_cookie(taskinfo['opener'])
-                #picdata = page.get_verification_code_pic()
-               # print(picdata)
-                #self.fillVerifyCodePic(picdata)
+        return appleid
+
+    def _getCurrentTaskStatus(self):
+        appleid = self._getCurrentAppleId()
+        for taskstatus in self.finishedAppleId:
+            if taskstatus['appleId'] == appleid:
+                return taskstatus
+
+    def refresh(self):
+        appleid = self._getCurrentAppleId()
+        print('appleid refresh %s' % appleid)
+        taskstatus = self._getCurrentTaskStatus()
+        if taskstatus:
+            taskstatus['taskCmd'] = 'refresh'
+            time.sleep(2)
+            data = taskstatus['verifyCodeData']
+            if data:
+                self.fillVerifyCodePic(data)
+                taskname = self.appContext.getCurrentTaskName()
+                self.reserverResult.update(taskname, appleid,
+                                           'verifyCodeData', data)
 
     def submit(self):
+        taskstatus = self._getCurrentTaskStatus()
+        if taskstatus:
+            taskstatus['taskCmd'] = 'end'
         print('submit')

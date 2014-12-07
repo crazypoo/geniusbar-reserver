@@ -3,7 +3,8 @@ import sys
 sys.path.append('../')
 import urllib
 from apple_genius_bar.store_page import GeniusbarPage
-from utils import debug, Writefile
+from utils import debug, Writefile, WriteVerifyPic
+import time
 
 
 class AppleGeniusBarReservation(object):
@@ -114,7 +115,21 @@ class AppleGeniusBarReservation(object):
     def debugstep(self):
         self.update_progress(100)
 
-    def Jump_login_page(self, supporturl, taskStatus=None, namespace=None):
+    def waitingCmd(self, page, taskStatus):
+        while True:
+            taskCmd = taskStatus['taskCmd']
+            if taskCmd == 'refresh':
+                debug.debug('refresh cmd %s' % taskStatus['appleId'])
+                verifycodedata, tSt = page.get_verification_code_pic()
+                taskStatus['verifyCodeData'] = verifycodedata
+                taskStatus['taskCmd'] = None
+            if taskCmd == 'end':
+                taskStatus['taskCmd'] = None
+                break
+            print('waitingCmd')
+            time.sleep(1)
+
+    def Jump_login_page(self, supporturl, taskStatus=None):
         self.initUrls()
         self.taskStatus = taskStatus
         self.update_progress(10)
@@ -146,6 +161,7 @@ class AppleGeniusBarReservation(object):
             debug.error(msg)
             self.taskStatus['prompInfo'] = msg
             self.update_progress(100)
+            self.waitingCmd(smschallengePage, taskStatus)
             return None
         self.taskStatus['prompInfo'] = text
         self.update_progress(85)
@@ -157,8 +173,9 @@ class AppleGeniusBarReservation(object):
             self.update_progress(87)
             if verifyData:
                 self.taskStatus['verifyCodeData'] = verifyData
-                self.taskStatus['verifyPage'] = smschallengePage
-                self.update_progress(90)
+                WriteVerifyPic('tmp/%s.jpg' % tSt, verifyData)
+                self.update_progress(100)
+                self.waitingCmd(smschallengePage, taskStatus)
                 # get the smschallenge info phone number
             else:
                 debug.error('verfyData error')
