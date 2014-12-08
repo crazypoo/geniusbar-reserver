@@ -10,6 +10,7 @@ class StorePage(WebPage):
     storeNumber = None
     headers = {}
     postData = {}
+    
 
     def __init__(self, url, data=None,
                  headers={},
@@ -32,6 +33,7 @@ application/xml;q=0.9,*/*;q=0.8'
 
 class GeniusbarPage(StorePage):
     geniusbarBaseUril = "http://concierge.apple.com/geniusbar/"
+    challengeUrlFormat = 'https://concierge.apple.com/geniusbar/%s/smschallenge'
 
     def __init__(self, url, data=None,
                  headers={},
@@ -125,6 +127,28 @@ class GeniusbarPage(StorePage):
         except Exception as e:
             debug.error(str(e))
             return (None, None)
+
+    def build_submit_post_data(self):
+        # soup = self.get_soup()
+        postData = {}
+        postData['_formToken'] = self.get_formtoken_value()
+        attrs = {'id': 'captchaBackToText'}
+        postData['captchaBackToText'] = self.get_tag_value('input', attrs)
+        attrs = {'id': 'captchaTryNewAudio'}
+        postData['captchaTryNewAudio'] = self.get_tag_value('input', attrs)
+        attrs = {'id': 'captchaFormat'}
+        postData['captchaFormat'] = self.get_tag_value('input', attrs)
+
+        # captcha dir
+        attrs = {'id': 'captchaKey'}
+        postData['captchaKey'] = self.get_tag_value('input', attrs)
+
+        attrs = {'id': 'captchaTryNewImg'}
+        postData['captchaTryNewImg'] = self.get_tag_value('input', attrs)
+
+        attrs = {'id': 'captchaVisionImpaired'}
+        postData['captchaVisionImpaired'] = self.get_tag_value('input', attrs)
+        return postData
 
     def get_smschalleng_steps(self, data=None):
         soup = self.get_soup(data)

@@ -41,16 +41,6 @@
                <layout class="QHBoxLayout" name="horizontalLayout_2">
                 <item>
                  <widget class="QTableWidget" name="tWTaskList">
-                  <row>
-                   <property name="text">
-                    <string>1</string>
-                   </property>
-                  </row>
-                  <row>
-                   <property name="text">
-                    <string>2</string>
-                   </property>
-                  </row>
                   <column>
                    <property name="text">
                     <string>账号</string>
@@ -260,7 +250,7 @@
                              </widget>
                             </item>
                             <item>
-                             <widget class="QLineEdit" name="lEReservCode">
+                             <widget class="QLineEdit" name="lESmsCode">
                               <property name="enabled">
                                <bool>true</bool>
                               </property>
@@ -323,7 +313,7 @@
                           <item>
                            <layout class="QVBoxLayout" name="verticalLayout_3">
                             <item>
-                             <widget class="QLineEdit" name="lEVerfiyCode"/>
+                             <widget class="QLineEdit" name="lECaptchaAnswer"/>
                             </item>
                             <item>
                              <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -395,7 +385,7 @@
      <x>0</x>
      <y>0</y>
      <width>956</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">

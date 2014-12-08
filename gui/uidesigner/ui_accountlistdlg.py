@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/accountlistdlg.ui'
 #
-# Created: Sun Dec 07 16:02:49 2014
+# Created: Mon Dec 08 14:15:10 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!

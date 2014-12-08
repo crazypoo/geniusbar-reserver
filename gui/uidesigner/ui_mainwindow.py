@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/mainwindow.ui'
 #
-# Created: Sun Dec 07 16:02:48 2014
+# Created: Mon Dec 08 14:15:10 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -51,11 +51,7 @@ class Ui_MainWindow(object):
         self.tWTaskList = QtGui.QTableWidget(self.gBListName)
         self.tWTaskList.setObjectName(_fromUtf8("tWTaskList"))
         self.tWTaskList.setColumnCount(5)
-        self.tWTaskList.setRowCount(2)
-        item = QtGui.QTableWidgetItem()
-        self.tWTaskList.setVerticalHeaderItem(0, item)
-        item = QtGui.QTableWidgetItem()
-        self.tWTaskList.setVerticalHeaderItem(1, item)
+        self.tWTaskList.setRowCount(0)
         item = QtGui.QTableWidgetItem()
         self.tWTaskList.setHorizontalHeaderItem(0, item)
         item = QtGui.QTableWidgetItem()
@@ -164,11 +160,11 @@ class Ui_MainWindow(object):
         self.label_7 = QtGui.QLabel(self.groupBox_13)
         self.label_7.setObjectName(_fromUtf8("label_7"))
         self.horizontalLayout_9.addWidget(self.label_7)
-        self.lEReservCode = QtGui.QLineEdit(self.groupBox_13)
-        self.lEReservCode.setEnabled(True)
-        self.lEReservCode.setMaximumSize(QtCore.QSize(128, 20))
-        self.lEReservCode.setObjectName(_fromUtf8("lEReservCode"))
-        self.horizontalLayout_9.addWidget(self.lEReservCode)
+        self.lESmsCode = QtGui.QLineEdit(self.groupBox_13)
+        self.lESmsCode.setEnabled(True)
+        self.lESmsCode.setMaximumSize(QtCore.QSize(128, 20))
+        self.lESmsCode.setObjectName(_fromUtf8("lESmsCode"))
+        self.horizontalLayout_9.addWidget(self.lESmsCode)
         self.verticalLayout_15.addLayout(self.horizontalLayout_9)
         self.verticalLayout_14.addWidget(self.groupBox_13)
         self.horizontalLayout_5.addWidget(self.groupBox_12)
@@ -194,9 +190,9 @@ class Ui_MainWindow(object):
         self.verticalLayout_8.setObjectName(_fromUtf8("verticalLayout_8"))
         self.verticalLayout_3 = QtGui.QVBoxLayout()
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
-        self.lEVerfiyCode = QtGui.QLineEdit(self.groupBox_16)
-        self.lEVerfiyCode.setObjectName(_fromUtf8("lEVerfiyCode"))
-        self.verticalLayout_3.addWidget(self.lEVerfiyCode)
+        self.lECaptchaAnswer = QtGui.QLineEdit(self.groupBox_16)
+        self.lECaptchaAnswer.setObjectName(_fromUtf8("lECaptchaAnswer"))
+        self.verticalLayout_3.addWidget(self.lECaptchaAnswer)
         self.horizontalLayout_3 = QtGui.QHBoxLayout()
         self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
         self.pBRefresh = QtGui.QPushButton(self.groupBox_16)
@@ -224,7 +220,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_10.addLayout(self.horizontalLayout_6)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 956, 23))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 956, 21))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.menu = QtGui.QMenu(self.menubar)
         self.menu.setObjectName(_fromUtf8("menu"))
@@ -303,10 +299,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "天才吧预约", None))
         self.gBListName.setTitle(_translate("MainWindow", "列表名", None))
-        item = self.tWTaskList.verticalHeaderItem(0)
-        item.setText(_translate("MainWindow", "1", None))
-        item = self.tWTaskList.verticalHeaderItem(1)
-        item.setText(_translate("MainWindow", "2", None))
         item = self.tWTaskList.horizontalHeaderItem(0)
         item.setText(_translate("MainWindow", "账号", None))
         item = self.tWTaskList.horizontalHeaderItem(1)

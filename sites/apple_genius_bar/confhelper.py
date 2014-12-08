@@ -36,3 +36,9 @@ class AccountManager(object):
             self.accounts = self._getAccounts()
         self.accounts = dict(self.accounts, **accounts)
         self.jsonhelper.write_objs(self.accounts)
+
+    def getAccount(self, appleId):
+        accounts = self.getAccounts()
+        for id, account in accounts.items():
+            if appleId in account.values():
+                return account

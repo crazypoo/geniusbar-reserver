@@ -5,4 +5,4 @@ class Account(object):
         self.data = data
 
     def getData(self):
-        return {self.data['appleId']: self.data}
+        return {self.data['appleid']: self.data}

@@ -3,7 +3,7 @@ import sys
 sys.path.append('../')
 import urllib
 from apple_genius_bar.store_page import GeniusbarPage
-from utils import debug, Writefile, WriteVerifyPic
+from utils import debug, Writefile
 import time
 
 
@@ -15,7 +15,7 @@ class AppleGeniusBarReservation(object):
 
         self.reservationUrl = "http://concierge.apple.com/reservation/"
         self.authUrl = "https://idmsa.apple.com/IDMSWebAuth/authenticate"
-        self.govUrlFormat = "https://concierge.apple.com/geniusbar/%s/governmentID"
+
         self.loginData = loginData
         GeniusbarPage._init_headers()
 
@@ -102,9 +102,9 @@ class AppleGeniusBarReservation(object):
         return authPage
 
     def get_techsupport_page(self, url):
-        debug.debug('GET %s' % url)
+        # debug.debug('GET %s' % url)
         headers = GeniusbarPage.headers
-        print('heaader %s' % headers)
+        # print('heaader %s' % headers)
         page = GeniusbarPage(url, headers=headers)
         return page
 
@@ -116,18 +116,45 @@ class AppleGeniusBarReservation(object):
         self.update_progress(100)
 
     def waitingCmd(self, page, taskStatus):
-        while True:
+        '''
+        waiting the input
+        '''
+        runtime = 300  # waiting time
+        while True and runtime > 0:
             taskCmd = taskStatus['taskCmd']
             if taskCmd == 'refresh':
                 debug.debug('refresh cmd %s' % taskStatus['appleId'])
                 verifycodedata, tSt = page.get_verification_code_pic()
                 taskStatus['verifyCodeData'] = verifycodedata
                 taskStatus['taskCmd'] = None
+                time.sleep(1)
+                continue
+            if taskCmd == 'submit':
+                debug.debug('get submit cmd %s' % taskStatus['appleId'])
+                postData = page.build_submit_post_data()
+                postData['captchaAnswer'] = taskStatus['captchaAnswer']
+                postData['phoneNumber'] = taskStatus['phoneNumber']
+                postData['smsCode'] = taskStatus['smsCode']
+                # 'Asia/Shanghai'
+                submitUrl = GeniusbarPage.challengeUrlFormat % GeniusbarPage.storeNumber
+                page.headers['Referer'] = submitUrl
+                print(page.headers)
+                # gzip, deflate
+                submitpage = GeniusbarPage(submitUrl,
+                                           data=urllib.urlencode(postData),
+                                           headers=page.pageHeader)
+                data = submitpage.get_data()
+                resultfile = 'tmp/%s.htm' % taskStatus['appleId']
+                Writefile(resultfile, data)
+                taskStatus['taskCmd'] = None
+                break
             if taskCmd == 'end':
                 taskStatus['taskCmd'] = None
                 break
-            print('waitingCmd')
+
             time.sleep(1)
+            runtime -= 1
+        debug.info('End task %s' % taskStatus['appleId'])
 
     def Jump_login_page(self, supporturl, taskStatus=None):
         self.initUrls()
@@ -173,7 +200,7 @@ class AppleGeniusBarReservation(object):
             self.update_progress(87)
             if verifyData:
                 self.taskStatus['verifyCodeData'] = verifyData
-                WriteVerifyPic('tmp/%s.jpg' % tSt, verifyData)
+                # WriteVerifyPic('tmp/%s.jpg' % tSt, verifyData)
                 self.update_progress(100)
                 self.waitingCmd(smschallengePage, taskStatus)
                 # get the smschallenge info phone number

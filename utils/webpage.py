@@ -35,8 +35,17 @@ class WebPage(object):
         req = urllib2.Request(self.url,
                               data=self.post_data,
                               headers=self.headers)
-        res = urllib2.urlopen(req, data=None, timeout=self.timeout)
-        return res.read()
+        counter = 3
+        while counter > 0:
+            try:
+                res = urllib2.urlopen(req, data=None, timeout=self.timeout)
+                data = res.read()
+                return data
+            except Exception as e:
+                debug.info(str(e))
+                counter -= 1
+        debug.error('Read failed')
+        return None
 
     def get_charset(self, html):
         r = '\w*charset=(".*").*'

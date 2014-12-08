@@ -1,17 +1,16 @@
-_formToken=eCkIGGn2d/RDakJgygdd9GjGYQ0=
-captchaAnswer=slgl
-captchaBackToText=返回文本模式
-captchaFormat=IMAGE
-captchaKey=t5ILbfTVeVSbVWSUhUP79/ZTSwfbgxElHHKnXLlUiLMBm//kpDN4Ssf6xDnDGpAsMrGNZMepSbPiS+WD7ie7Fqa9r+hRV748EV8zIuDbl5k=
-captchaTryNewAudio=换一个试试
-captchaTryNewImg=换一张图像试试
-captchaVisionImpaired=视力障碍
-clientTimezone=Asia/Shanghai
-countryISDCode=86
-forty1Parameter=TF1;016;;;;;;;;;;;;;;;;;;;;;;Mozilla;Netscape;5.0%20%28Windows%29;20100101;undefined;true;Windows%20NT%206.1%3B%20WOW64;true;Win32;undefined;Mozilla/5.0%20%28Windows%20NT%206.1%3B%20WOW64%3B%20rv%3A33.0%29%20Gecko/20100101%20Firefox/33.0;zh-CN;undefined;concierge.apple.com;undefined;undefined;undefined;undefined;false;false;1417484257201;8;2005/6/7%20%u4E0B%u53489%3A33%3A44;1920;1080;;15.0;;10.51.2;;2013;1;-480;-480;2014/12/2%20%u4E0A%u53489%3A37%3A37;24;1920;1040;0;0;Adobe%20Acrobat%7CAdobe%20PDF%20Plug-In%20For%20Firefox%20and%20Netscape%2011.0.9;;;;;Shockwave%20Flash%7CShockwave%20Flash%2015.0%20r0;;;;;;;;;Silverlight%20Plug-In%7C5.1.30514.0;;;;18;;;;;;;
-phoneNumber=13982045200
-smsCode=feafea
-
+_formToken	0sUzbykGUoRm7x48ImoxmRtp9Ow=
+captchaAnswer	ndg8
+captchaBackToText	返回文本模式
+captchaFormat	IMAGE
+captchaKey	vzJm4jaUCn2WDz1X4nbKeFVr/dN2A2Mbltp7po2fCvJBB1gpq210wUv7rJ3xJr4K9P2rpGCWXknyB0kRJbwKOLZeBGoBbj6CuQ6jHsvlKpE=
+captchaTryNewAudio	换一个试试
+captchaTryNewImg	换一张图像试试
+captchaVisionImpaired	视力障碍
+clientTimezone	Asia/Shanghai
+countryISDCode	86
+forty1Parameter	TF1;016;;;;;;;;;;;;;;;;;;;;;;Mozilla;Netscape;5.0%20%28Windows%29;20100101;undefined;true;Windows%20NT%206.1%3B%20WOW64;true;Win32;undefined;Mozilla/5.0%20%28Windows%20NT%206.1%3B%20WOW64%3B%20rv%3A34.0%29%20Gecko/20100101%20Firefox/34.0;zh-CN;undefined;concierge.apple.com;undefined;undefined;undefined;undefined;false;false;1418005820875;8;2005/6/7%20%u4E0B%u53489%3A33%3A44;1920;1080;;15.0;;10.51.2;;2013;2;-480;-480;2014/12/8%20%u4E0A%u534810%3A30%3A20;24;1920;1040;0;0;Adobe%20Acrobat%7CAdobe%20PDF%20Plug-In%20For%20Firefox%20and%20Netscape%2011.0.9;;;;;Shockwave%20Flash%7CShockwave%20Flash%2015.0%20r0;;;;;;;;;Silverlight%20Plug-In%7C5.1.30514.0;;;;18;;;;;;;
+phoneNumber	123456789
+smsCode	9889
 
 
 POST /geniusbar/R401/smschallenge HTTP/1.1

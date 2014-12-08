@@ -55,7 +55,7 @@ class AccountManagerDLG(QDialog):
         account['appleid'] = str(self.ui.lEAccount.text())
         account['passwd'] = str(self.ui.lEPasswd.text())
         account['governmentid'] = str(self.ui.lEGovId.text())
-        account['phonenumber'] = str(self.ui.lEPhoneNumber)
+        account['phonenumber'] = str(self.ui.lEPhoneNumber.text())
         for key, item in account.items():
             if len(item) == 0:
                 debug.debug('%s can not empty' % key)
