@@ -401,6 +401,7 @@
     </property>
     <addaction name="action_start_task"/>
     <addaction name="action_import_task"/>
+    <addaction name="action_stop_task"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -441,6 +442,9 @@
    </property>
   </action>
   <action name="action_start_task">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>开始任务</string>
    </property>
@@ -498,6 +502,11 @@
   <action name="action_12">
    <property name="text">
     <string>账号管理</string>
+   </property>
+  </action>
+  <action name="action_stop_task">
+   <property name="text">
+    <string>停止任务</string>
    </property>
   </action>
  </widget>

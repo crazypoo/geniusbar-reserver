@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/mainwindow.ui'
 #
-# Created: Mon Dec 08 14:15:10 2014
+# Created: Mon Dec 08 16:19:19 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -245,6 +245,7 @@ class Ui_MainWindow(object):
         self.action = QtGui.QAction(MainWindow)
         self.action.setObjectName(_fromUtf8("action"))
         self.action_start_task = QtGui.QAction(MainWindow)
+        self.action_start_task.setEnabled(True)
         self.action_start_task.setObjectName(_fromUtf8("action_start_task"))
         self.action_import_task = QtGui.QAction(MainWindow)
         self.action_import_task.setObjectName(_fromUtf8("action_import_task"))
@@ -268,10 +269,13 @@ class Ui_MainWindow(object):
         self.action_11.setObjectName(_fromUtf8("action_11"))
         self.action_12 = QtGui.QAction(MainWindow)
         self.action_12.setObjectName(_fromUtf8("action_12"))
+        self.action_stop_task = QtGui.QAction(MainWindow)
+        self.action_stop_task.setObjectName(_fromUtf8("action_stop_task"))
         self.menu.addAction(self.action)
         self.menu.addAction(self.action_7)
         self.menu_2.addAction(self.action_start_task)
         self.menu_2.addAction(self.action_import_task)
+        self.menu_2.addAction(self.action_stop_task)
         self.menu_3.addAction(self.action_4)
         self.menu_4.addAction(self.action_task_manage)
         self.menu_4.addAction(self.action_accountmanage)
@@ -349,4 +353,5 @@ class Ui_MainWindow(object):
         self.action_8.setText(_translate("MainWindow", "计划任务", None))
         self.action_11.setText(_translate("MainWindow", "代理管理", None))
         self.action_12.setText(_translate("MainWindow", "账号管理", None))
+        self.action_stop_task.setText(_translate("MainWindow", "停止任务", None))
 

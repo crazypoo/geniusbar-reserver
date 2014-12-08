@@ -119,8 +119,12 @@ class AppleGeniusBarReservation(object):
         '''
         waiting the input
         '''
+        debug.debug('Enter waiting cmd')
         runtime = 300  # waiting time
+        storeUrl = taskStatus['storeUrl']
+        debug.debug(storeUrl)
         while True and runtime > 0:
+            debug.debug('Enter while')
             taskCmd = taskStatus['taskCmd']
             if taskCmd == 'refresh':
                 debug.debug('refresh cmd %s' % taskStatus['appleId'])
@@ -138,20 +142,23 @@ class AppleGeniusBarReservation(object):
                 # 'Asia/Shanghai'
                 submitUrl = GeniusbarPage.challengeUrlFormat % GeniusbarPage.storeNumber
                 page.headers['Referer'] = submitUrl
-                print(page.headers)
-                # gzip, deflate
                 submitpage = GeniusbarPage(submitUrl,
                                            data=urllib.urlencode(postData),
                                            headers=page.pageHeader)
                 data = submitpage.get_data()
                 resultfile = 'tmp/%s.htm' % taskStatus['appleId']
                 Writefile(resultfile, data)
+                storePage = GeniusbarPage(storeUrl, headers=page.pageHeader)
+                data = storePage.get_data()
+                Writefile('tmp/last.html', data)
                 taskStatus['taskCmd'] = None
+                # gzip, deflate
+                # http://www.apple.com/cn/retail/shanghaiiapm/
                 break
             if taskCmd == 'end':
                 taskStatus['taskCmd'] = None
                 break
-
+            debug.debug('waiting cmd')
             time.sleep(1)
             runtime -= 1
         debug.info('End task %s' % taskStatus['appleId'])
@@ -188,7 +195,7 @@ class AppleGeniusBarReservation(object):
             debug.error(msg)
             self.taskStatus['prompInfo'] = msg
             self.update_progress(100)
-            self.waitingCmd(smschallengePage, taskStatus)
+            # self.waitingCmd(smschallengePage, taskStatus)
             return None
         self.taskStatus['prompInfo'] = text
         self.update_progress(85)

@@ -220,8 +220,8 @@ class MainWindow(QtGui.QMainWindow):
         storeName = task.storeName
         reservType = task.reservType
         suburl = self.store_suburl[unicode(storeName)]
-        url = AppleGeniusBarReservation.Get_store_url(suburl)
-        supportUrl = AppleGeniusBarReservation.Get_suppport_url(url)
+        storeUrl = AppleGeniusBarReservation.Get_store_url(suburl)
+        supportUrl = AppleGeniusBarReservation.Get_suppport_url(storeUrl)
         loginDatas = []
         for account in accounts:
             loginData = {}
@@ -233,6 +233,7 @@ class MainWindow(QtGui.QMainWindow):
             loginData['reservType'] = reservType
             loginData['storeName'] = storeName
             loginData['enterUrl'] = supportUrl
+            loginData['storeUrl'] = storeUrl
             loginDatas.append(loginData)
 
         return loginDatas
@@ -246,7 +247,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def startTask(self):
         self.running = True
-        self.ui.action_start_task
+        self.disableStart()
         loginDatas = self.getTasksInfo()
         self.statusTasks = []
         self.finishedAppleId = []
@@ -261,11 +262,13 @@ class MainWindow(QtGui.QMainWindow):
             taskStatus['appleId'] = loginData['appleId']
             taskStatus['taskProgress'] = '0'
             taskStatus['taskCmd'] = None
+            taskStatus['storeUrl'] = loginData['storeUrl']
+            self.statusTasks.append(taskStatus)
+
             taskResult = Manager().dict()
             taskResult['appleId'] = loginData['appleId']
-
             self.finishedAppleId.append(taskStatus)
-            self.statusTasks.append(taskStatus)
+
             pool.apply_async(Reserver, (apy, taskStatus))
 
         pool.close()
@@ -378,6 +381,13 @@ class MainWindow(QtGui.QMainWindow):
         if tasks:
             self.fillTaskView(tasks[0])
             self.appContext.setCurrentTask(tasks[0])
+        self.enableStart()
+
+    def enableStart(self):
+        self.ui.action_start_task.setEnabled(True)
+
+    def disableStart(self):
+        self.ui.action_start_task.setEnabled(False)
 
     def _getCurrentAppleId(self):
         row = self.preSelectedRow
@@ -430,3 +440,4 @@ class MainWindow(QtGui.QMainWindow):
             taskStatus['taskCmd'] = 'submit'
         else:
             debug.error('submit error')
+        self.enableStart()
