@@ -1,0 +1,142 @@
+#!/usr/bin/env python2.6
+  
+from sip import setapi
+  
+setapi("QDate", 2)
+setapi("QDateTime", 2)
+setapi("QTextStream", 2)
+setapi("QTime", 2)
+setapi("QVariant", 2)
+setapi("QString", 2)
+setapi("QUrl", 2)
+  
+from PyQt4.QtCore import QUrl, QFile, QIODevice, Qt
+from PyQt4.QtGui import QApplication, QMainWindow, QLabel, QPixmap, QSizePolicy
+from PyQt4.QtNetwork import QNetworkAccessManager, QNetworkRequest
+from sys import argv
+from base64 import b64decode
+from urllib import urlencode
+from json import loads
+from os.path import join, split
+from os import makedirs
+from urlparse import urlunsplit
+ 
+LAST_FM_KEY = b64decode('Mjk1YTAxY2ZhNjVmOWU1MjFiZGQyY2MzYzM2ZDdjODk=')
+MUSICBRAINZ_ALBUMID='4321855e-8e8e-4786-8506-28e6d69633b9'
+ 
+ 
+def main():
+    app = QApplication(sys.)
+    main = MainWindow()
+    main.show()
+    exit(app.exec_())
+ 
+ 
+class MainWindow(QMainWindow):
+  
+    def __init__(self, parent=None):
+        super(MainWindow, self).__init__(parent)
+        self.manager = QNetworkAccessManager(self)
+        self.artLabel = ArtLabel()
+        self.setCentralWidget(self.artLabel)
+ 
+        url = album_info_url(MUSICBRAINZ_ALBUMID)
+ 
+        request = QNetworkRequest()
+         
+        request.setUrl(QUrl(url))
+        request.setRawHeader('User-Agent', 'Quetzalcoatl 2.0')
+        reply = self.manager.get(request)
+        reply.finished.connect(self.replyFinished)
+ 
+    def replyFinished(self):
+        reply = self.sender()
+        raw = reply.readAll()
+        json = loads(raw.data())
+        mega = [x['#text'] for x in json['album']['image'] if x['size'] == 'mega'][0]
+ 
+        imageRequest = QNetworkRequest()
+        imageRequest.setUrl(QUrl(mega))
+ 
+        imageReply = self.manager.get(imageRequest)
+        imageReply.finished.connect(self.imageDownloaded)
+ 
+        reply.deleteLater()
+ 
+    def imageDownloaded(self):
+        reply = self.sender()
+        url = reply.url().path()
+        path = join(*url.split('/')[2:])
+        head, _ = split(path)
+        makedirs(head)
+        newFile = QFile()
+        newFile.setFileName(path)
+        newFile.open(QIODevice.WriteOnly)
+        newFile.write(reply.readAll())
+        newFile.close()
+        self.artLabel.load(path)
+        reply.deleteLater()
+ 
+ 
+class ArtLabel(QLabel):
+     
+    """
+    A QLabel that scales album art images properly.
+    """
+ 
+    def __init__(self, parent=None):
+         
+        """ Initializes the art label. """
+         
+        super(ArtLabel, self).__init__(parent)
+        self.pixmap = QPixmap() 
+        self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+        self.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+ 
+    def resizeEvent(self, event):
+         
+        """ Handles resize events. """
+ 
+        if not self.pixmap.isNull():
+            size = event.size()
+            self.refresh(size.width(), size.height())
+ 
+    def load(self, filename):
+        self.pixmap.load(filename)
+        self.refresh(self.width(), self.height())
+ 
+    def refresh(self, width, height):
+        pixmapWidth = self.pixmap.width()
+        pixmapHeight = self.pixmap.height()
+ 
+        if pixmapHeight > 0:
+            pixmapRatio = pixmapWidth / pixmapHeight
+        else:
+            pixmapRatio = pixmapWidth
+ 
+        w = width
+        h = height
+ 
+        if h > 0:
+            ratio = w / h
+        else:
+            ratio = w
+ 
+        if pixmapRatio < ratio:
+            self.setPixmap(self.pixmap.scaledToHeight(h, Qt.SmoothTransformation))
+        else:
+            self.setPixmap(self.pixmap.scaledToWidth(w, Qt.SmoothTransformation))
+ 
+def album_info_url(mbid):
+    scheme = 'http'
+    netloc = 'ws.audioscrobbler.com'
+    path = '/2.0/'
+    query = urlencode({'mbid': mbid, 'api_key': LAST_FM_KEY,
+        'method': 'album.getinfo', 'format': 'json'})
+    fragment = ''
+    parts = (scheme, netloc, path, query, fragment)
+    return urlunsplit(parts)
+ 
+  
+if __name__ == "__main__":
+   main()

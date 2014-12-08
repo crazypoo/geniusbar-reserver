@@ -1,0 +1,19 @@
+QWebView *m_pWebView;
+2	QNetworkCookieJar *m_pCookieJar;
+
+调用：
+01	QString strUrl = "www.maben.com.cn";
+02	m_pWebView = new QWebView();
+03	m_pCookieJar = new QNetworkCookieJar();
+04	m_pWebView->page()->networkAccessManager()->setCookieJar(m_pCookieJar);
+05	QList cookies;
+06	cookies.append(QNetworkCookie("key1", "value1"));
+07	cookies.append(QNetworkCookie("key2", "value2"));
+08	//更多cookie按照上面的方法依次添加...
+09	m_pCookieJar->setCookiesFromUrl(cookies, strUrl);
+10	m_pWebView->load(strUrl);
+
+
+QString DataAsString = QTextCodec::codecForMib(1015)->toUnicode(Data);
+
+(1015 is UTF-16, 1014 UTF-16LE, 1013 UTF-16BE, 106 UTF-8)

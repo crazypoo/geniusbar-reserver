@@ -23,6 +23,7 @@ class AppleGeniusBarReservation(object):
         self.reservationUrl = "http://concierge.apple.com/reservation/"
         self.authUrl = "https://idmsa.apple.com/IDMSWebAuth/authenticate"
         self.govUrlFormat = "https://concierge.apple.com/geniusbar/%s/governmentID"
+        self.timeslotFormat = "http://concierge.apple.com/geniusbar/%s/timeslots"
         GeniusbarPage._init_headers()
 
     @classmethod
@@ -124,7 +125,6 @@ class AppleGeniusBarReservation(object):
         storeUrl = taskStatus['storeUrl']
         debug.debug(storeUrl)
         while True and runtime > 0:
-            debug.debug('Enter while')
             taskCmd = taskStatus['taskCmd']
             if taskCmd == 'refresh':
                 debug.debug('refresh cmd %s' % taskStatus['appleId'])
@@ -141,16 +141,20 @@ class AppleGeniusBarReservation(object):
                 postData['smsCode'] = taskStatus['smsCode']
                 # 'Asia/Shanghai'
                 submitUrl = GeniusbarPage.challengeUrlFormat % GeniusbarPage.storeNumber
-                page.headers['Referer'] = submitUrl
+                headers = page.headers
+                headers['Referer'] = submitUrl
+                headers.pop('Accept-Encoding')
+                print(headers)
                 submitpage = GeniusbarPage(submitUrl,
                                            data=urllib.urlencode(postData),
-                                           headers=page.pageHeader)
+                                           headers=headers)
                 data = submitpage.get_data()
                 resultfile = 'tmp/%s.htm' % taskStatus['appleId']
                 Writefile(resultfile, data)
-                storePage = GeniusbarPage(storeUrl, headers=page.pageHeader)
-                data = storePage.get_data()
-                Writefile('tmp/last.html', data)
+                tlsUrl = self.timeslotFormat % GeniusbarPage.storeNumber
+                tlspage = GeniusbarPage(tlsUrl, headers=headers)
+                data = tlspage.get_data()
+                Writefile('last.html', data)
                 taskStatus['taskCmd'] = None
                 # gzip, deflate
                 # http://www.apple.com/cn/retail/shanghaiiapm/
@@ -158,7 +162,7 @@ class AppleGeniusBarReservation(object):
             if taskCmd == 'end':
                 taskStatus['taskCmd'] = None
                 break
-            debug.debug('waiting cmd')
+            #debug.debug('waiting cmd')
             time.sleep(1)
             runtime -= 1
         debug.info('End task %s' % taskStatus['appleId'])

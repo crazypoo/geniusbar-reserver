@@ -23,6 +23,10 @@ class WebPage(object):
         self.data = None
         self.soup = None
 
+    def reOpen(self):
+        self.data = None
+        self.soup = None
+
     def get_url(self):
         return self.url
 
@@ -31,7 +35,10 @@ class WebPage(object):
 
     def _read_page(self):
         self.init_cookie()
-        debug.debug('read %s' % self.url)
+        if self.post_data:
+            debug.debug('post %s' % self.url)
+        else:
+            debug.debug('read %s' % self.url)
         req = urllib2.Request(self.url,
                               data=self.post_data,
                               headers=self.headers)
