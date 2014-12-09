@@ -262,6 +262,7 @@ class MainWindow(QtGui.QMainWindow):
             taskStatus['appleId'] = loginData['appleId']
             taskStatus['taskProgress'] = '0'
             taskStatus['taskCmd'] = None
+            taskStatus['cmdStatus'] = None
             taskStatus['storeUrl'] = loginData['storeUrl']
             self.statusTasks.append(taskStatus)
 
@@ -438,6 +439,11 @@ class MainWindow(QtGui.QMainWindow):
             taskStatus['clientTimezone'] = 'Asia/Shanghai'
             taskStatus['countryISDCode'] = '86'
             taskStatus['taskCmd'] = 'submit'
+            while not taskStatus['cmdStatus']:
+                time.sleep(1)
+            if taskStatus['cmdStatus'] == 'NOK':
+                debug.info('submit error')
+                self.refresh()
         else:
             debug.error('submit error')
         self.enableStart()

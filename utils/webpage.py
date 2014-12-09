@@ -125,6 +125,7 @@ class WebPage(object):
         except AttributeError as e:
             debug.error('cannot find %s %s %s' %
                         (taglabel, str(attrs), str(e)))
+            return None
 
     def get_tags(self, tagLabel, attrs):
         soup = self.get_soup()
