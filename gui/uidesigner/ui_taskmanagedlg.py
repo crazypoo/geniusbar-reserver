@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/taskmanagedlg.ui'
 #
-# Created: Mon Dec 08 16:19:19 2014
+# Created: Tue Dec 09 15:47:55 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!

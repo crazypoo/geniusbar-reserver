@@ -2,11 +2,11 @@
 import sys
 import os
 from PyQt4 import QtGui
-import mainwindow
+from mainwindowq import MainWindow
 
 
 def main(proxyServers=None):
     app = QtGui.QApplication(sys.argv)
-    main = mainwindow.MainWindow(os.path.abspath(os.getcwd()))
+    main = MainWindow(os.path.abspath(os.getcwd()))
     main.show()
     app.exec_()
