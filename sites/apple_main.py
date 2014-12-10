@@ -152,7 +152,6 @@ class AppleGeniusBarReservation(object):
         '''
         waiting the input
         '''
-        debug.debug('Enter waiting cmd')
         runtime = 300  # waiting time
         storeUrl = taskStatus['storeUrl']
         debug.debug(storeUrl)
@@ -207,7 +206,7 @@ class AppleGeniusBarReservation(object):
             if taskCmd == 'end':
                 taskStatus['taskCmd'] = None
                 break
-            debug.debug('waiting cmd')
+            #debug.debug('waiting cmd')
             time.sleep(1)
             runtime -= 1
         debug.info('End task %s' % taskStatus['appleId'])

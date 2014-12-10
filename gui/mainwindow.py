@@ -116,6 +116,7 @@ class MainWindow(QtGui.QMainWindow):
         self.preSelectedRow = None
         self.store_suburl = {}
         self.storelist = []
+        self.finishedAppleId = []
         self.initStoreData()
         self.running = False
         # ###################################
@@ -142,6 +143,10 @@ class MainWindow(QtGui.QMainWindow):
         if task:
             self.appContext.setCurrentTask(task)
             self.fillTaskView(task)
+
+        self.ui.widget.sigRefresh.connect(self.refresh)
+        self.ui.widget.sigSubmit.connect(self.submit)
+        self.ui.widget.hide()
 
     def initStoreData(self):
         # the store name of each url
@@ -200,15 +205,16 @@ class MainWindow(QtGui.QMainWindow):
         #check the action of taskmanager, 
 
     def twTasklistCellClicked(self, row, col):
+        self.ui.widget.show()
         if col == 0:
             item = self.ui.tWTaskList.item(row, 0)
             appleId = item.text()
             progress = self.ui.tWTaskList.item(row, 1)
             progress = progress.text()
-            self.ui.progressBar.setValue(int(progress))
+            self.progressBar.setValue(int(progress))
             account = self.appContext.accountManager.getAccount(appleId)
             if account:
-                self.ui.lEPhoneNumber.setText(account['phonenumber'])
+                self.lEPhoneNumber.setText(account['phonenumber'])
             if int(progress) == 100:
                 self.fillResultView(appleId)
         self.preSelectedRow = row
@@ -246,13 +252,14 @@ class MainWindow(QtGui.QMainWindow):
         return opener
 
     def startTask(self):
+        self.ui.widget.show()
+        self.twTasklistCellClicked(0, 0)
         self.running = True
         self.disableStart()
         loginDatas = self.getTasksInfo()
         self.statusTasks = []
         self.finishedAppleId = []
         pool = self.getTaskPool()
-
         for loginData in loginDatas:
             apy = ApplyTask(loginData)
             self.applyTasks.append(apy)
@@ -297,10 +304,14 @@ class MainWindow(QtGui.QMainWindow):
         appleId = appleIdItem.text()
         progressItem = self.ui.tWTaskList.item(rowindex, 1)
         progress = int(progressItem.text())
-        self.ui.progressBar.setValue(progress)
+        # self.getProcessBar().setValue(progress)
+        self.progressBar.setValue(progress)
         if progress == 100:
             self.fillResultView(appleId)
             time.sleep(1)
+
+    def __getattr__(self, name):
+        return getattr(self.ui.widget, name)
 
     def fillResultView(self, appleId):
         currentTaskName = self.appContext.getCurrentTaskName()
@@ -323,7 +334,7 @@ class MainWindow(QtGui.QMainWindow):
             debug.debug('can not get verfiy pic')
         smsMsg = findResult['smsMsg']
         if smsMsg:
-            self.ui.pTSmsChallengeTip.setPlainText(smsMsg)
+            self.pTSmsChallengeTip.setPlainText(smsMsg)
         else:
             debug.error('Can not found smsMsg %s %s'
                         % (appleId, currentTaskName))
@@ -332,8 +343,10 @@ class MainWindow(QtGui.QMainWindow):
         image = QtGui.QImage.fromData(verifyData)
         pixmap = QtGui.QPixmap(image)
         size = QSize(pixmap.width(), pixmap.height())
-        self.ui.lbVerifyCodePic.resize(size)
-        self.ui.lbVerifyCodePic.setPixmap(pixmap)
+        # self.ui.lbVerifyCodePic
+        self.lbVerifyCodePic.resize(size)
+        # self.ui.lbVerifyCodePic.setPixmap(pixmap)
+        self.lbVerifyCodePic.setPixmap(pixmap)
 
     def checking(self, statusTasks, finished):
         while statusTasks:
@@ -409,6 +422,8 @@ class MainWindow(QtGui.QMainWindow):
     def refresh(self):
         appleid = self._getCurrentAppleId()
         taskstatus = self._getCurrentTaskStatus()
+        if not taskstatus:
+            return
         taskstatus['verifyCodeData'] = None
         if taskstatus:
             taskstatus['taskCmd'] = 'refresh'
@@ -433,9 +448,11 @@ class MainWindow(QtGui.QMainWindow):
     def submit(self):
         taskStatus = self._getCurrentTaskStatus()
         if taskStatus:
-            taskStatus['captchaAnswer'] = str(self.ui.lECaptchaAnswer.text())
-            taskStatus['phoneNumber'] = str(self.ui.lEPhoneNumber.text())
-            taskStatus['smsCode'] = str(self.ui.lESmsCode.text())
+            captcha = self.lECaptchaAnswer.text()
+            taskStatus['captchaAnswer'] = str(captcha)
+            phoneNumber = self.lEPhoneNumber.text()
+            taskStatus['phoneNumber'] = str(phoneNumber)
+            taskStatus['smsCode'] = str(self.lESmsCode.text())
             taskStatus['clientTimezone'] = 'Asia/Shanghai'
             taskStatus['countryISDCode'] = '86'
             taskStatus['taskCmd'] = 'submit'
@@ -446,4 +463,10 @@ class MainWindow(QtGui.QMainWindow):
                 self.refresh()
         else:
             debug.error('submit error')
-        self.enableStart()
+        #self.enableStart()
+
+    def viewDetail(self):
+        if 0 == self.stackedWidget.currentIndex():
+            self.stackedWidget.setCurrentIndex(1)
+        else:
+            self.stackedWidget.setCurrentIndex(0)

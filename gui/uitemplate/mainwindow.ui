@@ -6,141 +6,55 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>956</width>
-    <height>630</height>
+    <width>867</width>
+    <height>559</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>天才吧预约</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_4">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
-       <widget class="QGroupBox" name="groupBox_3">
-        <property name="title">
-         <string/>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_5">
-         <item>
-          <widget class="QTabWidget" name="tabWidget">
-           <property name="currentIndex">
-            <number>0</number>
-           </property>
-           <widget class="QWidget" name="tab">
-            <attribute name="title">
-             <string>未完成</string>
-            </attribute>
-            <layout class="QVBoxLayout" name="verticalLayout_2">
-             <item>
-              <widget class="QGroupBox" name="gBListName">
-               <property name="title">
-                <string>列表名</string>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_2">
-                <item>
-                 <widget class="QTableWidget" name="tWTaskList">
-                  <column>
-                   <property name="text">
-                    <string>账号</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>进度</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>代理</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>零售店</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>服务类型</string>
-                   </property>
-                  </column>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-           <widget class="QWidget" name="tab_current">
-            <attribute name="title">
-             <string>完成</string>
-            </attribute>
-            <layout class="QVBoxLayout" name="verticalLayout_6">
-             <item>
-              <widget class="QGroupBox" name="gBTaskName">
-               <property name="title">
-                <string>列表名</string>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_7">
-                <item>
-                 <widget class="QTableWidget" name="tWComplete">
-                  <row>
-                   <property name="text">
-                    <string>1</string>
-                   </property>
-                  </row>
-                  <row>
-                   <property name="text">
-                    <string>2</string>
-                   </property>
-                  </row>
-                  <column>
-                   <property name="text">
-                    <string>账号</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>零售店</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>服务类型</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>代理</string>
-                   </property>
-                  </column>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="groupBox_2">
-        <property name="title">
-         <string/>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="TaskViewWidget" name="widget" native="true"/>
-         </item>
-        </layout>
-       </widget>
-      </item>
-     </layout>
+     <widget class="QGroupBox" name="gBListName">
+      <property name="title">
+       <string>列表名</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QTableWidget" name="tWTaskList">
+         <column>
+          <property name="text">
+           <string>账号</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>进度</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>代理</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>零售店</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>服务类型</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <widget class="TaskViewWidget" name="widget" native="true"/>
+       </item>
+      </layout>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -149,7 +63,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>956</width>
+     <width>867</width>
      <height>21</height>
     </rect>
    </property>
@@ -167,6 +81,7 @@
     <addaction name="action_start_task"/>
     <addaction name="action_import_task"/>
     <addaction name="action_stop_task"/>
+    <addaction name="action_view_detail"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -272,6 +187,11 @@
   <action name="action_stop_task">
    <property name="text">
     <string>停止任务</string>
+   </property>
+  </action>
+  <action name="action_view_detail">
+   <property name="text">
+    <string>查看</string>
    </property>
   </action>
  </widget>
@@ -381,6 +301,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_view_detail</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>viewDetail()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>433</x>
+     <y>279</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onOk()</slot>
@@ -391,5 +327,6 @@
   <slot>importTask()</slot>
   <slot>refresh()</slot>
   <slot>submit()</slot>
+  <slot>viewDetail()</slot>
  </slots>
 </ui>

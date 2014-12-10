@@ -2,7 +2,7 @@
 import sys
 import os
 from PyQt4 import QtGui
-from mainwindowq import MainWindow
+from mainwindow import MainWindow
 
 
 def main(proxyServers=None):
