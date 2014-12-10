@@ -144,25 +144,31 @@ class AppleGeniusBarReservation(object):
                 headers = page.headers
                 headers['Referer'] = submitUrl
                 headers.pop('Accept-Encoding')
-                print(headers)
                 submitpage = GeniusbarPage(submitUrl,
                                            data=urllib.urlencode(postData),
                                            headers=headers)
                 data = submitpage.get_data()
                 resultfile = 'tmp/%s.htm' % taskStatus['appleId']
                 Writefile(resultfile, data)
+                attrs = {"class": "error-message on", "id": "error_message_generalError"}
+                if submitpage.get_tag_text('label', attrs=attrs):
+                    taskStatus['cmdStatus'] = 'NOK'
+                    taskStatus['taskCmd'] = None
+                    page = submitpage
+                    continue
                 tlsUrl = self.timeslotFormat % GeniusbarPage.storeNumber
                 tlspage = GeniusbarPage(tlsUrl, headers=headers)
                 data = tlspage.get_data()
                 Writefile('last.html', data)
                 taskStatus['taskCmd'] = None
                 # gzip, deflate
+                taskStatus['cmdStatus'] = 'OK'
                 # http://www.apple.com/cn/retail/shanghaiiapm/
                 break
             if taskCmd == 'end':
                 taskStatus['taskCmd'] = None
                 break
-            #debug.debug('waiting cmd')
+            debug.debug('waiting cmd')
             time.sleep(1)
             runtime -= 1
         debug.info('End task %s' % taskStatus['appleId'])
