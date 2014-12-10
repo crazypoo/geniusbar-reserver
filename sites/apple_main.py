@@ -116,6 +116,38 @@ class AppleGeniusBarReservation(object):
     def debugstep(self):
         self.update_progress(100)
 
+    def buildTimeSlotsTable(self, page, pageData=None):
+        '''
+        '''
+        # json data [{'week':[(time, key), ...]]
+        # for test
+        if pageData:
+            soup = page.get_soup(pageData)
+        else:
+            soup = page.get_soup()
+        attrs = {'id': 'dayC'}
+        daycs = soup.findAll('div', attrs=attrs)
+        ret = []
+        for dayc in daycs:
+            item = {}
+            times = []
+            dayName = dayc.find('a', {'id': 'dayNameC'}).text.replace(' ', '')
+            slot_inners = dayc.findAll('div', {'class': 'slot_inner'})
+            for slot_inner in slot_inners:
+                timeslots = slot_inner.findAll('a', {'id': 'timeslotC'})
+                for timeslot in timeslots:
+                    if not timeslot.contents:
+                        print('tiemslot have no contents')
+                        continue
+                    timetag = timeslot.find('span', {'id': 'timeslotNameC'})
+                    time = timetag.text
+                    idtag = timeslot.find('span', {'name': 'id'})
+                    id = idtag.text
+                    times.append((time, id))
+                item[dayName] = times
+            ret.append(item)
+        return ret
+
     def waitingCmd(self, page, taskStatus):
         '''
         waiting the input
@@ -150,12 +182,19 @@ class AppleGeniusBarReservation(object):
                 data = submitpage.get_data()
                 resultfile = 'tmp/%s.htm' % taskStatus['appleId']
                 Writefile(resultfile, data)
-                attrs = {"class": "error-message on", "id": "error_message_generalError"}
+                attrs = {"class": "error-message on",
+                         "id": "error_message_generalError"}
                 if submitpage.get_tag_text('label', attrs=attrs):
                     taskStatus['cmdStatus'] = 'NOK'
                     taskStatus['taskCmd'] = None
                     page = submitpage
                     continue
+                else:
+                    # success for submit
+                    ret = self.buildTimeSlotsTable(submitpage)
+                    taskStatus['cmdResult'] = ret
+                    debug.debug("%s times" % str(ret))
+
                 tlsUrl = self.timeslotFormat % GeniusbarPage.storeNumber
                 tlspage = GeniusbarPage(tlsUrl, headers=headers)
                 data = tlspage.get_data()

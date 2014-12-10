@@ -1,0 +1,16 @@
+$ python test_timeslotpage.py py
+12 月 16 日 星期二
+19:30
+u7pY+jDHxbMSa2AXWzq1/F5Jgps63Fte/isaGvnhMn2DMysOF9K7XtBfJIbKZGlm
+12 月 18 日 星期四
+19:30
+ns3KCHs0D7kgX5TM4v/fCCq0GOKJAH7lkywReBmUvcKDMysOF9K7XtBfJIbKZGlm
+12 月 23 日 星期二
+19:30
+5B1ENocHy3ZogNCLd6qzHktGTQaBmIkzooCSuhxV9GeDMysOF9K7XtBfJIbKZGlm
+12 月 25 日 星期四
+19:30
+w2Hqsz+rcxQjVJmdxgvttthygzWVaOXe4xHpCzlaxUmDMysOF9K7XtBfJIbKZGlm
+12 月 30 日 星期二
+19:30
+ryG74Zngq0TH6nch6geI9pmSQEsTpak/a+/UecqKxT2DMysOF9K7XtBfJIbKZGlm
