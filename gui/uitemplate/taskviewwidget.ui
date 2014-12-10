@@ -311,9 +311,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>tableWidget</sender>
+   <signal>cellClicked(int,int)</signal>
+   <receiver>Form</receiver>
+   <slot>cellClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>255</x>
+     <y>195</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>255</x>
+     <y>195</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>refresh()</slot>
   <slot>submit()</slot>
+  <slot>cellClicked()</slot>
  </slots>
 </ui>

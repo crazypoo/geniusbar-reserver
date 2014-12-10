@@ -24,16 +24,23 @@ class ApplyTask(object):
         self.reser = AppleGeniusBarReservation(loginData)
         self.enterUrl = loginData['enterUrl']
 
-    def apply(self, taskStatus):
+    def applyGeniusbar(self, taskStatus):
         debug.debug('start %s' % taskStatus['appleId'])
         return self.reser.Jump_login_page(self.enterUrl,
                                           taskStatus)
 
+    def applyWorkshops(self, taskStatus):
+        return self.reser.Jump_workshops_page(self.enterUrl,
+                                          taskStatus)
 
-def Reserver(applyTask, taskStatus):
+
+def Reserver(applyTask, taskStatus, geniusbar=True):
     name = multiprocessing.current_process().name
     debug.debug(name)
-    return applyTask.apply(taskStatus)
+    if geniusbar:
+        return applyTask.applyGeniusbar(taskStatus)
+    else:
+        return applyTask.applyWorkshops(taskStatus)
 
 
 class ReserverResult:
@@ -219,7 +226,7 @@ class MainWindow(QtGui.QMainWindow):
                 self.fillResultView(appleId)
         self.preSelectedRow = row
 
-    def getTasksInfo(self):
+    def getTasksInfo(self, geniusBar=True):
         taskName = self.ui.gBListName.title()
         task = self.appContext.taskManageDLG.tasks[str(taskName)]
         accounts = task.getAccounts()
@@ -227,7 +234,12 @@ class MainWindow(QtGui.QMainWindow):
         reservType = task.reservType
         suburl = self.store_suburl[unicode(storeName)]
         storeUrl = AppleGeniusBarReservation.Get_store_url(suburl)
-        supportUrl = AppleGeniusBarReservation.Get_suppport_url(storeUrl)
+        url = None
+        if geniusBar:
+            url = AppleGeniusBarReservation.Get_suppport_url(storeUrl)
+        else:
+            url = AppleGeniusBarReservation.Get_workshops_url(storeUrl)
+
         loginDatas = []
         for account in accounts:
             loginData = {}
@@ -238,7 +250,7 @@ class MainWindow(QtGui.QMainWindow):
             loginData['governmentIDType'] = 'CN.PRCID'
             loginData['reservType'] = reservType
             loginData['storeName'] = storeName
-            loginData['enterUrl'] = supportUrl
+            loginData['enterUrl'] = url
             loginData['storeUrl'] = storeUrl
             loginDatas.append(loginData)
 
@@ -256,7 +268,8 @@ class MainWindow(QtGui.QMainWindow):
         self.twTasklistCellClicked(0, 0)
         self.running = True
         self.disableStart()
-        loginDatas = self.getTasksInfo()
+        geniusBar = True
+        loginDatas = self.getTasksInfo(geniusBar=geniusBar)
         self.statusTasks = []
         self.finishedAppleId = []
         pool = self.getTaskPool()
@@ -277,7 +290,7 @@ class MainWindow(QtGui.QMainWindow):
             taskResult['appleId'] = loginData['appleId']
             self.finishedAppleId.append(taskStatus)
 
-            pool.apply_async(Reserver, (apy, taskStatus))
+            pool.apply_async(Reserver, (apy, taskStatus, geniusBar))
 
         pool.close()
         debug.debug('have %s task' % len(self.statusTasks))
@@ -461,11 +474,18 @@ class MainWindow(QtGui.QMainWindow):
             if taskStatus['cmdStatus'] == 'NOK':
                 debug.info('submit error')
                 self.refresh()
+
+            if taskStatus['cmdStatus'] == 'Ok':
+                result = taskStatus['cmdResult']
+                self.fillTableWidget(result[0], result[1])
+                self.viewDetail(1)
         else:
             debug.error('submit error')
-        #self.enableStart()
 
-    def viewDetail(self):
+    def viewDetail(self, index=None):
+        if index:
+            self.stackedWidget.setCurrentIndex(index)
+            return
         if 0 == self.stackedWidget.currentIndex():
             self.stackedWidget.setCurrentIndex(1)
         else:

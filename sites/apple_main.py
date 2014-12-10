@@ -39,6 +39,7 @@ class AppleGeniusBarReservation(object):
 
     @classmethod
     def Get_suppport_url(self, storeUrl):
+        debug.debug('get storeurl')
         page = GeniusbarPage(storeUrl)
         attrs = {'class': "nav hero-nav selfclear"}
         page_soup = page.get_soup()
@@ -52,7 +53,24 @@ class AppleGeniusBarReservation(object):
                 break
         return support_url
 
-    def post_reserv_page(self, prePage):
+    @classmethod
+    def Get_workshops_url(self, storeUrl):
+        page = GeniusbarPage(storeUrl)
+        data = page.get_data()
+        Writefile('debug/workshops.html', data)
+        attrs = {'class': "nav hero-nav selfclear"}
+        page_soup = page.get_soup()
+        navtag = page_soup.find('nav', attrs=attrs)
+        hrefs = navtag.findAll('a')
+        url = None
+        for href in hrefs:
+            target = href.find('img', {'alt': 'Workshops'})
+            if target:
+                url = href.get('href')
+                break
+        return url
+
+    def post_reserv_page(self, prePage, rultype='TECHSUPPORT'):
         debug.debug('post %s' % self.reservationUrl)
         postData = {}
         postData['_formToken'] = prePage.get_formtoken_value()
@@ -60,7 +78,7 @@ class AppleGeniusBarReservation(object):
         postData['storeNumber'] = prePage.get_tag_value('option', attrs=attrs)
         GeniusbarPage.storeNumber = postData['storeNumber']
         postData['store'] = GeniusbarPage.storeNumber
-        postData['ruleType'] = 'TECHSUPPORT'
+        postData['ruleType'] = rultype
         page = GeniusbarPage(self.reservationUrl,
                              urllib.urlencode(postData))
         return page
@@ -128,6 +146,7 @@ class AppleGeniusBarReservation(object):
         attrs = {'id': 'dayC'}
         daycs = soup.findAll('div', attrs=attrs)
         ret = []
+        maxRow = 0
         for dayc in daycs:
             item = {}
             times = []
@@ -145,8 +164,11 @@ class AppleGeniusBarReservation(object):
                     id = idtag.text
                     times.append((time, id))
                 item[dayName] = times
+                size = len(times)
+                if size > maxRow:
+                    maxRow = size
             ret.append(item)
-        return ret
+        return ret, maxRow
 
     def waitingCmd(self, page, taskStatus):
         '''
@@ -190,9 +212,11 @@ class AppleGeniusBarReservation(object):
                     continue
                 else:
                     # success for submit
-                    ret = self.buildTimeSlotsTable(submitpage)
-                    taskStatus['cmdResult'] = ret
-                    debug.debug("%s times" % str(ret))
+                    ret, maxrow = self.buildTimeSlotsTable(submitpage)
+                    taskStatus['cmdResult'] = (ret, maxrow)
+                    taskStatus['cmdStatus'] = 'OK'
+                    taskStatus['taskCmd'] = None
+                    break
 
                 tlsUrl = self.timeslotFormat % GeniusbarPage.storeNumber
                 tlspage = GeniusbarPage(tlsUrl, headers=headers)
@@ -211,7 +235,20 @@ class AppleGeniusBarReservation(object):
             runtime -= 1
         debug.info('End task %s' % taskStatus['appleId'])
 
+    def Jump_To_Workshops_page(self, enterUrl, taskStatus=None):
+        self.initUrls()
+        print('workshops %s' % enterUrl)
+        wkshpg = self.get_workshops_page(enterUrl)
+        self.update_progress(20)
+        Writefile('debug/wkspage.html', wkshpg.get_data())
+
+        self.post_reserv_page(wkshpg, 'WORKSHOP')
+        genpage = self.get_geniusbar_page(wkshpg)
+        Writefile('debug/geniuspage.html', genpage.get_data())
+
+
     def Jump_login_page(self, supporturl, taskStatus=None):
+        print('supportulr %s' % supporturl)
         self.initUrls()
         self.taskStatus = taskStatus
         self.update_progress(10)

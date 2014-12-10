@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/taskviewwidget.ui'
 #
-# Created: Wed Dec 10 18:32:58 2014
+# Created: Wed Dec 10 21:57:59 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -158,6 +158,7 @@ class Ui_Form(object):
         self.stackedWidget.setCurrentIndex(1)
         QtCore.QObject.connect(self.pBSumit, QtCore.SIGNAL(_fromUtf8("clicked()")), Form.submit)
         QtCore.QObject.connect(self.pBRefresh, QtCore.SIGNAL(_fromUtf8("clicked()")), Form.refresh)
+        QtCore.QObject.connect(self.tableWidget, QtCore.SIGNAL(_fromUtf8("cellClicked(int,int)")), Form.cellClicked)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
