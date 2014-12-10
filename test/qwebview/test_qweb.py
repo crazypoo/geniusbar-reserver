@@ -1,28 +1,30 @@
-from PyQt4.QtGui import QDialog
-from PyQt4.QtCore import QUrl, QString, QTextCodec
-from qwebview import Ui_Dialog
 import sys
-from PyQt4.QtNetwork import QNetworkAccessManager, QNetworkRequest
+from PyQt4.QtGui import QWidget
 from PyQt4.QtGui import QApplication, QMainWindow
+from PyQt4.QtCore import QUrl, QString
+from qwebview import Ui_Dialog
+from PyQt4.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkCookieJar
 
 
-class MyWebView(QDialog):
-    def __init__(self, parent=None):
-        super(MyWebView, self).__init__(parent)
+class GeniusBarReserser(QWidget):
+    def __init__(self, supportUrl, parent=None):
+        super(GeniusBarReserser, self).__init__(parent)
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
-        self.ui.webView.load(QUrl('http://www.apple.com/cn/retail/shanghaiiapm/'))
-        page = self.ui.webView.page()
-        print(page)
+        self.supportUrl = supportUrl
+        # self.ui.webView.load(QUrl('http://www.apple.com/cn/retail/shanghaiiapm/'))
+        self.netWorkmgr = QNetworkAccessManager(self)
+        cookieJar = QNetworkCookieJar()
+        self.netWrokMgr.setCookieJar(cookieJar)
 
-        
-class MainWindow(QDialog):
+
+class MainWindow(QMainWindow):
     def __init__(self, parent=None):
        # super(MainWindow, self).__init__(parent)
         super(MainWindow, self).__init__(parent)
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
-        self.manager = QNetworkAccessManager(self)
+        
         request = QNetworkRequest()
         request.setUrl(QUrl('http://www.apple.com/cn/retail/shanghaiiapm/'))
         reply = self.manager.get(request)
@@ -33,7 +35,7 @@ class MainWindow(QDialog):
         reply = self.sender()
         raw = reply.readAll()
         print(type(raw))
-        print(type(str(raw).decode('ascii', 'ignore')))
+        print(str(raw).decode('ascii', 'ignore'))
         #print(str(raw.data()).decode('unicode', 'ignore'))
         #text = QTextCodec.codecForMib(1013).toUnicode(raw.data())
         # print(text)

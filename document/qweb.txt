@@ -30,7 +30,20 @@ def main():
     main = MainWindow()
     main.show()
     exit(app.exec_())
- 
+ QUrl serviceUrl = QUrl("http://myserver/myservice.asmx");
+     QByteArray postData;
+
+     QUrl params;
+     params.addQueryItem("param1","string1");
+     params.addQueryItem("param2","string2");
+
+     postData = params.encodedQuery();
+
+     // Call the webservice
+     QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
+     connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(serviceRequestFinished(QNetworkReply*)));
+
+      networkManager->post(QNetworkRequest(serviceUrl), postData);
  
 class MainWindow(QMainWindow):
   
