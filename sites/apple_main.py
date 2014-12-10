@@ -79,6 +79,7 @@ class AppleGeniusBarReservation(object):
         GeniusbarPage.storeNumber = postData['storeNumber']
         postData['store'] = GeniusbarPage.storeNumber
         postData['ruleType'] = rultype
+        print(postData)
         page = GeniusbarPage(self.reservationUrl,
                              urllib.urlencode(postData))
         return page
@@ -235,17 +236,29 @@ class AppleGeniusBarReservation(object):
             runtime -= 1
         debug.info('End task %s' % taskStatus['appleId'])
 
-    def Jump_To_Workshops_page(self, enterUrl, taskStatus=None):
+    def Jump_workshops_page(self, enterUrl, taskStatus=None):
         self.initUrls()
         print('workshops %s' % enterUrl)
-        wkshpg = self.get_workshops_page(enterUrl)
-        self.update_progress(20)
+        wkshpg = GeniusbarPage(enterUrl)
+        print(wkshpg)
+        #self.update_progress(20)
         Writefile('debug/wkspage.html', wkshpg.get_data())
 
-        self.post_reserv_page(wkshpg, 'WORKSHOP')
-        genpage = self.get_geniusbar_page(wkshpg)
-        Writefile('debug/geniuspage.html', genpage.get_data())
-
+        reserpage = self.post_reserv_page(wkshpg, 'WORKSHOP')
+        Writefile('debug/geniuspage.html', reserpage.get_data())
+        workshopsurl = 'http://concierge.apple.com/workshops/' + GeniusbarPage.storeNumber
+        #genpage = self.get_geniusbar_page(wkshpg)
+        postData = {}
+        postData['id'] = '5756055972603593735'
+        postData['_formToken'] = reserpage.get_formtoken_value()
+        postData['workshopTypeName'] = 'CUSTOM_WORKSHOP'
+        timeslotpage = GeniusbarPage(workshopsurl,
+                                     data=urllib.urlencode(postData), headers=GeniusbarPage.headers)
+        Writefile('debug/timeslots.html', timeslotpage.get_data())
+        data, rowmax = self.buildTimeSlotsTable(timeslotpage)
+        for d in data:
+            for name, tiems in d.items():
+                print(name)
 
     def Jump_login_page(self, supporturl, taskStatus=None):
         print('supportulr %s' % supporturl)

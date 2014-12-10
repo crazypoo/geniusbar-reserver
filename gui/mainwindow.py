@@ -31,7 +31,7 @@ class ApplyTask(object):
 
     def applyWorkshops(self, taskStatus):
         return self.reser.Jump_workshops_page(self.enterUrl,
-                                          taskStatus)
+                                              taskStatus)
 
 
 def Reserver(applyTask, taskStatus, geniusbar=True):
