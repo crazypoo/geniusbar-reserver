@@ -268,7 +268,7 @@ class MainWindow(QtGui.QMainWindow):
         self.twTasklistCellClicked(0, 0)
         self.running = True
         self.disableStart()
-        geniusBar = True
+        geniusBar = False
         loginDatas = self.getTasksInfo(geniusBar=geniusBar)
         self.statusTasks = []
         self.finishedAppleId = []

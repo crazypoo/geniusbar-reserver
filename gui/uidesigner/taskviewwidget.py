@@ -1,5 +1,5 @@
 from PyQt4.QtGui import QWidget, QTableWidgetItem
-from uidesigner.ui_taskviewwidget import Ui_Form
+from gui.uidesigner.ui_taskviewwidget import Ui_Form
 from PyQt4.QtCore import pyqtSignal, QString
 
 

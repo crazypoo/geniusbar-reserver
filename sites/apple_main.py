@@ -129,8 +129,11 @@ class AppleGeniusBarReservation(object):
         return page
 
     def update_progress(self, progress):
+        print('updata')
         if self.taskStatus:
             self.taskStatus['taskProgress'] = progress
+            print('do updata')
+        print('end update')
 
     def debugstep(self):
         self.update_progress(100)
@@ -238,12 +241,13 @@ class AppleGeniusBarReservation(object):
 
     def Jump_workshops_page(self, enterUrl, taskStatus=None):
         self.initUrls()
+        self.taskStatus = taskStatus
         print('workshops %s' % enterUrl)
         wkshpg = GeniusbarPage(enterUrl)
         print(wkshpg)
         #self.update_progress(20)
         Writefile('debug/wkspage.html', wkshpg.get_data())
-
+        self.update_progress(30)
         reserpage = self.post_reserv_page(wkshpg, 'WORKSHOP')
         Writefile('debug/geniuspage.html', reserpage.get_data())
         workshopsurl = 'http://concierge.apple.com/workshops/' + GeniusbarPage.storeNumber
