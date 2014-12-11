@@ -33,11 +33,16 @@ from PyQt4 import QtGui
 from gui.uidesigner.taskviewwidget import TaskViewWidget
 
 
+def doubleclicked(timestr):
+    print(timestr)
+
+
 def main(proxyServers=None):
     data, maxrow = test_timeslotpage()
     app = QtGui.QApplication(sys.argv)
     main = TaskViewWidget()
     main.fillTableWidget(data, maxrow)
+    main.sigTimeSlot.connect(doubleclicked)
     main.show()
     app.exec_()
 

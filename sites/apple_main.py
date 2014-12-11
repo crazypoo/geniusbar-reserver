@@ -79,6 +79,7 @@ class AppleGeniusBarReservation(object):
         GeniusbarPage.storeNumber = postData['storeNumber']
         postData['store'] = GeniusbarPage.storeNumber
         postData['ruleType'] = rultype
+        print('post reverv')
         print(postData)
         page = GeniusbarPage(self.reservationUrl,
                              urllib.urlencode(postData))
@@ -129,11 +130,8 @@ class AppleGeniusBarReservation(object):
         return page
 
     def update_progress(self, progress):
-        print('updata')
         if self.taskStatus:
             self.taskStatus['taskProgress'] = progress
-            print('do updata')
-        print('end update')
 
     def debugstep(self):
         self.update_progress(100)
@@ -172,16 +170,30 @@ class AppleGeniusBarReservation(object):
                 if size > maxRow:
                     maxRow = size
             ret.append(item)
-        return ret, maxRow
+        return (ret, maxRow)
+
+    def afterReserWorkShops(self, page, taskStatus):
+        runningtime = 300
+        while runningtime > 0:
+            taskCmd = taskStatus['taskCmd']
+            if taskCmd == 'timeslot':
+                data, rowmax = self.buildTimeSlotsTable(page)
+                taskStatus['timeSlots'] = (data, rowmax)
+                taskStatus['taskCmd'] = None
+                taskStatus['cmdStatus'] = 'OK'
+                break
+            runningtime -= 1
+            time.sleep(1)
+            print('waitingCmd')
 
     def waitingCmd(self, page, taskStatus):
         '''
         waiting the input
         '''
-        runtime = 300  # waiting time
+        runtime = 60  # waiting time
         storeUrl = taskStatus['storeUrl']
         debug.debug(storeUrl)
-        while True and runtime > 0:
+        while runtime > 0:
             taskCmd = taskStatus['taskCmd']
             if taskCmd == 'refresh':
                 debug.debug('refresh cmd %s' % taskStatus['appleId'])
@@ -246,26 +258,26 @@ class AppleGeniusBarReservation(object):
         wkshpg = GeniusbarPage(enterUrl)
         print(wkshpg)
         #self.update_progress(20)
-        Writefile('debug/wkspage.html', wkshpg.get_data())
+        #Writefile('debug/wkspage.html', wkshpg.get_data())
         self.update_progress(30)
         reserpage = self.post_reserv_page(wkshpg, 'WORKSHOP')
-        Writefile('debug/geniuspage.html', reserpage.get_data())
+        #Writefile('debug/geniuspage.html', reserpage.get_data())
         workshopsurl = 'http://concierge.apple.com/workshops/' + GeniusbarPage.storeNumber
+        self.update_progress(60)
+
         #genpage = self.get_geniusbar_page(wkshpg)
         postData = {}
         postData['id'] = '5756055972603593735'
         postData['_formToken'] = reserpage.get_formtoken_value()
         postData['workshopTypeName'] = 'CUSTOM_WORKSHOP'
         timeslotpage = GeniusbarPage(workshopsurl,
-                                     data=urllib.urlencode(postData), headers=GeniusbarPage.headers)
-        Writefile('debug/timeslots.html', timeslotpage.get_data())
-        data, rowmax = self.buildTimeSlotsTable(timeslotpage)
-        for d in data:
-            for name, tiems in d.items():
-                print(name)
+                                     data=urllib.urlencode(postData),
+                                     headers=GeniusbarPage.headers)
+        self.update_progress(100)
+        self.afterReserWorkShops(timeslotpage, taskStatus)
+       # Writefile('debug/timeslots.html', timeslotpage.get_data())
 
     def Jump_login_page(self, supporturl, taskStatus=None):
-        print('supportulr %s' % supporturl)
         self.initUrls()
         self.taskStatus = taskStatus
         self.update_progress(10)

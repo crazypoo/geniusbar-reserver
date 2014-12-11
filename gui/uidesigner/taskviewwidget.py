@@ -13,6 +13,7 @@ class TaskViewWidget(QWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self)
         self.contents = {}
+        self.selectedtime = None
 
     def refresh(self):
         self.sigRefresh.emit()
@@ -42,6 +43,27 @@ class TaskViewWidget(QWidget):
             index += 1
 
     def cellClicked(self, row, col):
+        # print('cellClicked %s %s' % (row, col))
         key = '%s%s' % (row, col)
-        self.sigTimeSlot.emit(self.contents[key])
+        self.selectedtime = self.contents[key]
+
+    def cellDoubleClicked(self, row, col):
+        # print('cellDoubleClicked %s %s' % (row, col))
+        try:
+            key = '%s%s' % (row, col)
+            self.selectedtime = self.contents[key]
+            self.sigTimeSlot.emit(self.contents[key])
+            self.ui.stackedWidget.setCurrentIndex(0)
+        except:
+            self.sigTimeSlot.emit('testclicked')
+
+    def accept(self):
+        if self.selectedtime:
+            self.sigTimeSlot.emit(self.selectedtime)
+            self.ui.stackedWidget.setCurrentIndex(0)
+        else:
+            self.sigTimeSlot.emit('testclicked')
+
+
+    def rejected(self):
         self.ui.stackedWidget.setCurrentIndex(0)

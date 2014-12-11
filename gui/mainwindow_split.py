@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 import os
 import PyQt4.QtGui as QtGui
+from PyQt4.QtGui import QSplitter, QLabel
 from PyQt4.QtCore import pyqtSignal
 from PyQt4.QtCore import QSize
-from utils import debug, WriteVerifyPic
-from uidesigner.ui_mainwindow import Ui_MainWindow
+from utils import debug  # , WriteVerifyPic
+from uidesigner.ui_mainwindow_splitter import Ui_MainWindow
+from uidesigner import taskviewwidget
 from sites.apple_main import AppleGeniusBarReservation
 from taskmanagedlg import TaskManageDLG
 from tasklistdlg import TaskListDLG
@@ -16,6 +18,7 @@ from multiprocessing import Manager, Pool
 import threading
 import time
 import cookielib
+from tablewidget import TableWidget
 
 
 class ApplyTask(object):
@@ -73,7 +76,7 @@ class ReserverResult:
 
 
 class AppContext():
-    def __init__(self, cwd):
+    def __init__(self, cwd, mainWindow):
         self.configurefileDir = cwd
         self.accountManagerDLG = None
         self.taskManageDLG = None
@@ -82,6 +85,7 @@ class AppContext():
         self.accountManager = None
         self.currentTaskList = None
         self.accountListDLG = None
+        self.mainWindow = mainWindow
 
     def getDefaultTaskFile(self):
         return os.path.join(self.configurefileDir,
@@ -99,8 +103,12 @@ class AppContext():
     def getCurrentTask(self):
         return self.currentTaskList
 
+    def __getattr__(self, name):
+        return getattr(self.mainWindow, name)
+
     def setCurrentTask(self, task):
         self.currentTaskList = task
+        self.msgLabel.setText('Current Task is: %s' % task.taskName)
 
     def getCurrentTaskName(self):
         if self.currentTaskList:
@@ -111,14 +119,44 @@ class MainWindow(QtGui.QMainWindow):
     signalViewTask = pyqtSignal(int)
     signalUpdateProgress = pyqtSignal(str, str)
     signalStoreResult = pyqtSignal(str)
-    sigUpdateCurrentId = pyqtSignal()
+    # sigUpdateCurrentId = pyqtSignal()
     sigUpdateProgressBar = pyqtSignal(str)
+
+    def setupTaskTable(self):
+
+        headers = [
+            u"账号",
+            u"进度",
+            u"代理",
+            u"零售店",
+            u"服务类型"
+        ]
+        self.taskTableWidget = TableWidget(headers=headers)
+
+    def setupViews(self):
+        splitter = QSplitter()
+        self.setupTaskTable()
+        splitter.addWidget(self.taskTableWidget)
+        self.taskViewWidget = taskviewwidget.TaskViewWidget()
+        splitter.addWidget(self.taskViewWidget)
+        splitter.setStretchFactor(0, 0)
+        splitter.setStretchFactor(1, 1)
+        self.setCentralWidget(splitter)
+        self.taskViewWidget.hide()
+
+        self.msgLabel = QLabel()
+        self.statusBar().addWidget(self.msgLabel)
 
     def __init__(self, abscwd, parent=None):
         super(MainWindow, self).__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.appContext = AppContext(abscwd)
+        self.setupViews()
+        self.appContext = AppContext(abscwd, self)
+        self.setupMembers()
+        self.setupSig2Slot()
+
+    def setupMembers(self):
         self.reserverResult = ReserverResult()
         self.preSelectedRow = None
         self.store_suburl = {}
@@ -140,21 +178,22 @@ class MainWindow(QtGui.QMainWindow):
 
         # the apply process
         self.applyTasks = []
-        self.signalUpdateProgress.connect(self.updateProgress)
-        self.signalStoreResult.connect(self.storeResult)
-        self.sigUpdateCurrentId.connect(self.updateCurrentApplIdProgress)
-        self.sigTimeSlot.connect(self.selectTimeSlot)
-        # self.sigUpdateProgressBar.connect(self.updateProgressBar)
-        # fillTaskView
+
         self.appleIdToProgresscell = {}  # = {id, item}
         task = self.taskManageDLG.getDefaultTask()
         if task:
             self.appContext.setCurrentTask(task)
             self.fillTaskView(task)
 
-        self.ui.widget.sigRefresh.connect(self.refresh)
-        self.ui.widget.sigSubmit.connect(self.submit)
-        self.ui.widget.hide()
+    def setupSig2Slot(self):
+        self.signalUpdateProgress.connect(self.updateProgress)
+        self.signalStoreResult.connect(self.storeResult)
+        # self.sigUpdateCurrentId.connect(self.updateCurrentApplIdProgress)
+        self.sigTimeSlot.connect(self.selectTimeSlot)
+        self.pBSubmit.clicked.connect(self.submit)
+        self.pBRefresh.clicked.connect(self.refresh)
+
+        self.taskTableWidget.cellClicked.connect(self.twTasklistCellClicked)
 
     def initStoreData(self):
         # the store name of each url
@@ -174,29 +213,29 @@ class MainWindow(QtGui.QMainWindow):
         if rowCount is not 0:
             self.preSelectedRow = 0
 
-        self.ui.gBListName.setTitle(unicode(task.taskName))
-        self.ui.tWTaskList.setRowCount(rowCount)
+        # self.ui.gBListName.setTitle(unicode(task.taskName))
+        self.taskTableWidget.setRowCount(rowCount)
         row = 0
         for count in accounts:
             item = QtGui.QTableWidgetItem()
             item.setText(count['appleid'])
-            self.ui.tWTaskList.setItem(row, 0, item)
+            self.taskTableWidget.setItem(row, 0, item)
 
             item = QtGui.QTableWidgetItem()
             item.setText("0")
-            self.ui.tWTaskList.setItem(row, 1, item)
+            self.taskTableWidget.setItem(row, 1, item)
             self.appleIdToProgresscell[count['appleid']] = item
             item = QtGui.QTableWidgetItem()
             item.setText(task.proxyServer)
-            self.ui.tWTaskList.setItem(row, 2, item)
+            self.taskTableWidget.setItem(row, 2, item)
 
             item = QtGui.QTableWidgetItem()
             item.setText(unicode(task.storeName))
-            self.ui.tWTaskList.setItem(row, 3, item)
+            self.taskTableWidget.setItem(row, 3, item)
 
             item = QtGui.QTableWidgetItem()
             item.setText(task.reservType)
-            self.ui.tWTaskList.setItem(row, 4, item)
+            self.taskTableWidget.setItem(row, 4, item)
             row += 1
 
     def getTaskPool(self):
@@ -210,14 +249,19 @@ class MainWindow(QtGui.QMainWindow):
     def taskManage(self):
         self.taskManageDLG.exec_()
         # TODO:
-        #check the action of taskmanager, 
+
+    def getTaskTable(self):
+        return self.taskTableWidget
+
+    def getTaskView(self):
+        return self.taskViewWidget
 
     def twTasklistCellClicked(self, row, col):
-        self.ui.widget.show()
+        self.getTaskView().show()
         if col == 0:
-            item = self.ui.tWTaskList.item(row, 0)
+            item = self.getTaskTable().item(row, 0)
             appleId = item.text()
-            progress = self.ui.tWTaskList.item(row, 1)
+            progress = self.getTaskTable().item(row, 1)
             progress = progress.text()
             self.progressBar.setValue(int(progress))
             account = self.appContext.accountManager.getAccount(appleId)
@@ -228,7 +272,7 @@ class MainWindow(QtGui.QMainWindow):
         self.preSelectedRow = row
 
     def getTasksInfo(self, geniusBar=True):
-        taskName = self.ui.gBListName.title()
+        taskName = self.appContext.getCurrentTaskName()
         task = self.appContext.taskManageDLG.tasks[str(taskName)]
         accounts = task.getAccounts()
         storeName = task.storeName
@@ -265,11 +309,10 @@ class MainWindow(QtGui.QMainWindow):
         return opener
 
     def startTask(self):
-        self.ui.widget.show()
         self.twTasklistCellClicked(0, 0)
         self.running = True
         self.disableStart()
-        geniusBar = False
+        geniusBar = True
         loginDatas = self.getTasksInfo(geniusBar=geniusBar)
         self.statusTasks = []
         self.finishedAppleId = []
@@ -304,10 +347,10 @@ class MainWindow(QtGui.QMainWindow):
     def updateProgress(self, appleId, progress):
         item = self.appleIdToProgresscell[str(appleId)]
         item.setText(progress)
-        self.updateCurrentApplIdProgress()
+        self.updateCurrentApplIdProgress(appleId)
 
-    def updateCurrentApplIdProgress(self):
-        rowindex = self.ui.tWTaskList.currentRow()
+    def updateCurrentApplIdProgress(self, appleId):
+        rowindex = self.getTaskTable().currentRow()
         if rowindex == -1:
             if self.preSelectedRow:
                 rowindex = self.preSelectedRow
@@ -315,9 +358,9 @@ class MainWindow(QtGui.QMainWindow):
                 rowindex = 0
         self.preSelectedRow = rowindex
 
-        appleIdItem = self.ui.tWTaskList.item(rowindex, 0)
+        appleIdItem = self.getTaskTable().item(rowindex, 0)
         appleId = appleIdItem.text()
-        progressItem = self.ui.tWTaskList.item(rowindex, 1)
+        progressItem = self.getTaskTable().item(rowindex, 1)
         progress = int(progressItem.text())
         # self.getProcessBar().setValue(progress)
         self.progressBar.setValue(progress)
@@ -326,7 +369,10 @@ class MainWindow(QtGui.QMainWindow):
             time.sleep(1)
 
     def __getattr__(self, name):
-        return getattr(self.ui.widget, name)
+        ret = getattr(self.taskTableWidget, name)
+        if not ret:
+            ret = getattr(self.taskViewWidget, name)
+        return ret
 
     def fillResultView(self, appleId):
         currentTaskName = self.appContext.getCurrentTaskName()
@@ -380,7 +426,6 @@ class MainWindow(QtGui.QMainWindow):
                 self.signalUpdateProgress.emit(appleId, progress)
                 time.sleep(3)
 
-            self.sigUpdateCurrentId.emit()
         debug.info('Terminal task %s' % self.appContext.getCurrentTaskName())
         self.enableStart()
 
@@ -400,6 +445,7 @@ class MainWindow(QtGui.QMainWindow):
         '''
         save the current task list
         '''
+        return
         task = self.appContext.getCurrentTask()
         self.appContext.taskManageDLG._storeToDefault(task)
 
@@ -422,11 +468,11 @@ class MainWindow(QtGui.QMainWindow):
     def _getCurrentAppleId(self):
         row = self.preSelectedRow
         if row == -1:
-            row = self.ui.tWTaskList.currentRow()
+            row = self.getTaskTable().currentRow()
             if row == -1:
                 return
             self.preSelectedRow = row
-        appleid = self.ui.tWTaskList.item(row, 0).text()
+        appleid = self.getTaskTable().item(row, 0).text()
         return appleid
 
     def _getCurrentTaskStatus(self):
@@ -476,8 +522,10 @@ class MainWindow(QtGui.QMainWindow):
             taskStatus['clientTimezone'] = 'Asia/Shanghai'
             taskStatus['countryISDCode'] = '86'
             taskStatus['taskCmd'] = 'submit'
-            while not taskStatus['cmdStatus']:
+            timer = 3
+            while not taskStatus['cmdStatus'] and timer > 0:
                 time.sleep(1)
+                timer -= 1
             if taskStatus['cmdStatus'] == 'NOK':
                 debug.info('submit error')
                 self.refresh()
@@ -492,7 +540,22 @@ class MainWindow(QtGui.QMainWindow):
     def isCmdOk(self, status):
         return status['cmdStatus'] == 'OK'
 
-    def viewDetail(self, index=None):
+    def viewDetail(self):
+        self.taskViewWidget.show()
+        self.taskViewWidget.stackedWidget.setCurrentIndex(1)
+        taskStatus = self._getCurrentTaskStatus()
+        if taskStatus:
+            taskStatus['taskCmd'] = 'timeslot'
+            timer = 3
+            while not taskStatus['cmdStatus'] and timer > 0:
+                time.sleep(1)
+                timer -= 1
+            if self.isCmdOk(taskStatus):
+                ret = taskStatus['timeSlots']
+                self.fillTableWidget(ret[0], ret[1])
+
+    def vviewDetail(self, index=None):
+        self.getTaskView().show()
         if index:
             self.stackedWidget.setCurrentIndex(index)
             return

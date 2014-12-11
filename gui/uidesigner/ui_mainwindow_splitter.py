@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'uitemplate/mainwindow.ui'
+# Form implementation generated from reading ui file 'uitemplate/mainwindow_splitter.ui'
 #
 # Created: Thu Dec 11 17:48:55 2014
 #      by: PyQt4 UI code generator 4.11.3
@@ -26,37 +26,12 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(853, 578)
+        MainWindow.resize(1000, 653)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
-        self.horizontalLayout_2 = QtGui.QHBoxLayout(self.centralwidget)
-        self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
-        self.gBListName = QtGui.QGroupBox(self.centralwidget)
-        self.gBListName.setObjectName(_fromUtf8("gBListName"))
-        self.horizontalLayout = QtGui.QHBoxLayout(self.gBListName)
-        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        self.tWTaskList = QtGui.QTableWidget(self.gBListName)
-        self.tWTaskList.setObjectName(_fromUtf8("tWTaskList"))
-        self.tWTaskList.setColumnCount(5)
-        self.tWTaskList.setRowCount(0)
-        item = QtGui.QTableWidgetItem()
-        self.tWTaskList.setHorizontalHeaderItem(0, item)
-        item = QtGui.QTableWidgetItem()
-        self.tWTaskList.setHorizontalHeaderItem(1, item)
-        item = QtGui.QTableWidgetItem()
-        self.tWTaskList.setHorizontalHeaderItem(2, item)
-        item = QtGui.QTableWidgetItem()
-        self.tWTaskList.setHorizontalHeaderItem(3, item)
-        item = QtGui.QTableWidgetItem()
-        self.tWTaskList.setHorizontalHeaderItem(4, item)
-        self.horizontalLayout.addWidget(self.tWTaskList)
-        self.widget = TaskViewWidget(self.gBListName)
-        self.widget.setObjectName(_fromUtf8("widget"))
-        self.horizontalLayout.addWidget(self.widget)
-        self.horizontalLayout_2.addWidget(self.gBListName)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 853, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1000, 21))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.menu = QtGui.QMenu(self.menubar)
         self.menu.setObjectName(_fromUtf8("menu"))
@@ -133,22 +108,10 @@ class Ui_MainWindow(object):
         QtCore.QObject.connect(MainWindow, QtCore.SIGNAL(_fromUtf8("destroyed()")), MainWindow.close)
         QtCore.QObject.connect(self.action_import_task, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.importTask)
         QtCore.QObject.connect(self.action_view_detail, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.viewDetail)
-        QtCore.QObject.connect(self.tWTaskList, QtCore.SIGNAL(_fromUtf8("cellClicked(int,int)")), MainWindow.twTasklistCellClicked)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "天才吧预约", None))
-        self.gBListName.setTitle(_translate("MainWindow", "列表名", None))
-        item = self.tWTaskList.horizontalHeaderItem(0)
-        item.setText(_translate("MainWindow", "账号", None))
-        item = self.tWTaskList.horizontalHeaderItem(1)
-        item.setText(_translate("MainWindow", "进度", None))
-        item = self.tWTaskList.horizontalHeaderItem(2)
-        item.setText(_translate("MainWindow", "代理", None))
-        item = self.tWTaskList.horizontalHeaderItem(3)
-        item.setText(_translate("MainWindow", "零售店", None))
-        item = self.tWTaskList.horizontalHeaderItem(4)
-        item.setText(_translate("MainWindow", "服务类型", None))
         self.menu.setTitle(_translate("MainWindow", "文件", None))
         self.menu_2.setTitle(_translate("MainWindow", "任务", None))
         self.menu_3.setTitle(_translate("MainWindow", "设置", None))
@@ -170,4 +133,3 @@ class Ui_MainWindow(object):
         self.action_stop_task.setText(_translate("MainWindow", "停止任务", None))
         self.action_view_detail.setText(_translate("MainWindow", "查看", None))
 
-from taskviewwidget import TaskViewWidget

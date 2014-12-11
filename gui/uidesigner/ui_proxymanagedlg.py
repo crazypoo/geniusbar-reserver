@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/proxymanagedlg.ui'
 #
-# Created: Wed Dec 10 21:57:58 2014
+# Created: Thu Dec 11 17:48:55 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,16 +26,14 @@ except AttributeError:
 class Ui_ProxyFinderDLG(object):
     def setupUi(self, ProxyFinderDLG):
         ProxyFinderDLG.setObjectName(_fromUtf8("ProxyFinderDLG"))
-        ProxyFinderDLG.resize(525, 291)
-        self.layoutWidget = QtGui.QWidget(ProxyFinderDLG)
-        self.layoutWidget.setGeometry(QtCore.QRect(9, 0, 496, 267))
-        self.layoutWidget.setObjectName(_fromUtf8("layoutWidget"))
-        self.horizontalLayout_6 = QtGui.QHBoxLayout(self.layoutWidget)
-        self.horizontalLayout_6.setMargin(0)
+        ProxyFinderDLG.resize(652, 363)
+        self.horizontalLayout_7 = QtGui.QHBoxLayout(ProxyFinderDLG)
+        self.horizontalLayout_7.setObjectName(_fromUtf8("horizontalLayout_7"))
+        self.horizontalLayout_6 = QtGui.QHBoxLayout()
         self.horizontalLayout_6.setObjectName(_fromUtf8("horizontalLayout_6"))
         self.verticalLayout_5 = QtGui.QVBoxLayout()
         self.verticalLayout_5.setObjectName(_fromUtf8("verticalLayout_5"))
-        self.groupBox_2 = QtGui.QGroupBox(self.layoutWidget)
+        self.groupBox_2 = QtGui.QGroupBox(ProxyFinderDLG)
         self.groupBox_2.setTitle(_fromUtf8(""))
         self.groupBox_2.setObjectName(_fromUtf8("groupBox_2"))
         self.verticalLayout_2 = QtGui.QVBoxLayout(self.groupBox_2)
@@ -53,7 +51,7 @@ class Ui_ProxyFinderDLG(object):
         self.horizontalLayout.addWidget(self.pushButton)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
         self.verticalLayout_5.addWidget(self.groupBox_2)
-        self.groupBox = QtGui.QGroupBox(self.layoutWidget)
+        self.groupBox = QtGui.QGroupBox(ProxyFinderDLG)
         self.groupBox.setTitle(_fromUtf8(""))
         self.groupBox.setObjectName(_fromUtf8("groupBox"))
         self.verticalLayout = QtGui.QVBoxLayout(self.groupBox)
@@ -83,7 +81,7 @@ class Ui_ProxyFinderDLG(object):
         self.verticalLayout_7.addItem(spacerItem)
         self.verticalLayout_6 = QtGui.QVBoxLayout()
         self.verticalLayout_6.setObjectName(_fromUtf8("verticalLayout_6"))
-        self.groupBox_4 = QtGui.QGroupBox(self.layoutWidget)
+        self.groupBox_4 = QtGui.QGroupBox(ProxyFinderDLG)
         self.groupBox_4.setTitle(_fromUtf8(""))
         self.groupBox_4.setObjectName(_fromUtf8("groupBox_4"))
         self.verticalLayout_4 = QtGui.QVBoxLayout(self.groupBox_4)
@@ -110,7 +108,7 @@ class Ui_ProxyFinderDLG(object):
         self.verticalLayout_3.addLayout(self.horizontalLayout_5)
         self.verticalLayout_4.addLayout(self.verticalLayout_3)
         self.verticalLayout_6.addWidget(self.groupBox_4)
-        self.groupBox_3 = QtGui.QGroupBox(self.layoutWidget)
+        self.groupBox_3 = QtGui.QGroupBox(ProxyFinderDLG)
         self.groupBox_3.setTitle(_fromUtf8(""))
         self.groupBox_3.setObjectName(_fromUtf8("groupBox_3"))
         self.horizontalLayout_3 = QtGui.QHBoxLayout(self.groupBox_3)
@@ -127,6 +125,7 @@ class Ui_ProxyFinderDLG(object):
         self.verticalLayout_6.addWidget(self.groupBox_3)
         self.verticalLayout_7.addLayout(self.verticalLayout_6)
         self.horizontalLayout_6.addLayout(self.verticalLayout_7)
+        self.horizontalLayout_7.addLayout(self.horizontalLayout_6)
 
         self.retranslateUi(ProxyFinderDLG)
         QtCore.QMetaObject.connectSlotsByName(ProxyFinderDLG)

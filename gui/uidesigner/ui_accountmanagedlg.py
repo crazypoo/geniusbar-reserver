@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/accountmanagedlg.ui'
 #
-# Created: Wed Dec 10 21:57:58 2014
+# Created: Thu Dec 11 17:48:55 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
