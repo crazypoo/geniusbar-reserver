@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from PyQt4.QtGui import QDialog
+from PyQt4.QtGui import QDialog, QFileDialog
 from PyQt4.QtGui import QAction
 from PyQt4.QtGui import QMenu
 from PyQt4.QtGui import QTableWidgetItem
@@ -68,10 +68,28 @@ class AccountManagerDLG(QDialog):
 
     def importFromFile(self):
         debug.debug('import accounter from file')
-        pass
+        filter = "All(*)"
+        fileName = QFileDialog.getOpenFileName(self,
+                                                     caption="导入账号",
+                                                     directory='.',
+                                                     filter=filter)
+        accounts = {}
+        #账号，密码，身份证
+        with open(fileName, 'r') as f:
+            for line in f.readlines():
+                account = {}
+                l = line.replace('\n', '').replace(' ', '').split(',')
+                account['appleid'] = l[0]
+                account['passwd'] = l[1]
+                account['governmentid'] = l[2]
+                account['phonenumber'] = ''
+                accounts[l[0]] = account
+        self.appContext.accountManager.addAccounts(accounts)
+        accounts = self.appContext.accountManager.getAccounts()
+        self.updataAccountsTableView(accounts)
 
     def updataAccountsTableView(self, accounts):
-        rowCount = len(accounts) + 1
+        rowCount = len(accounts)
         self.ui.tWAccounts.setRowCount(rowCount)
         row = 0
         for _, account in accounts.items():

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/accountmanagedlg.ui'
 #
-# Created: Fri Dec 12 16:01:51 2014
+# Created: Fri Dec 12 18:18:29 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -119,6 +119,9 @@ class Ui_AccountDLG(object):
         self.pBAdd = QtGui.QPushButton(self.groupBox_2)
         self.pBAdd.setObjectName(_fromUtf8("pBAdd"))
         self.horizontalLayout_7.addWidget(self.pBAdd)
+        self.pBImportfromfile = QtGui.QPushButton(self.groupBox_2)
+        self.pBImportfromfile.setObjectName(_fromUtf8("pBImportfromfile"))
+        self.horizontalLayout_7.addWidget(self.pBImportfromfile)
         self.pBClear = QtGui.QPushButton(self.groupBox_2)
         self.pBClear.setObjectName(_fromUtf8("pBClear"))
         self.horizontalLayout_7.addWidget(self.pBClear)
@@ -137,6 +140,7 @@ class Ui_AccountDLG(object):
         QtCore.QObject.connect(self.pBClear, QtCore.SIGNAL(_fromUtf8("clicked()")), AccountDLG.clear)
         QtCore.QObject.connect(self.pBOk, QtCore.SIGNAL(_fromUtf8("clicked()")), AccountDLG.accept)
         QtCore.QObject.connect(self.pBCancel, QtCore.SIGNAL(_fromUtf8("clicked()")), AccountDLG.reject)
+        QtCore.QObject.connect(self.pBImportfromfile, QtCore.SIGNAL(_fromUtf8("clicked()")), AccountDLG.importFromFile)
         QtCore.QMetaObject.connectSlotsByName(AccountDLG)
 
     def retranslateUi(self, AccountDLG):
@@ -156,6 +160,7 @@ class Ui_AccountDLG(object):
         self.label_3.setText(_translate("AccountDLG", "身份证号：", None))
         self.label_4.setText(_translate("AccountDLG", "手机号：", None))
         self.pBAdd.setText(_translate("AccountDLG", "添加", None))
+        self.pBImportfromfile.setText(_translate("AccountDLG", "从文件导入", None))
         self.pBClear.setText(_translate("AccountDLG", "清空", None))
         self.pBOk.setText(_translate("AccountDLG", "确定", None))
         self.pBCancel.setText(_translate("AccountDLG", "取消", None))
