@@ -199,7 +199,6 @@ class AppleGeniusBarReservation(object):
         runtime = 300  # waiting time
         storeUrl = taskStatus['storeUrl']
         debug.debug(storeUrl)
-        tmpHeaders = page.headers
 
         while runtime > 0:
             taskCmd = taskStatus['taskCmd']
@@ -229,10 +228,6 @@ class AppleGeniusBarReservation(object):
                 resultfile = 'tmp/%s.htm' % taskStatus['appleId']
                 Writefile(resultfile, data)
 
-                #get timeslots
-                # timeSlotsurl = self.timeslotFormat % GeniusbarPage.storeNumber
-                # timeSlotsPage = GeniusbarPage(timeSlotsurl, headers=headers)
-                # Writefile('tmp/gettimeslotpage.html', timeSlotsPage.get_data())
                 attrs = {"class": "error-message on",
                          "id": "error_message_generalError"}
                 if submitpage.get_tag_text('label', attrs=attrs):
@@ -255,7 +250,6 @@ class AppleGeniusBarReservation(object):
                 postData = self.buildPostTimeSlotsData(page)
                 postData['clientTimezone'] = taskStatus['clientTimezone']
                 postData['id'] = taskStatus['id']
-                debug.debug(postData)
                 tlsUrl = self.timeslotFormat % GeniusbarPage.storeNumber
                 debug.debug('tls ulr %s' % tlsUrl)
                 headers = {}
@@ -267,19 +261,12 @@ class AppleGeniusBarReservation(object):
                 tlspage = GeniusbarPage(tlsUrl,
                                         data=urllib.urlencode(postData),
                                         headers=headers)
-                debug.debug('end post tlspage')
-
                 data = tlspage.get_data()
                 Writefile('tmp/posttimeslotsresult.html', data)
-                # gzip, deflate
-                # get GET reservationConfirmation
-                # http://concierge.apple.com/geniusbar/R448/reservationConfirmation
-                confirmUrl = self.reservConfirmFormat % GeniusbarPage.storeNumber
-                headers['Referer'] = tlsUrl
-                confirmPage = GeniusbarPage(confirmUrl, headers=headers)
-                Writefile('tmp/confirmPage.html', confirmPage.get_data())
-                text = self.getConfirmMsg(confirmPage)
+                text = self.getConfirmMsg(tlspage)
                 taskStatus['prompInfo'] = text.replace(' ', '')
+                Writefile('tmp/reserv-%s' % taskStatus['appleId'],
+                          taskStatus['prompInfo'])
                 taskStatus['taskCmd'] = None
                 taskStatus['cmdStatus'] = 'OK'
                 break

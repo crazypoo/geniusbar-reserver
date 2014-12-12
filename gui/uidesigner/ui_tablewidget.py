@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/tablewidget.ui'
 #
-# Created: Fri Dec 12 10:19:43 2014
+# Created: Fri Dec 12 16:01:52 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -29,7 +29,7 @@ class Ui_Form(object):
         Form.resize(629, 451)
         self.verticalLayout = QtGui.QVBoxLayout(Form)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.tableWidget = QtGui.QTableWidget(Form)
+        self.tableWidget = TaskTableWidget(Form)
         self.tableWidget.setObjectName(_fromUtf8("tableWidget"))
         self.tableWidget.setColumnCount(0)
         self.tableWidget.setRowCount(0)
@@ -41,3 +41,4 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         Form.setWindowTitle(_translate("Form", "Form", None))
 
+from tasktablewidget import TaskTableWidget

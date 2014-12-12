@@ -44,18 +44,30 @@ class TaskViewWidget(QWidget):
 
     def cellClicked(self, row, col):
         # print('cellClicked %s %s' % (row, col))
+        if row == -1 or col == -1:
+            return
         key = '%s%s' % (row, col)
+        item = self.item(row, col)
+        if not item:
+            return
+
         self.selectedtime = self.contents[key]
 
     def cellDoubleClicked(self, row, col):
         # print('cellDoubleClicked %s %s' % (row, col))
+        if row == -1 or col == -1:
+            return
+        item = self.item(row, col)
+        if not item:
+            return
+
         try:
             key = '%s%s' % (row, col)
             self.selectedtime = self.contents[key]
             self.sigTimeSlot.emit(self.contents[key])
             self.ui.stackedWidget.setCurrentIndex(0)
         except:
-            self.sigTimeSlot.emit('testclicked')
+            self.sigTimeSlot.emit('error')
 
     def accept(self):
         if self.selectedtime:

@@ -538,12 +538,13 @@ class MainWindow(QtGui.QMainWindow):
             while not taskStatus['cmdStatus'] and timer > 0:
                 time.sleep(1)
                 timer -= 1
-                debug.debug('check timeslot cmd status')
+
             if taskStatus['cmdStatus'] == 'OK':
                 result = self.getTaskResult(taskStatus['appleId'])
                 result['smsMsg'] = taskStatus['prompInfo']
                 print(result['smsMsg'])
                 self.fillResultView(taskStatus['appleId'])
+                self.showTaskResult()
             elif taskStatus['cmdStatus'] == 'NOK':
                 debug.error('selected time error')
             else:
@@ -571,30 +572,31 @@ class MainWindow(QtGui.QMainWindow):
                 debug.info('submit error')
                 self.refresh()
 
-            if taskStatus['cmdStatus'] == 'OK':
+            elif taskStatus['cmdStatus'] == 'OK':
                 result = taskStatus['timeSlots']
                 self.fillTableWidget(result[0], result[1])
-                self.showTimeSlots()
+                self.showTimeSlots(1)
+            else:
+                debug.error('submit task error')
+
         else:
             debug.error('submit error')
 
     def isCmdOk(self, status):
         return status['cmdStatus'] == 'OK'
 
-    def showTimeSlots(self):
+    def showTimeSlots(self, index=1):
         self.taskViewWidget.show()
-        self.taskViewWidget.stackedWidget.setCurrentIndex(1)
+        self.taskViewWidget.stackedWidget.setCurrentIndex(index)
+
+    def showTaskResult(self, index=0):
+        self.taskViewWidget.show()
+        self.taskViewWidget.stackedWidget.setCurrentIndex(index)
 
     def viewDetail(self):
         self.taskViewWidget.show()
-        self.taskViewWidget.stackedWidget.setCurrentIndex(1)
-        # taskStatus = self._getCurrentTaskStatus()
-        # if taskStatus:
-        #     taskStatus['taskCmd'] = 'timeslot'
-        #     timer = 3
-        #     while not taskStatus['cmdStatus'] and timer > 0:
-        #         time.sleep(1)
-        #         timer -= 1
-        #     if self.isCmdOk(taskStatus):
-        #         ret = taskStatus['timeSlots']
-        #         self.fillTableWidget(ret[0], ret[1])
+        if self.taskViewWidget.stackedWidget.currentIndex() == 0:
+            self.taskViewWidget.stackedWidget.setCurrentIndex(1)
+        else:
+            self.taskViewWidget.stackedWidget.setCurrentIndex(1)
+

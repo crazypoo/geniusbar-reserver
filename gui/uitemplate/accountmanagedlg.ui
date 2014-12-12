@@ -189,6 +189,13 @@
            </widget>
           </item>
           <item>
+           <widget class="QPushButton" name="pBImportfromfile">
+            <property name="text">
+             <string>从文件导入</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="pBClear">
             <property name="text">
              <string>清空</string>
@@ -291,10 +298,27 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pBImportfromfile</sender>
+   <signal>clicked()</signal>
+   <receiver>AccountDLG</receiver>
+   <slot>importFromFile()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>264</x>
+     <y>368</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>200</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>addAccount()</slot>
   <slot>clear()</slot>
   <slot>randomGovernId()</slot>
+  <slot>importFromFile()</slot>
  </slots>
 </ui>

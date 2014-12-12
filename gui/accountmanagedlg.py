@@ -66,6 +66,10 @@ class AccountManagerDLG(QDialog):
         accounts = self.appContext.accountManager.getAccounts()
         self.updataAccountsTableView(accounts)
 
+    def importFromFile(self):
+        debug.debug('import accounter from file')
+        pass
+
     def updataAccountsTableView(self, accounts):
         rowCount = len(accounts) + 1
         self.ui.tWAccounts.setRowCount(rowCount)
