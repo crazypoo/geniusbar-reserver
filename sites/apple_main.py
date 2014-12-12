@@ -24,6 +24,9 @@ class AppleGeniusBarReservation(object):
         self.authUrl = "https://idmsa.apple.com/IDMSWebAuth/authenticate"
         self.govUrlFormat = "https://concierge.apple.com/geniusbar/%s/governmentID"
         self.timeslotFormat = "http://concierge.apple.com/geniusbar/%s/timeslots"
+        # http://concierge.apple.com/geniusbar/R448/reservationConfirmation
+        self.reservConfirmFormat = 'http://concierge.apple.com/geniusbar/%s/reservationConfirmation'
+        self.challengeUrlFormat = 'https://concierge.apple.com/geniusbar/%s/smschallenge'
         GeniusbarPage._init_headers()
 
     @classmethod
@@ -101,7 +104,6 @@ class AppleGeniusBarReservation(object):
         postData['supportOffered'] = 'true'
         headers = GeniusbarPage.headers
         headers['Referer'] = prePage.get_url()
-        headers["Host"] = 'concierge.apple.com'
         geniusbarPage = GeniusbarPage(GeniusbarPage.get_geniusbar_url(),
                                       data=urllib.urlencode(postData),
                                       headers=headers)
@@ -136,19 +138,23 @@ class AppleGeniusBarReservation(object):
     def debugstep(self):
         self.update_progress(100)
 
-    def buildTimeSlotsTable(self, page, pageData=None):
+    def buildPostTimeSlotsData(self, page):
+        '''
+        '''
+        postData = {}
+        postData['_formToken'] = page.get_formtoken_value()
+        return postData
+
+    def buildTimeSlotsTable(self, page):
         '''
         '''
         # json data [{'week':[(time, key), ...]]
         # for test
-        if pageData:
-            soup = page.get_soup(pageData)
-        else:
-            soup = page.get_soup()
+        soup = page.get_soup()
         attrs = {'id': 'dayC'}
         daycs = soup.findAll('div', attrs=attrs)
-        ret = []
         maxRow = 0
+        ret = []
         for dayc in daycs:
             item = {}
             times = []
@@ -190,9 +196,11 @@ class AppleGeniusBarReservation(object):
         '''
         waiting the input
         '''
-        runtime = 60  # waiting time
+        runtime = 300  # waiting time
         storeUrl = taskStatus['storeUrl']
         debug.debug(storeUrl)
+        tmpHeaders = page.headers
+
         while runtime > 0:
             taskCmd = taskStatus['taskCmd']
             if taskCmd == 'refresh':
@@ -208,8 +216,9 @@ class AppleGeniusBarReservation(object):
                 postData['captchaAnswer'] = taskStatus['captchaAnswer']
                 postData['phoneNumber'] = taskStatus['phoneNumber']
                 postData['smsCode'] = taskStatus['smsCode']
+                postData['clientTimezone'] = taskStatus['clientTimezone']
                 # 'Asia/Shanghai'
-                submitUrl = GeniusbarPage.challengeUrlFormat % GeniusbarPage.storeNumber
+                submitUrl = self.challengeUrlFormat % GeniusbarPage.storeNumber
                 headers = page.headers
                 headers['Referer'] = submitUrl
                 headers.pop('Accept-Encoding')
@@ -219,6 +228,11 @@ class AppleGeniusBarReservation(object):
                 data = submitpage.get_data()
                 resultfile = 'tmp/%s.htm' % taskStatus['appleId']
                 Writefile(resultfile, data)
+
+                #get timeslots
+                # timeSlotsurl = self.timeslotFormat % GeniusbarPage.storeNumber
+                # timeSlotsPage = GeniusbarPage(timeSlotsurl, headers=headers)
+                # Writefile('tmp/gettimeslotpage.html', timeSlotsPage.get_data())
                 attrs = {"class": "error-message on",
                          "id": "error_message_generalError"}
                 if submitpage.get_tag_text('label', attrs=attrs):
@@ -228,28 +242,60 @@ class AppleGeniusBarReservation(object):
                     continue
                 else:
                     # success for submit
+                    # get the time slots
                     ret, maxrow = self.buildTimeSlotsTable(submitpage)
-                    taskStatus['cmdResult'] = (ret, maxrow)
                     taskStatus['cmdStatus'] = 'OK'
+                    taskStatus['timeSlots'] = (ret, maxrow)
                     taskStatus['taskCmd'] = None
-                    break
-
+                    page = submitpage
+                    continue
+            if taskCmd == 'timeslot':
+                # post timeslots
+                debug.debug('get timeslot cmd %s' % taskStatus['appleId'])
+                postData = self.buildPostTimeSlotsData(page)
+                postData['clientTimezone'] = taskStatus['clientTimezone']
+                postData['id'] = taskStatus['id']
+                debug.debug(postData)
                 tlsUrl = self.timeslotFormat % GeniusbarPage.storeNumber
-                tlspage = GeniusbarPage(tlsUrl, headers=headers)
+                debug.debug('tls ulr %s' % tlsUrl)
+                headers = {}
+                headers['Accept-Language'] = 'zh-cn,zh;q=0.8,en-us;q=0.5,en;q=0.3'
+                headers['User-Agent'] = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0"
+                headers['Accept'] = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+                headers["Connection"] = 'keep-alive'
+                headers["Host"] = 'concierge.apple.com'
+                tlspage = GeniusbarPage(tlsUrl,
+                                        data=urllib.urlencode(postData),
+                                        headers=headers)
+                debug.debug('end post tlspage')
+
                 data = tlspage.get_data()
-                Writefile('last.html', data)
-                taskStatus['taskCmd'] = None
+                Writefile('tmp/posttimeslotsresult.html', data)
                 # gzip, deflate
+                # get GET reservationConfirmation
+                # http://concierge.apple.com/geniusbar/R448/reservationConfirmation
+                confirmUrl = self.reservConfirmFormat % GeniusbarPage.storeNumber
+                headers['Referer'] = tlsUrl
+                confirmPage = GeniusbarPage(confirmUrl, headers=headers)
+                Writefile('tmp/confirmPage.html', confirmPage.get_data())
+                text = self.getConfirmMsg(confirmPage)
+                taskStatus['prompInfo'] = text.replace(' ', '')
+                taskStatus['taskCmd'] = None
                 taskStatus['cmdStatus'] = 'OK'
-                # http://www.apple.com/cn/retail/shanghaiiapm/
                 break
             if taskCmd == 'end':
                 taskStatus['taskCmd'] = None
                 break
-            #debug.debug('waiting cmd')
+            debug.debug('waiting cmd')
             time.sleep(1)
             runtime -= 1
         debug.info('End task %s' % taskStatus['appleId'])
+
+    def getConfirmMsg(self, page):
+        soup = page.get_soup()
+        divtag = soup.find('div', attrs={'class': 'col-first'})
+        ul = divtag.find('ul')
+        return ul.text
 
     def Jump_workshops_page(self, enterUrl, taskStatus=None):
         self.initUrls()

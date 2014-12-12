@@ -140,19 +140,6 @@
              </layout>
             </item>
             <item>
-             <widget class="QPushButton" name="pBRandomGovernId">
-              <property name="maximumSize">
-               <size>
-                <width>35</width>
-                <height>23</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>随机</string>
-              </property>
-             </widget>
-            </item>
-            <item>
              <layout class="QHBoxLayout" name="horizontalLayout_5">
               <item>
                <widget class="QLabel" name="label_4">
@@ -297,22 +284,6 @@
     <hint type="sourcelabel">
      <x>496</x>
      <y>324</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>277</x>
-     <y>178</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pBRandomGovernId</sender>
-   <signal>clicked()</signal>
-   <receiver>AccountDLG</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>304</x>
-     <y>273</y>
     </hint>
     <hint type="destinationlabel">
      <x>277</x>

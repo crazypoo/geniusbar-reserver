@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/accountmanagedlg.ui'
 #
-# Created: Thu Dec 11 17:48:55 2014
+# Created: Fri Dec 12 10:19:43 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -95,10 +95,6 @@ class Ui_AccountDLG(object):
         self.lEGovId.setObjectName(_fromUtf8("lEGovId"))
         self.horizontalLayout_4.addWidget(self.lEGovId)
         self.horizontalLayout_6.addLayout(self.horizontalLayout_4)
-        self.pBRandomGovernId = QtGui.QPushButton(self.gBTaskinfo)
-        self.pBRandomGovernId.setMaximumSize(QtCore.QSize(35, 23))
-        self.pBRandomGovernId.setObjectName(_fromUtf8("pBRandomGovernId"))
-        self.horizontalLayout_6.addWidget(self.pBRandomGovernId)
         self.horizontalLayout_5 = QtGui.QHBoxLayout()
         self.horizontalLayout_5.setObjectName(_fromUtf8("horizontalLayout_5"))
         self.label_4 = QtGui.QLabel(self.gBTaskinfo)
@@ -141,7 +137,6 @@ class Ui_AccountDLG(object):
         QtCore.QObject.connect(self.pBClear, QtCore.SIGNAL(_fromUtf8("clicked()")), AccountDLG.clear)
         QtCore.QObject.connect(self.pBOk, QtCore.SIGNAL(_fromUtf8("clicked()")), AccountDLG.accept)
         QtCore.QObject.connect(self.pBCancel, QtCore.SIGNAL(_fromUtf8("clicked()")), AccountDLG.reject)
-        QtCore.QObject.connect(self.pBRandomGovernId, QtCore.SIGNAL(_fromUtf8("clicked()")), AccountDLG.accept)
         QtCore.QMetaObject.connectSlotsByName(AccountDLG)
 
     def retranslateUi(self, AccountDLG):
@@ -159,7 +154,6 @@ class Ui_AccountDLG(object):
         self.label.setText(_translate("AccountDLG", "账户ID:", None))
         self.label_2.setText(_translate("AccountDLG", "密码：", None))
         self.label_3.setText(_translate("AccountDLG", "身份证号：", None))
-        self.pBRandomGovernId.setText(_translate("AccountDLG", "随机", None))
         self.label_4.setText(_translate("AccountDLG", "手机号：", None))
         self.pBAdd.setText(_translate("AccountDLG", "添加", None))
         self.pBClear.setText(_translate("AccountDLG", "清空", None))

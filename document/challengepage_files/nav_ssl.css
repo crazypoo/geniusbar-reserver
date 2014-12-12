@@ -1,0 +1,64 @@
+a.more{white-space:nowrap;padding-right:10px;background:url(https://ssl.apple.com/global/elements/arrows/morearrow_08c.gif) no-repeat 100% 50%;zoom:1;}
+a[rel="external"],a.external{white-space:nowrap;padding-right:15px;background:url(https://ssl.apple.com/global/elements/icons/external10x10.gif) no-repeat 100% 50%;zoom:1;}
+#globalfooter ol#breadcrumbs li{padding:0 10px 0 20px!important;background:url(https://ssl.apple.com/global/nav/images/breadcrumb_sep_20080909.png) no-repeat!important;background-size:contain;}
+.btn_rect.popup span.more{background:url(https://ssl.apple.com/global/elements/arrows/morearrow_08c.gif) no-repeat 100% 60%;padding:0 10px 0 0!important;white-space:nowrap;}
+a.more{white-space:nowrap;padding-right:10px;background:url(https://ssl.apple.com/global/elements/arrows/morearrow_08c.gif) no-repeat 100% 50%;zoom:1;}
+a.external{white-space:nowrap;padding-right:15px;background:url(https://ssl.apple.com/global/elements/icons/external10x10.gif) no-repeat 100% 49%;zoom:1;}
+a[rel="external"]{white-space:nowrap;padding-right:15px;background:url(https://ssl.apple.com/global/elements/icons/external10x10.gif) no-repeat 100% 49%;zoom:1;}
+a.pdf{background:url(https://ssl.apple.com/global/elements/icons/globaliconpdf12x12.gif) 0 .4em no-repeat;display:block;padding-left:20px;}
+a.html{background:url(https://ssl.apple.com/global/elements/icons/globaliconhtml12x12.gif) 0 .4em no-repeat;display:block;padding-left:20px;}
+a.qt{background:url(https://ssl.apple.com/global/elements/icons/globaliconqt12x12.gif) 0 .4em no-repeat;display:block;padding-left:20px;}
+a.ical{background:url(https://ssl.apple.com/global/elements/icons/globaliconical12x12.gif) 0 .4em no-repeat;display:block;padding-left:20px;}
+a.dl{background:url(https://ssl.apple.com/global/elements/icons/globalicondl11x10.gif) 0 .4em no-repeat;display:block;padding-left:20px;}
+a.dmg{background:url(https://ssl.apple.com/global/elements/icons/globalicondmg12x12.gif) 0 .4em no-repeat;display:block;padding-left:20px;}
+a.zip{background:url(https://ssl.apple.com/global/elements/icons/globaliconzip12x12.gif) 0 .4em no-repeat;display:block;padding-left:20px;}
+a.keynote{background:url(https://ssl.apple.com/global/elements/icons/globaliconkeynote12x12.gif) 0 .4em no-repeat;display:block;padding-left:20px;}
+a.audio{background:url(https://ssl.apple.com/global/elements/icons/globaliconaudio12x12.gif) 0 .4em no-repeat;display:block;padding-left:20px;}
+#globalfooter #breadcrumbs{font-size:11px;color:#444;background:url(https://ssl.apple.com/global/nav/images/breadcrumb_bg.png) no-repeat;overflow:hidden;height:36px;line-height:34px;font-weight:bold;text-shadow:0 1px 0 #fff;}
+#globalfooter #breadcrumbs span{float:left;width:9px;margin:0 10px 0 0;position:relative;height:0;padding-top:34px;margin-top:1px;overflow:hidden;background:url(https://ssl.apple.com/global/nav/images/breadcrumb_sep.png) no-repeat;}
+#globalfooter ol#breadcrumbs{font-size:11px;color:#444;background:url(https://ssl.apple.com/global/nav/images/breadcrumb_bg.png) no-repeat;height:36px;line-height:34px;margin:0;list-style:none;font-weight:bold;text-shadow:0 1px 0 #fff;}
+#globalfooter ol#breadcrumbs li{float:left;margin:0;padding:0 0 0 20px;background:url(https://ssl.apple.com/global/nav/images/breadcrumb_sep_20080909.png) no-repeat;background-size:contain;}
+#directorynav{font-size:11px;background:url(https://ssl.apple.com/global/nav/images/directory_bg.png) repeat-y;border-top:1px solid #e5e5e5;float:left;width:100%;margin-top:-4px;*position:relative;}
+#directorynav .capbottom{clear:both;position:relative;top:5px;_top:12px;height:5px;width:980px;background:url(https://ssl.apple.com/global/nav/images/directory_capbg.png) no-repeat;}
+#breadory ol#breadcrumbs li a{float:left;color:#666;text-decoration:none;padding:0 1.75em 0 0;margin-left:0;background:url(https://ssl.apple.com/global/nav/images/breadcrumb_separator.png) no-repeat 100% 50%;}
+#breadory ol#breadcrumbs li.home a{background:url(https://ssl.apple.com/global/nav/images/breadcrumb_home.png) no-repeat 1.25em 50%;margin:0;padding:0 0 0 1.25em;width:30px;text-indent:-9999px;overflow:hidden;}
+#breadory ol#breadcrumbs li.home a:hover{background-image:url(https://ssl.apple.com/global/nav/images/breadcrumb_home_over.png);}
+#productheader a.preorder_blue,#productheader span.preorder_blue{width:75px;background-image:url(https://ssl.apple.com/global/elements/buttons/preorder_blue.png);}
+#productheader a.buynow,#productheader span.buynow{width:72px;background-image:url(https://ssl.apple.com/global/elements/buttons/buynows.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/buynows.gif);}
+#productheader a.ordernow,#productheader span.ordernow{width:81px;background-image:url(https://ssl.apple.com/global/elements/buttons/ordernows.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/ordernows.gif);}
+#productheader a.joinnow,#productheader span.joinnow{width:72px;background-image:url(https://ssl.apple.com/global/elements/buttons/joinnows.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/joinnows.gif);}
+#productheader a.preorder,#productheader span.preorder{width:99px;background-image:url(https://ssl.apple.com/global/elements/buttons/preordernows.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/preordernows.gif);}
+#productheader a.howtobuy,#productheader span.howtobuy{width:86px;background-image:url(https://ssl.apple.com/global/elements/buttons/howtobuys.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/howtobuys.gif);}
+#productheader a.howtoapply,#productheader span.howtoapply{width:100px;background-image:url(https://ssl.apple.com/global/elements/buttons/howtoapplys.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/howtoapplys.gif);}
+#productheader a.freetrial,#productheader span.freetrial{width:72px;background-image:url(https://ssl.apple.com/global/elements/buttons/freetrials.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/freetrials.gif);}
+#productheader a.downloadnow,#productheader span.downloadnow{width:108px;background-image:url(https://ssl.apple.com/global/elements/buttons/downloadnows.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/downloadnows.gif);}
+#productnav a.downloadnow,#productnav span.downloadnow{width:108px;background-image:url(https://ssl.apple.com/global/elements/buttons/downloadnows.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/downloadnows.gif);}
+#productheader a.upgradenow,#productheader span.upgradenow{width:104px;background-image:url(https://ssl.apple.com/global/elements/buttons/upgradenows.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/upgradenows.gif);}
+#productheader a.tryamac,#productheader span.tryamac{width:77px;background-image:url(https://ssl.apple.com/global/elements/buttons/tryamacs.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/tryamacs.gif);}
+#productheader a.notifyme,#productheader span.notifyme{width:75px;background-image:url(https://ssl.apple.com/global/elements/buttons/notifymes.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/notifymes.gif);}
+.browsewebappss{background-image:url(https://ssl.apple.com/global/elements/buttons/browsewebappss.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/browsewebappss.gif);width:123px;}
+.businessstores{background-image:url(https://ssl.apple.com/global/elements/buttons/businessstores.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/businessstores.gif);width:105px;}
+.buyiphones{background-image:url(https://ssl.apple.com/global/elements/buttons/buyiphones.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/buyiphones.gif);width:87px;}
+.buynows{background-image:url(https://ssl.apple.com/global/elements/buttons/buynows.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/buynows.gif);width:72px;}
+.comingsoons{background-image:url(https://ssl.apple.com/global/elements/buttons/comingsoons.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/comingsoons.gif);width:97px;}
+.descargarahoras{background-image:url(https://ssl.apple.com/global/elements/buttons/descargarahoras.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/descargarahoras.gif);width:108px;}
+.downloadituness{background-image:url(https://ssl.apple.com/global/elements/buttons/downloadituness.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/downloadituness.gif);width:116px;}
+.downloadnows{background-image:url(https://ssl.apple.com/global/elements/buttons/downloadnows.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/downloadnows.gif);width:108px;}
+.finds{background-image:url(https://ssl.apple.com/global/elements/buttons/finds.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/finds.gif);width:52px;}
+.freetrials{background-image:url(https://ssl.apple.com/global/elements/buttons/freetrials.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/freetrials.gif);width:72px;}
+.getstarteds{background-image:url(https://ssl.apple.com/global/elements/buttons/getstarteds.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/getstarteds.gif);width:90px;}
+.gos{background-image:url(https://ssl.apple.com/global/elements/buttons/gos.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/gos.gif);width:44px;}
+.howtoapplys{background-image:url(https://ssl.apple.com/global/elements/buttons/howtoapplys.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/howtoapplys.gif);width:100px;}
+.howtobuys{background-image:url(https://ssl.apple.com/global/elements/buttons/howtobuys.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/howtobuys.gif);width:86px;}
+.joinnows{background-image:url(https://ssl.apple.com/global/elements/buttons/joinnows.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/joinnows.gif);width:72px;}
+.learnmores{background-image:url(https://ssl.apple.com/global/elements/buttons/learnmores.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/learnmores.gif);width:89px;}
+.nikebuynows{background-image:url(https://ssl.apple.com/global/elements/buttons/nikebuynows.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/nikebuynows.gif);width:72px;}
+.notifymes{background-image:url(https://ssl.apple.com/global/elements/buttons/notifymes.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/notifymes.gif);width:80px;}
+.ordernows{background-image:url(https://ssl.apple.com/global/elements/buttons/ordernows.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/ordernows.gif);width:81px;}
+.preordernows{background-image:url(https://ssl.apple.com/global/elements/buttons/preordernows.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/preordernows.gif);width:99px;}
+.preorders{background-image:url(https://ssl.apple.com/global/elements/buttons/preorders.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/preorders.gif);width:77px;}
+.reserves{background-image:url(https://ssl.apple.com/global/elements/buttons/reserves.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/reserves.gif);width:68px;}
+.startyoursearchs{background-image:url(https://ssl.apple.com/global/elements/buttons/startyoursearchs.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/startyoursearchs.gif);width:120px;}
+.submits{background-image:url(https://ssl.apple.com/global/elements/buttons/submits.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/submits.gif);width:67px;}
+.tryamacs{background-image:url(https://ssl.apple.com/global/elements/buttons/tryamacs.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/tryamacs.gif);width:77px;}
+.upgradenows{background-image:url(https://ssl.apple.com/global/elements/buttons/upgradenows.png);_background-image:url(https://ssl.apple.com/global/elements/buttons/upgradenows.gif);width:104px;}

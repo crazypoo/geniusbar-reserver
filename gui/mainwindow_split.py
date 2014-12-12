@@ -329,6 +329,8 @@ class MainWindow(QtGui.QMainWindow):
             taskStatus['cmdStatus'] = None
             taskStatus['storeUrl'] = loginData['storeUrl']
             taskStatus['timeSlots'] = None
+            # timeslot id
+            taskStatus['id'] = None
             self.statusTasks.append(taskStatus)
 
             taskResult = Manager().dict()
@@ -400,6 +402,22 @@ class MainWindow(QtGui.QMainWindow):
             debug.error('Can not found smsMsg %s %s'
                         % (appleId, currentTaskName))
 
+    def getTaskResult(self, appleId):
+        currentTaskName = self.appContext.getCurrentTaskName()
+        results = self.reserverResult.getData(currentTaskName)
+        if not results:
+            debug.info('Can not find %s' % currentTaskName)
+            return
+        findResult = None
+        for result in results:
+            if appleId in result.values():
+                findResult = result
+        if not findResult:
+            debug.error('can not found verifyData %s,%s'
+                        % (appleId, currentTaskName))
+            return
+        return findResult
+
     def fillVerifyCodePic(self, verifyData):
         image = QtGui.QImage.fromData(verifyData)
         pixmap = QtGui.QPixmap(image)
@@ -426,7 +444,7 @@ class MainWindow(QtGui.QMainWindow):
                 self.signalUpdateProgress.emit(appleId, progress)
                 time.sleep(3)
 
-        debug.info('Terminal task %s' % self.appContext.getCurrentTaskName())
+        debug.info('Terminal check %s' % self.appContext.getCurrentTaskName())
         self.enableStart()
 
     def storeResult(self, appleId):
@@ -509,7 +527,27 @@ class MainWindow(QtGui.QMainWindow):
             taskstatus['taskCmd'] = None
 
     def selectTimeSlot(self, timeSlotId):
-        print(timeSlotId)
+        '''post the timeslot data'''
+        taskStatus = self._getCurrentTaskStatus()
+        if taskStatus:
+            taskStatus['id'] = timeSlotId
+            taskStatus['taskCmd'] = 'timeslot'
+            taskStatus['clientTimezone'] = 'Asia/Shanghai'
+            taskStatus['cmdStatus'] = None
+            timer = 30
+            while not taskStatus['cmdStatus'] and timer > 0:
+                time.sleep(1)
+                timer -= 1
+                debug.debug('check timeslot cmd status')
+            if taskStatus['cmdStatus'] == 'OK':
+                result = self.getTaskResult(taskStatus['appleId'])
+                result['smsMsg'] = taskStatus['prompInfo']
+                print(result['smsMsg'])
+                self.fillResultView(taskStatus['appleId'])
+            elif taskStatus['cmdStatus'] == 'NOK':
+                debug.error('selected time error')
+            else:
+                debug.error('selectTimeSlot failed')
 
     def submit(self):
         taskStatus = self._getCurrentTaskStatus()
@@ -521,54 +559,42 @@ class MainWindow(QtGui.QMainWindow):
             taskStatus['smsCode'] = str(self.lESmsCode.text())
             taskStatus['clientTimezone'] = 'Asia/Shanghai'
             taskStatus['countryISDCode'] = '86'
+            taskStatus['cmdStatus'] = None
             taskStatus['taskCmd'] = 'submit'
-            timer = 3
+            timer = 30
             while not taskStatus['cmdStatus'] and timer > 0:
                 time.sleep(1)
+                debug.debug('check cmdStatus')
                 timer -= 1
+            print('end check cmdStatus')
             if taskStatus['cmdStatus'] == 'NOK':
                 debug.info('submit error')
                 self.refresh()
 
-            if taskStatus['cmdStatus'] == 'Ok':
-                result = taskStatus['cmdResult']
+            if taskStatus['cmdStatus'] == 'OK':
+                result = taskStatus['timeSlots']
                 self.fillTableWidget(result[0], result[1])
-                self.viewDetail(1)
+                self.showTimeSlots()
         else:
             debug.error('submit error')
 
     def isCmdOk(self, status):
         return status['cmdStatus'] == 'OK'
 
+    def showTimeSlots(self):
+        self.taskViewWidget.show()
+        self.taskViewWidget.stackedWidget.setCurrentIndex(1)
+
     def viewDetail(self):
         self.taskViewWidget.show()
         self.taskViewWidget.stackedWidget.setCurrentIndex(1)
-        taskStatus = self._getCurrentTaskStatus()
-        if taskStatus:
-            taskStatus['taskCmd'] = 'timeslot'
-            timer = 3
-            while not taskStatus['cmdStatus'] and timer > 0:
-                time.sleep(1)
-                timer -= 1
-            if self.isCmdOk(taskStatus):
-                ret = taskStatus['timeSlots']
-                self.fillTableWidget(ret[0], ret[1])
-
-    def vviewDetail(self, index=None):
-        self.getTaskView().show()
-        if index:
-            self.stackedWidget.setCurrentIndex(index)
-            return
-        if 0 == self.stackedWidget.currentIndex():
-            self.stackedWidget.setCurrentIndex(1)
-        else:
-            self.stackedWidget.setCurrentIndex(0)
-
-        taskStatus = self._getCurrentTaskStatus()
-        if taskStatus:
-            taskStatus['taskCmd'] = 'timeslot'
-            while not taskStatus['cmdStatus']:
-                time.sleep(1)
-            if self.isCmdOk(taskStatus):
-                ret = taskStatus['timeSlots']
-                self.fillTableWidget(ret[0], ret[1])
+        # taskStatus = self._getCurrentTaskStatus()
+        # if taskStatus:
+        #     taskStatus['taskCmd'] = 'timeslot'
+        #     timer = 3
+        #     while not taskStatus['cmdStatus'] and timer > 0:
+        #         time.sleep(1)
+        #         timer -= 1
+        #     if self.isCmdOk(taskStatus):
+        #         ret = taskStatus['timeSlots']
+        #         self.fillTableWidget(ret[0], ret[1])

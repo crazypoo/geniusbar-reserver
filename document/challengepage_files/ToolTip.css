@@ -1,0 +1,8 @@
+.tooltip.popped{visibility:visible;}
+.tooltip{visibility:hidden;width:331px;z-index:9999;position:absolute;}
+.tooltip h3{color:#fff;font-size:12px;font-weight:bold;margin:0 18px;padding-top:10px;text-align:center;}
+.tooltip p{color:#a1a5a9;font-weight:normal;font-size:11px;margin:0 25px;line-height:15px;padding-bottom:15px;text-align:left;}
+.tooltip .ttcap{width:331px;height:12px;background:transparent url(images/tooltip_cap.png) no-repeat;}
+.tooltip .ttboot{width:331px;height:24px;background:transparent url(images/tooltip_boot.png) no-repeat;}
+.tooltip.leftShift .ttboot{width:331px;height:24px;background:transparent url(images/tooltip_boot_left.png) no-repeat;}
+.tooltip .ttmid{width:331px;background:transparent url(images/tooltip_bg.png) no-repeat bottom;}

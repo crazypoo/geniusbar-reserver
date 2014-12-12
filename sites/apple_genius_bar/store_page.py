@@ -10,7 +10,6 @@ class StorePage(WebPage):
     storeNumber = None
     headers = {}
     postData = {}
-    
 
     def __init__(self, url, data=None,
                  headers={},
@@ -29,11 +28,12 @@ NT 6.1; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0"
         StorePage.headers['Accept'] = 'text/html,application/xhtml+xml,\
 application/xml;q=0.9,*/*;q=0.8'
         StorePage.headers["Connection"] = 'keep-alive'
+        StorePage.headers["Host"] = 'concierge.apple.com'
 
 
 class GeniusbarPage(StorePage):
     geniusbarBaseUril = "http://concierge.apple.com/geniusbar/"
-    challengeUrlFormat = 'https://concierge.apple.com/geniusbar/%s/smschallenge'
+
 
     def __init__(self, url, data=None,
                  headers={},
@@ -148,6 +148,8 @@ class GeniusbarPage(StorePage):
 
         attrs = {'id': 'captchaVisionImpaired'}
         postData['captchaVisionImpaired'] = self.get_tag_value('input', attrs)
+        #'<input name="countryISDCode" value="86" type="hidden">'
+        postData['countryISDCode'] = self.get_tag_value('input', attrs={'name': 'countryISDCode'})
         return postData
 
     def get_smschalleng_steps(self, data=None):

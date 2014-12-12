@@ -1,0 +1,51 @@
+#concierge #main{margin:0 auto;width:980px;}
+#concierge #content{width:820px;padding:29px 80px 46px;margin:0;}
+#concierge #content h2{font-size:28px;}
+#concierge #content .first h1{margin-bottom:8px;}
+#concierge #content .last h2{margin-top:12px;font-size:22px;}
+#concierge #content .last{width:443px;}
+#concierge #content .first p{width:340px;font-size:18px;color:#666;line-height:1.38em;}
+#concierge .error{color:#f00;font-size:14px;}
+#concierge #reservation-type-error{margin-top:4px;}
+#concierge #store-select-error{margin:17px 0 28px 0;}
+#concierge .info{font-size:16px;line-height:1.4;}
+#concierge .steps{margin:1.6em 0 2em;}
+#concierge .steps li{margin-top:8px;clear:both;}
+#concierge .steps .step-label,#concierge .steps .step{display:inline-block;vertical-align:top;}
+#concierge .steps .step{width:360px;}
+#concierge .steps .step-label{font-weight:bold;width:62px;}
+#concierge img.positioned{position:absolute;z-index:15;right:-15px;bottom:0;}
+#concierge .col{position:relative;border-bottom:1px solid #d5d5d5;min-height:570px;}
+#concierge .col-left{width:54%;position:relative;z-index:20;margin-bottom:25px;}
+#concierge .disclaimer-top{padding-bottom:0;margin-bottom:0;}
+#concierge .disclaimer-bottom{font-size:16px;width:54%;margin-bottom:0;margin-top:8px;}
+#concierge #content input{font-size:16px;width:356px;padding:6px;color:#000;border:1px solid #d0d0d0;}
+#concierge .text-label-set{margin-bottom:22px;}
+#concierge .text-label-set label{display:block;width:376px;margin-bottom:2px;color:#333;font-weight:bold;}
+#concierge .phone-countrycode{display:block;width:380px;margin-bottom:2px;color:#333;font-weight:bold;overflow:auto;}
+#concierge .phone-countrycode div.country-code{width:90px;float:left;}
+#concierge .phone-countrycode div.country-code .select{padding:7px 0 0 0;}
+#concierge #content .phone-countrycode div.country-code .select .dd{width:70px;background:transparent url(../images/bg_dropdown.png) top right no-repeat;float:left;height:26px;padding:0 0 0 6px;border:1px solid #E0E0E0;border-radius:5px;*background:none;*padding:0;*border:0;}
+#concierge #content .phone-countrycode div.country-code .select .dd .ddc{width:70px;height:26px;overflow-x:hidden;width:229px\0/;}
+#concierge .phone-countrycode div.phone-number{float:right;}
+select{cursor:pointer;width:87px;background-color:transparent;font-size:14px;height:26px;border:0;padding:3px 0 3px 0;-webkit-appearance:none;-webkit-transition:opacity .30s linear;-moz-appearance:window;-moz-transition:opacity .30s linear;outline:none;width:246px\0/;*width:231px;}
+#concierge .phone-countrycode label.country-code{width:90px;}
+#concierge #content .phone-countrycode label.default,#concierge #content .phone-countrycode input{width:250px;}
+#concierge .text-label-set label span{color:#999;font-weight:normal;}
+#concierge .text-label-set.error-highlight label,#concierge .text-label-set label.error-message,#concierge .error-message,#concierge #main p.error-message{padding-left:18px;color:#f00;background:url('../images/icon_error.png') 0 2px no-repeat;font-weight:bold;font-size:12px;line-height:18px;}
+#concierge .error-message,#concierge .text-label-set .error-message,#concierge .text-label-set.error label.default{display:none;}
+#concierge .error-message.on{display:block;}
+#concierge .text-label-set .input-text{display:inline-block;padding:5px;background-color:#f0f0f0;border-radius:5px;}
+#concierge ol.sosumi{margin-bottom:25px;list-style:decimal;padding-left:3em;}
+#concierge p.sosumi{margin-bottom:25px;list-style:decimal;padding-right:2em;}
+#concierge .text-label-set{margin-bottom:12px;}
+#concierge .button_container{padding:20px 0;width:350px;float:right;right:80px;bottom:auto;position:relative;}
+#concierge .disclaimer-footer{font-size:12px;width:54%;}
+.cap.top{background:transparent url(../images/container_cap_top.png) no-repeat 0 0;}
+.cap.bottom{background:transparent url(../images/container_cap_bottom.png) no-repeat 0 0;}
+#captchaDiv{height:70px;margin-bottom:10px;}
+#captcha{width:170px;height:70px;margin-right:10px;float:left;}
+#captchaRefresh{position:absolute;margin-top:0;}
+#captchaImg{margin-bottom:-4px;margin-right:10px;}
+#captchaToggle{position:absolute;margin-top:25px;}
+#captchaToggleButton{margin-bottom:-3px;margin-right:8px;}
