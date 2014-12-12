@@ -14,7 +14,7 @@ class StorePage(WebPage):
     def __init__(self, url, data=None,
                  headers={},
                  charset='utf-8',
-                 timeout=100):
+                 timeout=20):
         super(StorePage, self).__init__(url, data, headers, charset, timeout)
 
     @classmethod

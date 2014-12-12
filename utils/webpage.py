@@ -43,6 +43,7 @@ class WebPage(object):
                               data=self.post_data,
                               headers=self.headers)
         counter = 3
+        debug.debug('timeout %s' % self.timeout)
         while counter > 0:
             try:
                 res = urllib2.urlopen(req, data=None, timeout=self.timeout)

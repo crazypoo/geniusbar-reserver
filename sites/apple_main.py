@@ -74,7 +74,6 @@ class AppleGeniusBarReservation(object):
         return url
 
     def post_reserv_page(self, prePage, rultype='TECHSUPPORT'):
-        debug.debug('post %s' % self.reservationUrl)
         postData = {}
         postData['_formToken'] = prePage.get_formtoken_value()
         attrs = {'selected': 'selected'}
@@ -89,7 +88,6 @@ class AppleGeniusBarReservation(object):
         return page
 
     def get_geniusbar_page(self, prePage):
-        debug.debug('GET %s' % GeniusbarPage.get_geniusbar_url())
         headers = GeniusbarPage.headers
         headers['Referer'] = prePage.get_url()
         headers["Host"] = 'concierge.apple.com'
@@ -98,7 +96,7 @@ class AppleGeniusBarReservation(object):
         return geniusbarPage
 
     def post_geniusbar_page(self, prePage):
-        debug.debug('POST %s' % GeniusbarPage.get_geniusbar_url())
+
         postData = {}
         postData["_formToken"] = prePage.get_formtoken_value()
         postData['supportOffered'] = 'true'
@@ -110,7 +108,7 @@ class AppleGeniusBarReservation(object):
         return geniusbarPage
 
     def post_anth_page(self, prePage):
-        debug.debug('POST %s' % self.authUrl)
+
         postData = prePage.build_auth_post_data()
         # 'Qq654123'
         postData['accountPassword'] = self.loginData['accountPassword']
@@ -273,7 +271,7 @@ class AppleGeniusBarReservation(object):
             if taskCmd == 'end':
                 taskStatus['taskCmd'] = None
                 break
-            debug.debug('waiting cmd')
+            #debug.debug('waiting cmd')
             time.sleep(1)
             runtime -= 1
         debug.info('End task %s' % taskStatus['appleId'])
@@ -367,7 +365,6 @@ class AppleGeniusBarReservation(object):
         return None
 
     def post_governmenid(self, url, prepage):
-        debug.debug('post %s' % url)
         postData = prepage.build_governmentid_post_data()
         postData["_formToken"] = prepage.get_formtoken_value()
         postData['governmentID'] = self.loginData['governmentID']
@@ -389,7 +386,6 @@ class AppleGeniusBarReservation(object):
         "serviceType_iPod"
         "serviceType_Mac"
         '''
-        debug.debug('post %s' % GeniusbarPage.get_geniusbar_url())
         reservType = self.loginData['reservType']
         postData = prePage.build_smschallenge_post_data(reservType)
         headers = GeniusbarPage.headers

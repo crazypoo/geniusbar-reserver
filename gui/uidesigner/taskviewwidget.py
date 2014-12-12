@@ -47,7 +47,7 @@ class TaskViewWidget(QWidget):
         if row == -1 or col == -1:
             return
         key = '%s%s' % (row, col)
-        item = self.item(row, col)
+        item = self.ui.tableWidget.item(row, col)
         if not item:
             return
 
@@ -57,7 +57,7 @@ class TaskViewWidget(QWidget):
         # print('cellDoubleClicked %s %s' % (row, col))
         if row == -1 or col == -1:
             return
-        item = self.item(row, col)
+        item = self.ui.tableWidget.item(row, col)
         if not item:
             return
 

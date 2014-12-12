@@ -61,6 +61,12 @@ class ReserverResult:
             self.result[taskName] = []
         self.result[taskName].append(result)
 
+    def stopAllTask(self):
+        for taskname, result in self.result.items():
+            for r in result:
+                r['cmdTask'] = 'end'
+        self.result = {}
+
     def _getTaskResult(self, taskName):
         if taskName in self.result.keys():
             return self.result[taskName]
@@ -309,7 +315,8 @@ class MainWindow(QtGui.QMainWindow):
         return opener
 
     def startTask(self):
-        self.twTasklistCellClicked(0, 0)
+        self.reserverResult.stopAllTask()
+
         self.running = True
         self.disableStart()
         geniusBar = True
@@ -345,6 +352,7 @@ class MainWindow(QtGui.QMainWindow):
                                     args=(self.statusTasks,
                                           self.finishedAppleId))
         checking.start()
+        self.twTasklistCellClicked(0, 0)
 
     def updateProgress(self, appleId, progress):
         item = self.appleIdToProgresscell[str(appleId)]
@@ -463,7 +471,6 @@ class MainWindow(QtGui.QMainWindow):
         '''
         save the current task list
         '''
-        return
         task = self.appContext.getCurrentTask()
         self.appContext.taskManageDLG._storeToDefault(task)
 
@@ -565,7 +572,7 @@ class MainWindow(QtGui.QMainWindow):
             timer = 30
             while not taskStatus['cmdStatus'] and timer > 0:
                 time.sleep(1)
-                debug.debug('check cmdStatus')
+                #debug.debug('check cmdStatus')
                 timer -= 1
             print('end check cmdStatus')
             if taskStatus['cmdStatus'] == 'NOK':

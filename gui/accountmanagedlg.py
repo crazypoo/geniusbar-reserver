@@ -73,6 +73,9 @@ class AccountManagerDLG(QDialog):
                                                      caption="导入账号",
                                                      directory='.',
                                                      filter=filter)
+        if not fileName:
+            return
+
         accounts = {}
         #账号，密码，身份证
         with open(fileName, 'r') as f:
