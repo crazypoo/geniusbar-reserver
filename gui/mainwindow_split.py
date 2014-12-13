@@ -138,6 +138,11 @@ class MainWindow(QtGui.QMainWindow):
             u"服务类型"
         ]
         self.taskTableWidget = TableWidget(headers=headers)
+        self.signalCellContextMenu.connect(self.taskWidgetContextMenu)
+
+    def taskWidgetContextMenu(self, event):
+        print(event.pos())
+
     def setupResultTable(self):
         headers = [
             u'账号',
@@ -157,6 +162,9 @@ class MainWindow(QtGui.QMainWindow):
         self.taskViewWidget.hide()
         self.msgLabel = QLabel()
         self.statusBar().addWidget(self.msgLabel)
+
+    def contextMenuEvent(self, event):
+        print('contextMenuEvent')
 
     def setupViews2(self):
         self.setupTaskTable()

@@ -2,6 +2,7 @@
 from PyQt4.QtGui import QWidget, QTableWidgetItem
 from PyQt4.QtCore import QString
 from uidesigner import ui_tablewidget
+#from PyQt4.QtCore import pyqtSignal
 
 
 class TableWidget(QWidget):
@@ -11,6 +12,8 @@ class TableWidget(QWidget):
         self.ui = ui_tablewidget.Ui_Form()
         self.ui.setupUi(self)
         self.setupHeaders(headers)
+        horheader = self.ui.tableWidget.horizontalHeader()
+        horheader.setStretchLastSection(True)
 
     def setupHeaders(self, headers):
         if not headers:
@@ -26,3 +29,12 @@ class TableWidget(QWidget):
             return getattr(self.ui.tableWidget, name)
         except:
             pass
+
+    #def contextMenuEvent(self, event):
+    #print('contextMenuEvent')
+        # actfun = partial(self._removeAccout, str(item.text()))
+        # self.act_delete = QAction(u'删除', self, triggered=actfun)
+
+        # popMenu = QMenu()
+        # popMenu.addAction(self.act_delete)
+        # popMenu.exec_(self.cursor().pos())
