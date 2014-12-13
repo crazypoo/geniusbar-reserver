@@ -19,6 +19,9 @@ class AccountListDLG(QDialog):
         for _, account in accounts.items():
             self.ui.listWidget.addItem(account['appleid'])
 
+        # multi select
+        self.ui.listWidget.setSelectionMode(2)
+
     def showEvent(self, event):
         self.initUI()
 
