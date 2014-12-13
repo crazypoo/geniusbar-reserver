@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/proxymanagedlg.ui'
 #
-# Created: Sat Dec 13 11:46:11 2014
+# Created: Sat Dec 13 19:07:17 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!

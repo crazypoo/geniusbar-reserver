@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import PyQt4.QtGui as QtGui
-from PyQt4.QtGui import QSplitter, QLabel
+from PyQt4.QtGui import QSplitter, QLabel, QAction, QIcon
 from PyQt4.QtCore import pyqtSignal
 from PyQt4.QtCore import QSize, Qt, QString
 from utils import debug  # , WriteVerifyPic
@@ -181,11 +181,27 @@ class MainWindow(QtGui.QMainWindow):
         self.msgLabel = QLabel()
         self.statusBar().addWidget(self.msgLabel)
 
+    def setupMenubar(self):
+        self.act_start = QAction(QIcon('res/img/start.png'),
+                                 "&Start",
+                                 self, statusTip='start task')
+
+        self.act_start.triggered.connect(self.startTask)
+        self.ui.toolBar.addAction(self.act_start)
+        self.act_import_task = QAction(QIcon('res/img/import.png'),
+                                       "&Import",
+                                       self,
+                                       statusTip='import task')
+
+        self.act_import_task.triggered.connect(self.importTask)
+        self.ui.toolBar.addAction(self.act_import_task)
+
     def __init__(self, abscwd, parent=None):
         super(MainWindow, self).__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.setupViews2()
+        self.setupMenubar()
         self.appContext = AppContext(abscwd, self)
         self.setupMembers()
         self.setupSig2Slot()
@@ -344,8 +360,8 @@ class MainWindow(QtGui.QMainWindow):
 
     def startTask(self):
         self.reserverResult.stopAllTask()
-
-        self.running = True
+        if self.running:
+            return
         self.disableStart()
         geniusBar = True
         loginDatas = self.getTasksInfo(geniusBar=geniusBar)
@@ -514,9 +530,11 @@ class MainWindow(QtGui.QMainWindow):
 
     def enableStart(self):
         self.ui.action_start_task.setEnabled(True)
+        self.running = False
 
     def disableStart(self):
         self.ui.action_start_task.setEnabled(False)
+        self.running = True
 
     def _getCurrentAppleId(self):
         row = self.preSelectedRow
@@ -643,4 +661,3 @@ class MainWindow(QtGui.QMainWindow):
             self.taskViewWidget.stackedWidget.setCurrentIndex(1)
         else:
             self.taskViewWidget.stackedWidget.setCurrentIndex(1)
-

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/mainwindow_splitter.ui'
 #
-# Created: Sat Dec 13 11:46:10 2014
+# Created: Sat Dec 13 19:07:16 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -31,7 +31,7 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1000, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1000, 23))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.menu = QtGui.QMenu(self.menubar)
         self.menu.setObjectName(_fromUtf8("menu"))
@@ -47,12 +47,9 @@ class Ui_MainWindow(object):
         self.statusbar = QtGui.QStatusBar(MainWindow)
         self.statusbar.setObjectName(_fromUtf8("statusbar"))
         MainWindow.setStatusBar(self.statusbar)
-        self.dockWidget = QtGui.QDockWidget(MainWindow)
-        self.dockWidget.setObjectName(_fromUtf8("dockWidget"))
-        self.dockWidgetContents = QtGui.QWidget()
-        self.dockWidgetContents.setObjectName(_fromUtf8("dockWidgetContents"))
-        self.dockWidget.setWidget(self.dockWidgetContents)
-        MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(4), self.dockWidget)
+        self.toolBar = QtGui.QToolBar(MainWindow)
+        self.toolBar.setObjectName(_fromUtf8("toolBar"))
+        MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
         self.action = QtGui.QAction(MainWindow)
         self.action.setObjectName(_fromUtf8("action"))
         self.action_start_task = QtGui.QAction(MainWindow)
@@ -117,6 +114,7 @@ class Ui_MainWindow(object):
         self.menu_3.setTitle(_translate("MainWindow", "设置", None))
         self.menu_4.setTitle(_translate("MainWindow", "管理", None))
         self.menu_5.setTitle(_translate("MainWindow", "帮助", None))
+        self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar", None))
         self.action.setText(_translate("MainWindow", "配置", None))
         self.action_start_task.setText(_translate("MainWindow", "开始任务", None))
         self.action_import_task.setText(_translate("MainWindow", "导入任务", None))
