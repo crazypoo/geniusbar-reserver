@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/taskviewwidget.ui'
 #
-# Created: Fri Dec 12 18:18:29 2014
+# Created: Sat Dec 13 11:46:11 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,11 +26,16 @@ except AttributeError:
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName(_fromUtf8("Form"))
-        Form.resize(410, 287)
-        self.verticalLayout_6 = QtGui.QVBoxLayout(Form)
+        Form.resize(430, 277)
+        self.horizontalLayout_7 = QtGui.QHBoxLayout(Form)
+        self.horizontalLayout_7.setObjectName(_fromUtf8("horizontalLayout_7"))
+        self.groupBox = QtGui.QGroupBox(Form)
+        self.groupBox.setTitle(_fromUtf8(""))
+        self.groupBox.setObjectName(_fromUtf8("groupBox"))
+        self.verticalLayout_6 = QtGui.QVBoxLayout(self.groupBox)
         self.verticalLayout_6.setObjectName(_fromUtf8("verticalLayout_6"))
-        self.stackedWidget = QtGui.QStackedWidget(Form)
-        self.stackedWidget.setMaximumSize(QtCore.QSize(411, 271))
+        self.stackedWidget = QtGui.QStackedWidget(self.groupBox)
+        self.stackedWidget.setMaximumSize(QtCore.QSize(420, 280))
         self.stackedWidget.setObjectName(_fromUtf8("stackedWidget"))
         self.page = QtGui.QWidget()
         self.page.setObjectName(_fromUtf8("page"))
@@ -150,6 +155,7 @@ class Ui_Form(object):
         self.verticalLayout_7.addLayout(self.verticalLayout_5)
         self.stackedWidget.addWidget(self.page_2)
         self.verticalLayout_6.addWidget(self.stackedWidget)
+        self.horizontalLayout_7.addWidget(self.groupBox)
 
         self.retranslateUi(Form)
         self.stackedWidget.setCurrentIndex(0)

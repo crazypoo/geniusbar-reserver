@@ -5,6 +5,7 @@ from uidesigner import ui_tablewidget
 
 
 class TableWidget(QWidget):
+
     def __init__(self, headers=None, parent=None):
         super(TableWidget, self).__init__(parent)
         self.ui = ui_tablewidget.Ui_Form()

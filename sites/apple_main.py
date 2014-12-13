@@ -81,8 +81,6 @@ class AppleGeniusBarReservation(object):
         GeniusbarPage.storeNumber = postData['storeNumber']
         postData['store'] = GeniusbarPage.storeNumber
         postData['ruleType'] = rultype
-        print('post reverv')
-        print(postData)
         page = GeniusbarPage(self.reservationUrl,
                              urllib.urlencode(postData))
         return page
@@ -228,10 +226,14 @@ class AppleGeniusBarReservation(object):
 
                 attrs = {"class": "error-message on",
                          "id": "error_message_generalError"}
-                if submitpage.get_tag_text('label', attrs=attrs):
+                errorMsg = submitpage.get_tag_text('label', attrs=attrs)
+                if errorMsg:
                     taskStatus['cmdStatus'] = 'NOK'
                     taskStatus['taskCmd'] = None
+                    taskStatus['prompInfo'] = errorMsg
                     page = submitpage
+                    debug.error(errorMsg)
+                    Writefile('tmp/submiterr.html', page.get_data())
                     continue
                 else:
                     # success for submit

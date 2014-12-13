@@ -3,7 +3,7 @@ import os
 import PyQt4.QtGui as QtGui
 from PyQt4.QtGui import QSplitter, QLabel
 from PyQt4.QtCore import pyqtSignal
-from PyQt4.QtCore import QSize
+from PyQt4.QtCore import QSize, Qt, QString
 from utils import debug  # , WriteVerifyPic
 from uidesigner.ui_mainwindow_splitter import Ui_MainWindow
 from uidesigner import taskviewwidget
@@ -138,6 +138,12 @@ class MainWindow(QtGui.QMainWindow):
             u"服务类型"
         ]
         self.taskTableWidget = TableWidget(headers=headers)
+    def setupResultTable(self):
+        headers = [
+            u'账号',
+            u'预约信息'
+            ]
+        self.reservResultTable = TableWidget(headers=headers)
 
     def setupViews(self):
         splitter = QSplitter()
@@ -149,7 +155,21 @@ class MainWindow(QtGui.QMainWindow):
         splitter.setStretchFactor(1, 1)
         self.setCentralWidget(splitter)
         self.taskViewWidget.hide()
+        self.msgLabel = QLabel()
+        self.statusBar().addWidget(self.msgLabel)
 
+    def setupViews2(self):
+        self.setupTaskTable()
+        msplitter = QSplitter(Qt.Horizontal)
+        msplitter.addWidget(self.taskTableWidget)
+
+        rsplitter = QSplitter(Qt.Vertical, msplitter)
+        self.setupResultTable()
+        rsplitter.addWidget(self.reservResultTable)
+        self.taskViewWidget = taskviewwidget.TaskViewWidget()
+        rsplitter.addWidget(self.taskViewWidget)
+
+        self.setCentralWidget(msplitter)
         self.msgLabel = QLabel()
         self.statusBar().addWidget(self.msgLabel)
 
@@ -157,7 +177,7 @@ class MainWindow(QtGui.QMainWindow):
         super(MainWindow, self).__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setupViews()
+        self.setupViews2()
         self.appContext = AppContext(abscwd, self)
         self.setupMembers()
         self.setupSig2Slot()
@@ -547,15 +567,23 @@ class MainWindow(QtGui.QMainWindow):
                 timer -= 1
 
             if taskStatus['cmdStatus'] == 'OK':
-                result = self.getTaskResult(taskStatus['appleId'])
-                result['smsMsg'] = taskStatus['prompInfo']
-                print(result['smsMsg'])
-                self.fillResultView(taskStatus['appleId'])
-                self.showTaskResult()
+                # result = self.getTaskResult(taskStatus['appleId'])
+                self.addReservResult(taskStatus['appleId'],
+                                     taskStatus['prompInfo'])
             elif taskStatus['cmdStatus'] == 'NOK':
                 debug.error('selected time error')
             else:
                 debug.error('selectTimeSlot failed')
+
+    def addReservResult(self, appleId, info):
+        row = self.reservResultTable.ui.tableWidget.rowCount()+1
+        self.reservResultTable.ui.tableWidget.setRowCount(row)
+        accountitem = QtGui.QTableWidgetItem()
+        accountitem.setText(QString(appleId))
+        item = QtGui.QTableWidgetItem()
+        item.setText(QString(info))
+        self.reservResultTable.ui.tableWidget.setItem(row-1, 0, accountitem)
+        self.reservResultTable.ui.tableWidget.setItem(row-1, 1, item)
 
     def submit(self):
         taskStatus = self._getCurrentTaskStatus()
@@ -577,6 +605,7 @@ class MainWindow(QtGui.QMainWindow):
             print('end check cmdStatus')
             if taskStatus['cmdStatus'] == 'NOK':
                 debug.info('submit error')
+                debug.info(taskStatus['prompInfo'])
                 self.refresh()
 
             elif taskStatus['cmdStatus'] == 'OK':
