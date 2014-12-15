@@ -128,6 +128,10 @@ class MainWindow(QtGui.QMainWindow):
     # sigUpdateCurrentId = pyqtSignal()
     sigUpdateProgressBar = pyqtSignal(str)
 
+    # timeslots command sig appleId
+    sigFillTimeslotsTable = pyqtSignal(str)
+    sigUpdateStatusBar = pyqtSignal(str)
+
     def setupTaskTable(self):
 
         headers = [
@@ -138,6 +142,7 @@ class MainWindow(QtGui.QMainWindow):
             u"服务类型"
         ]
         self.taskTableWidget = TableWidget(headers=headers)
+
     def setupResultTable(self):
         headers = [
             u'账号',
@@ -220,6 +225,9 @@ class MainWindow(QtGui.QMainWindow):
         self.pBRefresh.clicked.connect(self.refresh)
 
         self.taskTableWidget.cellClicked.connect(self.twTasklistCellClicked)
+
+        self.sigFillTimeslotsTable.connect(self.fillTimeSlotsTable)
+        self.sigUpdateStatusBar.connect(self.updateStatusBar)
 
     def initStoreData(self):
         # the store name of each url
@@ -547,11 +555,23 @@ class MainWindow(QtGui.QMainWindow):
                 self.fillVerifyCodePic(data)
                 taskname = self.appContext.getCurrentTaskName()
                 self.reserverResult.update(taskname, appleid,
-                                           'verifyCodeData', data)
+                                           u'verifyCodeData', data)
                 taskstatus['verifyCodeData'] = None
             else:
                 debug.info('refresh failed')
             taskstatus['taskCmd'] = None
+
+    def waitingRefreshCmd(self, taskStatus):
+        timer = 30
+        cmdStatus = taskStatus['cmdStatus']
+        while timer > 0 and not cmdStatus:
+            time.sleep(1)
+            timer -= 1
+            cmdStatus = taskStatus['cmdStatus']
+        if cmdStatus == 'NOK':
+            self.sigUpdateStatusBar.emit(u'刷新失败')
+        elif cmdStatus == 'OK':
+            pass
 
     def selectTimeSlot(self, timeSlotId):
         '''post the timeslot data'''
@@ -597,26 +617,42 @@ class MainWindow(QtGui.QMainWindow):
             taskStatus['countryISDCode'] = '86'
             taskStatus['cmdStatus'] = None
             taskStatus['taskCmd'] = 'submit'
-            timer = 30
-            while not taskStatus['cmdStatus'] and timer > 0:
-                time.sleep(1)
-                #debug.debug('check cmdStatus')
-                timer -= 1
-            print('end check cmdStatus')
-            if taskStatus['cmdStatus'] == 'NOK':
-                debug.info('submit error')
-                debug.info(taskStatus['prompInfo'])
-                self.refresh()
 
-            elif taskStatus['cmdStatus'] == 'OK':
-                result = taskStatus['timeSlots']
-                self.fillTableWidget(result[0], result[1])
-                self.showTimeSlots(1)
-            else:
-                debug.error('submit task error')
+            waitingCmd = threading.Thread(target=self.waitingSubmitCmd,
+                                          args=(taskStatus, ))
 
-        else:
-            debug.error('submit error')
+            waitingCmd.start()
+
+    def updateStatusBar(self, statusMsg):
+        self.statusBar().showMessage(statusMsg)
+
+    def fillTimeSlotsTable(self, appleId):
+        taskStatus = self.getTaskResult(appleId)
+        if not taskStatus:
+            debug.error('Can not found taskstatus for %s' % appleId)
+            return
+        result = taskStatus['timeSlots']
+        self.fillTableWidget(result[0], result[1])
+        self.showTimeSlots(1)
+
+    def refreshCaptcha(self):
+        self.refresh()
+
+    def waitingSubmitCmd(self, taskStatus):
+        timer = 30
+        cmdStatus = taskStatus['cmdStatus']
+        while timer > 30 and not cmdStatus:
+            time.sleep(1)
+            timer -= 1
+            cmdStatus = taskStatus['cmdStatus']
+
+        if taskStatus['cmdStatus'] == 'NOK':
+            self.sigUpdateStatusBar.emit(taskStatus['prompInfo'])
+            debug.info(taskStatus['prompInfo'])
+
+        elif taskStatus['cmdStatus'] == 'OK':
+            self.sigFillTimeslotsTable.emit(taskStatus['appleId'])
+            self.sigUpdateStatusBar.emit(u'提交成功!')
 
     def isCmdOk(self, status):
         return status['cmdStatus'] == 'OK'
@@ -635,4 +671,3 @@ class MainWindow(QtGui.QMainWindow):
             self.taskViewWidget.stackedWidget.setCurrentIndex(1)
         else:
             self.taskViewWidget.stackedWidget.setCurrentIndex(1)
-

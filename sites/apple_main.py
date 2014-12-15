@@ -201,7 +201,12 @@ class AppleGeniusBarReservation(object):
             if taskCmd == 'refresh':
                 debug.debug('refresh cmd %s' % taskStatus['appleId'])
                 verifycodedata, tSt = page.get_verification_code_pic()
-                taskStatus['verifyCodeData'] = verifycodedata
+                if verifycodedata:
+                    taskStatus['verifyCodeData'] = verifycodedata
+                    taskStatus['cmdStatus'] = 'OK'
+                else:
+                    taskStatus['cmdStatus'] = 'NOK'
+
                 taskStatus['taskCmd'] = None
                 time.sleep(1)
                 continue
