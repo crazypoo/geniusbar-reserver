@@ -1,0 +1,10 @@
+G00WZXRW
+18683527991
+
+Sun, 14 Dec 2014 19:02:27 DEBUG read http://www.apple.com/cn/retail/wangfujing/
+Sun, 14 Dec 2014 19:02:29 DEBUG checking wsndnr@163.com 70
+Sun, 14 Dec 2014 19:02:29 DEBUG have 1 task
+Sun, 14 Dec 2014 19:02:29 INFO Can not find task2
+Sun, 14 Dec 2014 19:02:29 DEBUG checking wsndnr@163.com 0
+Sun, 14 Dec 2014 19:02:29 DEBUG PoolWorker-17
+Sun, 14 Dec 2014 19:02:29 DEBUG start wsndnr@163.com
