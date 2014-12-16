@@ -230,7 +230,6 @@ class MainWindow(QtGui.QMainWindow):
 
         # the apply process
         self.applyTasks = []
-
         self.appleIdToProgresscell = {}  # = {id, item}
         task = self.taskManageDLG.getDefaultTask()
         if task:

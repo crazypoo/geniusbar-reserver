@@ -63,11 +63,13 @@ class WebPage(object):
             self.charset = m.group(1)
         else:
             print(html.find('charset='))
-            print("not found:")
+            print("not found")
 
     def init_cookie(self):
         if WebPage.cookie:
             return
+        debug.info('do init cookie')
+
         WebPage.cookie = cookielib.LWPCookieJar('tmpcookie')
         cookie_support = urllib2.HTTPCookieProcessor(WebPage.cookie)
         WebPage.opener = urllib2.build_opener(cookie_support)

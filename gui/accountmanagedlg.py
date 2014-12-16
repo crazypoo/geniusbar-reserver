@@ -67,17 +67,16 @@ class AccountManagerDLG(QDialog):
         self.updataAccountsTableView(accounts)
 
     def importFromFile(self):
-        debug.debug('import accounter from file')
         filter = "All(*)"
         fileName = QFileDialog.getOpenFileName(self,
-                                                     caption="导入账号",
-                                                     directory='.',
-                                                     filter=filter)
+                                               caption="导入账号",
+                                               directory='.',
+                                               filter=filter)
         if not fileName:
             return
 
         accounts = {}
-        #账号，密码，身份证
+        # 账号，密码，身份证
         with open(fileName, 'r') as f:
             for line in f.readlines():
                 account = {}

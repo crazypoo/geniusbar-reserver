@@ -8,7 +8,7 @@ from uidesigner.ui_taskmanagedlg import Ui_TaskManageDLG
 from utils import debug
 from sites.apple_genius_bar.task import Task
 from functools import partial
-import pickle
+import cPickle as pickle
 import os
 import glob
 
@@ -108,6 +108,7 @@ class TaskManageDLG(QtGui.QDialog):
             return self.defultTask
         # read from dump file
         taskfile = self.appContext.getDefaultTaskFile()
+        print('defultTask %s' % taskfile)
         try:
             with open(taskfile, 'rb') as f:
                 self.defultTask = pickle.load(f)

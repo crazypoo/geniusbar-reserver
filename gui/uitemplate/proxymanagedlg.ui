@@ -56,21 +56,6 @@
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
            <widget class="QTableWidget" name="tableWidget">
-            <row>
-             <property name="text">
-              <string>新建行</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>新建行</string>
-             </property>
-            </row>
-            <row>
-             <property name="text">
-              <string>新建行</string>
-             </property>
-            </row>
             <column>
              <property name="text">
               <string>地址</string>

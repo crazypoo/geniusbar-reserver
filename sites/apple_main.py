@@ -2,9 +2,12 @@
 import sys
 sys.path.append('../')
 import urllib
+import cookielib
+import urllib2
 from apple_genius_bar.store_page import GeniusbarPage
 from utils import debug, Writefile
 import time
+import multiprocessing
 
 
 class AppleGeniusBarReservation(object):
@@ -17,7 +20,6 @@ class AppleGeniusBarReservation(object):
         self.authUrl = "https://idmsa.apple.com/IDMSWebAuth/authenticate"
 
         self.loginData = loginData
-        GeniusbarPage._init_headers()
 
     def initUrls(self):
         self.reservationUrl = "http://concierge.apple.com/reservation/"
@@ -310,6 +312,14 @@ class AppleGeniusBarReservation(object):
         self.afterReserWorkShops(timeslotpage, taskStatus)
        # Writefile('debug/timeslots.html', timeslotpage.get_data())
 
+    def build_opener(self):
+        debug.info('build opener')
+        cookie = cookielib.CookieJar()
+        cookie_support = urllib2.HTTPCookieProcessor(cookie)
+        opener = urllib2.build_opener(cookie_support)
+        urllib2.install_opener(opener)
+        debug.info('end build opener')
+
     def Jump_login_page(self, supporturl, taskStatus=None):
         self.initUrls()
         self.taskStatus = taskStatus
@@ -342,6 +352,10 @@ class AppleGeniusBarReservation(object):
             debug.error(msg)
             self.taskStatus['prompInfo'] = msg
             self.update_progress(100)
+            name = multiprocessing.current_process().name
+
+            Writefile('tmp/%s.html' % name, smschallengePage.get_data())
+
             # self.waitingCmd(smschallengePage, taskStatus)
             return None
         self.taskStatus['prompInfo'] = text
