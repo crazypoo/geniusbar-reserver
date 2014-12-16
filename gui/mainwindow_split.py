@@ -384,6 +384,7 @@ class MainWindow(QtGui.QMainWindow):
             taskStatus['cmdStatus'] = None
             taskStatus['storeUrl'] = loginData['storeUrl']
             taskStatus['timeSlots'] = None
+            taskStatus['proxyServer'] = None
             # timeslot id
             taskStatus['id'] = None
             self.statusTasks.append(taskStatus)

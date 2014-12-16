@@ -34,7 +34,7 @@ class WebPage(object):
         return self.headers
 
     def _read_page(self):
-        self.init_cookie()
+        # self.init_cookie()
         if self.post_data:
             debug.debug('post %s' % self.url)
         else:

@@ -310,18 +310,27 @@ class AppleGeniusBarReservation(object):
                                      headers=GeniusbarPage.headers)
         self.update_progress(100)
         self.afterReserWorkShops(timeslotpage, taskStatus)
-       # Writefile('debug/timeslots.html', timeslotpage.get_data())
+        # Writefile('debug/timeslots.html', timeslotpage.get_data())
 
-    def build_opener(self):
+    def build_opener(self, proxyServer=None):
         debug.info('build opener')
-        cookie = cookielib.CookieJar()
+        cookie = cookielib.LWPCookieJar()
         cookie_support = urllib2.HTTPCookieProcessor(cookie)
-        opener = urllib2.build_opener(cookie_support)
+        if proxyServer:
+            proxyHandler = urllib2.ProxyHandler({'http': proxyServer})
+            opener = urllib2.build_opener(cookie_support, proxyHandler)
+        else:
+            opener = urllib2.build_opener(cookie_support)
         urllib2.install_opener(opener)
         debug.info('end build opener')
 
     def Jump_login_page(self, supporturl, taskStatus=None):
         self.initUrls()
+        if taskStatus['proxyServer']:
+            self.build_opener(proxy=taskStatus['proxyServer'])
+        else:
+            self.build_opener()
+
         self.taskStatus = taskStatus
         self.update_progress(10)
         supportPage = self.get_techsupport_page(supporturl)
