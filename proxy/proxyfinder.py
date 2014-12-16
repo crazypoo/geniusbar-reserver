@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from utils.webpage import WebPage
-import re, os
 import subprocess
-from multiprocessing import Pool, Queue
+import re
+from multiprocessing import Pool
+import multiprocessing
 from utils import debug
 
 
@@ -22,8 +23,8 @@ class ProxyPage(WebPage):
         attrs = {'class': 'proxylistitem', "name": "list_proxy_ip"}
         tags = self.get_tags('div', attrs=attrs)
         ippattern = '(\d{2,3}\.){3}\d{1,3}'
-        portpattern='(80){1,2}'
-        isIp=False
+        portpattern = '(80){1,2}'
+        isIp = False
         ip = None
         port = None
         for tag in tags:
@@ -46,35 +47,45 @@ class ProxyPage(WebPage):
         return servers
 
 
-def Checker(ip):
+def Checker(ip, processData):
     cmd = 'ping -n 2 -w 2 %s' % ip
-    debug.debug(cmd)
+
+    processData['curIndex'] += 1
+    result = None
     try:
         res = subprocess.check_output(cmd)
         if not -1 == res.find('TTL='):
-            debug.debug('find %s' %ip)
-            return ip
+            debug.debug('find %s' % ip)
+            result = ip
     except Exception as e:
         debug.debug(str(e))
-        return False
+    finally:
+        debug.debug(cmd)
+        index = processData['curIndex']
+        total = processData['total']
+        processData['progress'] = (index*100 / total)
+        # print('progress %s index %s total %s' % (processData['progress'], index, total))
+        return result
 
 
 class ProxyFinder():
     def __init__(self, urls):
         self.urls = urls
 
-    def get_available_proxys(self):
+    def get_available_proxys(self, procData):
         restips = []
         for url in self.urls:
-            #tmppage = ProxyPage(url)
-            #ips = tmppage.get_proxyservers()
-            ips =[('219.131.198.100','80'), ('119.62.128.38', '80')]
-            queue = Queue(len(ips))
-            pool = Pool(processes=2)
+            tmppage = ProxyPage(url)
+            ips = tmppage.get_proxyservers()
+            pool = Pool(processes=multiprocessing.cpu_count()*2)
+            procData['total'] = len(ips)
+            procData['curIndex'] = 5
             for ip, port in ips:
-                res = pool.apply_async(Checker, (ip,))
+                res = pool.apply_async(Checker, (ip, procData))
                 if res.get():
                     restips.append((ip, port))
+                    if len(restips) == 10:
+                        break
             pool.close()
             pool.join()
         newips = {}.fromkeys(restips).keys()

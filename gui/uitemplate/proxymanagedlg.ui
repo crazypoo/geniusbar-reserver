@@ -34,10 +34,10 @@
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="lineEdit"/>
+             <widget class="QLineEdit" name="lEProxyUrl"/>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton">
+             <widget class="QPushButton" name="pBUpdate">
               <property name="text">
                <string>更新</string>
               </property>
@@ -95,6 +95,16 @@
      </item>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_7">
+       <item>
+        <widget class="QProgressBar" name="progressBar">
+         <property name="value">
+          <number>24</number>
+         </property>
+         <property name="textVisible">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
        <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
@@ -167,6 +177,13 @@
                </widget>
               </item>
               <item>
+               <widget class="QPushButton" name="pBImport">
+                <property name="text">
+                 <string>导入</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QPushButton" name="pushButton_3">
                 <property name="text">
                  <string>取消</string>
@@ -187,5 +204,25 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pBUpdate</sender>
+   <signal>clicked()</signal>
+   <receiver>ProxyFinderDLG</receiver>
+   <slot>updateProxy()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>273</x>
+     <y>33</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>325</x>
+     <y>181</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>updateProxy()</slot>
+ </slots>
 </ui>

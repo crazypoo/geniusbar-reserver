@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/proxymanagedlg.ui'
 #
-# Created: Sat Dec 13 19:07:17 2014
+# Created: Tue Dec 16 11:01:42 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -43,12 +43,12 @@ class Ui_ProxyFinderDLG(object):
         self.label = QtGui.QLabel(self.groupBox_2)
         self.label.setObjectName(_fromUtf8("label"))
         self.horizontalLayout.addWidget(self.label)
-        self.lineEdit = QtGui.QLineEdit(self.groupBox_2)
-        self.lineEdit.setObjectName(_fromUtf8("lineEdit"))
-        self.horizontalLayout.addWidget(self.lineEdit)
-        self.pushButton = QtGui.QPushButton(self.groupBox_2)
-        self.pushButton.setObjectName(_fromUtf8("pushButton"))
-        self.horizontalLayout.addWidget(self.pushButton)
+        self.lEProxyUrl = QtGui.QLineEdit(self.groupBox_2)
+        self.lEProxyUrl.setObjectName(_fromUtf8("lEProxyUrl"))
+        self.horizontalLayout.addWidget(self.lEProxyUrl)
+        self.pBUpdate = QtGui.QPushButton(self.groupBox_2)
+        self.pBUpdate.setObjectName(_fromUtf8("pBUpdate"))
+        self.horizontalLayout.addWidget(self.pBUpdate)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
         self.verticalLayout_5.addWidget(self.groupBox_2)
         self.groupBox = QtGui.QGroupBox(ProxyFinderDLG)
@@ -77,6 +77,11 @@ class Ui_ProxyFinderDLG(object):
         self.horizontalLayout_6.addLayout(self.verticalLayout_5)
         self.verticalLayout_7 = QtGui.QVBoxLayout()
         self.verticalLayout_7.setObjectName(_fromUtf8("verticalLayout_7"))
+        self.progressBar = QtGui.QProgressBar(ProxyFinderDLG)
+        self.progressBar.setProperty("value", 24)
+        self.progressBar.setTextVisible(False)
+        self.progressBar.setObjectName(_fromUtf8("progressBar"))
+        self.verticalLayout_7.addWidget(self.progressBar)
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout_7.addItem(spacerItem)
         self.verticalLayout_6 = QtGui.QVBoxLayout()
@@ -118,6 +123,9 @@ class Ui_ProxyFinderDLG(object):
         self.pushButton_2 = QtGui.QPushButton(self.groupBox_3)
         self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
         self.horizontalLayout_2.addWidget(self.pushButton_2)
+        self.pBImport = QtGui.QPushButton(self.groupBox_3)
+        self.pBImport.setObjectName(_fromUtf8("pBImport"))
+        self.horizontalLayout_2.addWidget(self.pBImport)
         self.pushButton_3 = QtGui.QPushButton(self.groupBox_3)
         self.pushButton_3.setObjectName(_fromUtf8("pushButton_3"))
         self.horizontalLayout_2.addWidget(self.pushButton_3)
@@ -128,12 +136,13 @@ class Ui_ProxyFinderDLG(object):
         self.horizontalLayout_7.addLayout(self.horizontalLayout_6)
 
         self.retranslateUi(ProxyFinderDLG)
+        QtCore.QObject.connect(self.pBUpdate, QtCore.SIGNAL(_fromUtf8("clicked()")), ProxyFinderDLG.updateProxy)
         QtCore.QMetaObject.connectSlotsByName(ProxyFinderDLG)
 
     def retranslateUi(self, ProxyFinderDLG):
         ProxyFinderDLG.setWindowTitle(_translate("ProxyFinderDLG", "代理管理", None))
         self.label.setText(_translate("ProxyFinderDLG", "地址：", None))
-        self.pushButton.setText(_translate("ProxyFinderDLG", "更新", None))
+        self.pBUpdate.setText(_translate("ProxyFinderDLG", "更新", None))
         item = self.tableWidget.verticalHeaderItem(0)
         item.setText(_translate("ProxyFinderDLG", "新建行", None))
         item = self.tableWidget.verticalHeaderItem(1)
@@ -149,5 +158,6 @@ class Ui_ProxyFinderDLG(object):
         self.label_3.setText(_translate("ProxyFinderDLG", "端口：", None))
         self.label_2.setText(_translate("ProxyFinderDLG", "IP地址：", None))
         self.pushButton_2.setText(_translate("ProxyFinderDLG", "添加", None))
+        self.pBImport.setText(_translate("ProxyFinderDLG", "导入", None))
         self.pushButton_3.setText(_translate("ProxyFinderDLG", "取消", None))
 

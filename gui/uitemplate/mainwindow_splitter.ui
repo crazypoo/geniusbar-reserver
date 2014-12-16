@@ -51,7 +51,7 @@
     </property>
     <addaction name="action_task_manage"/>
     <addaction name="action_accountmanage"/>
-    <addaction name="action_11"/>
+    <addaction name="action_proxy_manager"/>
    </widget>
    <widget class="QMenu" name="menu_5">
     <property name="title">
@@ -135,7 +135,7 @@
     <string>计划任务</string>
    </property>
   </action>
-  <action name="action_11">
+  <action name="action_proxy_manager">
    <property name="text">
     <string>代理管理</string>
    </property>
@@ -254,6 +254,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_proxy_manager</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>proxyMgr()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>499</x>
+     <y>326</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onOk()</slot>
@@ -265,5 +281,6 @@
   <slot>refresh()</slot>
   <slot>submit()</slot>
   <slot>viewDetail()</slot>
+  <slot>proxyMgr()</slot>
  </slots>
 </ui>

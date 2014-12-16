@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/mainwindow_splitter.ui'
 #
-# Created: Sat Dec 13 19:07:16 2014
+# Created: Tue Dec 16 11:01:42 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -73,8 +73,8 @@ class Ui_MainWindow(object):
         self.action_task_manage.setObjectName(_fromUtf8("action_task_manage"))
         self.action_8 = QtGui.QAction(MainWindow)
         self.action_8.setObjectName(_fromUtf8("action_8"))
-        self.action_11 = QtGui.QAction(MainWindow)
-        self.action_11.setObjectName(_fromUtf8("action_11"))
+        self.action_proxy_manager = QtGui.QAction(MainWindow)
+        self.action_proxy_manager.setObjectName(_fromUtf8("action_proxy_manager"))
         self.action_12 = QtGui.QAction(MainWindow)
         self.action_12.setObjectName(_fromUtf8("action_12"))
         self.action_stop_task = QtGui.QAction(MainWindow)
@@ -90,7 +90,7 @@ class Ui_MainWindow(object):
         self.menu_3.addAction(self.action_4)
         self.menu_4.addAction(self.action_task_manage)
         self.menu_4.addAction(self.action_accountmanage)
-        self.menu_4.addAction(self.action_11)
+        self.menu_4.addAction(self.action_proxy_manager)
         self.menu_5.addAction(self.action_6)
         self.menubar.addAction(self.menu.menuAction())
         self.menubar.addAction(self.menu_2.menuAction())
@@ -105,6 +105,7 @@ class Ui_MainWindow(object):
         QtCore.QObject.connect(MainWindow, QtCore.SIGNAL(_fromUtf8("destroyed()")), MainWindow.close)
         QtCore.QObject.connect(self.action_import_task, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.importTask)
         QtCore.QObject.connect(self.action_view_detail, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.viewDetail)
+        QtCore.QObject.connect(self.action_proxy_manager, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.proxyMgr)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -126,7 +127,7 @@ class Ui_MainWindow(object):
         self.action_10.setText(_translate("MainWindow", "自定义代理", None))
         self.action_task_manage.setText(_translate("MainWindow", "任务管理", None))
         self.action_8.setText(_translate("MainWindow", "计划任务", None))
-        self.action_11.setText(_translate("MainWindow", "代理管理", None))
+        self.action_proxy_manager.setText(_translate("MainWindow", "代理管理", None))
         self.action_12.setText(_translate("MainWindow", "账号管理", None))
         self.action_stop_task.setText(_translate("MainWindow", "停止任务", None))
         self.action_view_detail.setText(_translate("MainWindow", "查看", None))

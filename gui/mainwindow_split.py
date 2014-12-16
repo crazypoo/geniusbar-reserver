@@ -13,6 +13,7 @@ from tasklistdlg import TaskListDLG
 from accountmanagedlg import AccountManagerDLG
 from accountlistdlg import AccountListDLG
 from sites.apple_genius_bar.confhelper import AccountManager
+from proxymanagerdlg import ProxyManagerDLG
 import multiprocessing
 from multiprocessing import Manager, Pool
 import threading
@@ -91,6 +92,7 @@ class AppContext():
         self.accountManager = None
         self.currentTaskList = None
         self.accountListDLG = None
+        self.proxyManagerDLG = None
         self.mainWindow = mainWindow
 
     def getDefaultTaskFile(self):
@@ -222,7 +224,7 @@ class MainWindow(QtGui.QMainWindow):
         self.taskManageDLG = TaskManageDLG(self.appContext,
                                            self.storelist,
                                            self.reservTypes)
-
+        self.appContext.proxyManagerDLG = ProxyManagerDLG(self.appContext)
         self.appContext.taskManageDLG = self.taskManageDLG
         self.appContext.tasklistDLG = TaskListDLG(self.appContext)
 
@@ -295,6 +297,9 @@ class MainWindow(QtGui.QMainWindow):
     def accountManage(self):
         self.appContext.accountManagerDLG.exec_()
         # TODO:
+
+    def proxyMgr(self):
+        self.appContext.proxyManagerDLG.exec_()
 
     def taskManage(self):
         self.taskManageDLG.exec_()
