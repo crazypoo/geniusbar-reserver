@@ -17,8 +17,18 @@ class Task(object):
     def addAccount(self, accounts):
         self.accounts.extend(accounts)
 
+    def setAccounts(self, accounts):
+        self.accounts = accounts
+
     def getAccounts(self):
         return self.accounts
+
+    def updateAccount(self, account):
+        for index, ac in enumerate(self.accounts):
+            if ac['appleid'] == account['appleid']:
+                del self.accounts[index]
+                self.accounts.append(account)
+                break
 
     def store(self):
         pass

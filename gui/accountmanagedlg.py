@@ -85,6 +85,7 @@ class AccountManagerDLG(QDialog):
                 account['passwd'] = l[1]
                 account['governmentid'] = l[2]
                 account['phonenumber'] = ''
+                account['proxyserver'] = ''
                 accounts[l[0]] = account
         self.appContext.accountManager.addAccounts(accounts)
         accounts = self.appContext.accountManager.getAccounts()

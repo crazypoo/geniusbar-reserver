@@ -35,17 +35,19 @@ class TaskManageDLG(QtGui.QDialog):
         self.ui.cBReservType.addItems(reservType)
         # for store in stores:
         self.ui.cBStoreName.addItems(stores)
-        self.ui.lEProxyIP.setText('')
-        self.ui.lEProxyPort.setText('80')
+        # self.ui.lEProxyIP.setText('')
+        # self.ui.lEProxyPort.setText('')
         self.ui.lETaskName.setText('task1')
+        self.setupViews()
         sig = self.ui.tWTasks.signalCellContextMenu
         sig.connect(self.taskCellContextMenuEvent)
 
+    def setupViews(self):
         taskfiles = self.getTaskfiles()
         self.tasks = self.getTasksFromdisk(taskfiles)
-
         # update twTasklist
-        self.filltWTasksView(self.tasks)
+        if self.tasks:
+            self.filltWTasksView(self.tasks)
 
     def _removeAccout(self, applid):
         row = self.ui.tWTasks.currentRow()
@@ -108,7 +110,6 @@ class TaskManageDLG(QtGui.QDialog):
             return self.defultTask
         # read from dump file
         taskfile = self.appContext.getDefaultTaskFile()
-        print('defultTask %s' % taskfile)
         try:
             with open(taskfile, 'rb') as f:
                 self.defultTask = pickle.load(f)
@@ -148,10 +149,13 @@ class TaskManageDLG(QtGui.QDialog):
     def _storeToDefault(self, task):
         try:
             taskfile = self.appContext.getDefaultTaskFile()
+            task.taskName = 'defultTask'
             with open(taskfile, 'wb') as f:
                 pickle.dump(task, f)
         except Exception as e:
             debug.error('Error write %s %s' % (taskfile, str(e)))
+
+        self.setupViews()
 
     def getTasksFromdisk(self, taskfiles):
         debug.debug('read taskfiles %s' % taskfiles)

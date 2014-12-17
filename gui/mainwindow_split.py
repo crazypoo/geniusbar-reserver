@@ -18,7 +18,6 @@ import multiprocessing
 from multiprocessing import Manager, Pool
 import threading
 import time
-import cookielib
 from tablewidget import TableWidget
 
 
@@ -39,8 +38,6 @@ class ApplyTask(object):
 
 
 def Reserver(applyTask, taskStatus, geniusbar=True):
-    name = multiprocessing.current_process().name
-    debug.debug(name)
     if geniusbar:
         return applyTask.applyGeniusbar(taskStatus)
     else:
@@ -184,6 +181,11 @@ class MainWindow(QtGui.QMainWindow):
         self.statusBar().addWidget(self.msgLabel)
 
     def setupMenubar(self):
+        self.act_save = QAction(QIcon('res/img/save.png'),
+                                   "&Save result",
+                                   self, statusTip='save result')
+        self.ui.toolBarApp.addAction(self.act_save)
+
         self.act_start = QAction(QIcon('res/img/start.png'),
                                  "&Start",
                                  self, statusTip='start task')
@@ -194,9 +196,28 @@ class MainWindow(QtGui.QMainWindow):
                                        "&Import",
                                        self,
                                        statusTip='import task')
-
         self.act_import_task.triggered.connect(self.importTask)
         self.ui.toolBar.addAction(self.act_import_task)
+
+        self.act_acntmgr = QAction(QIcon('res/img/acutmrg.png'),
+                                   "&Accounts",
+                                   self, statusTip='Accounts manager')
+
+        self.act_taskmgr = QAction(QIcon('res/img/tskmgr.png'),
+                                   "&Tasks",
+                                   self, statusTip='tasks manager')
+        self.act_proxymgr = QAction(QIcon('res/img/proxymgr.png'),
+                                   "&ProxyManage",
+                                   self, statusTip='proxy manage')
+        self.act_proxymgr.triggered.connect(self.proxyMgr)
+        self.act_acntmgr.triggered.connect(self.accountManage)
+        self.act_taskmgr.triggered.connect(self.taskManage)
+        self.ui.toolBarMgr.addAction(self.act_taskmgr)
+        self.ui.toolBarMgr.addAction(self.act_acntmgr)
+        self.ui.toolBarMgr.addAction(self.act_proxymgr)
+
+
+
 
     def __init__(self, abscwd, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -258,7 +279,26 @@ class MainWindow(QtGui.QMainWindow):
                             "serviceType_iPod",
                             "serviceType_Mac"]
 
+    def updateCurrentTaskInfo(self):
+        '''
+        account id and proxyserver
+        '''
+        rowCount = self.taskTableWidget.rowCount()
+        task = self.appContext.getCurrentTask()
+        accounts = task.getAccounts()
+        ret = {}
+        for row in range(rowCount):
+            appleId = self.taskTableWidget.item(row, 0).text()
+            proxyServer = self.taskTableWidget.item(row, 2).text()
+            ret[str(appleId)] = str(proxyServer)
+        for index, account in enumerate(accounts):
+            accounts[index]['proxyserver'] = ret[account['appleid']]
+        task.setAccounts(accounts)
+
+        self.appContext.setCurrentTask(task)
+
     def fillTaskView(self, task):
+
         accounts = task.getAccounts()
         rowCount = len(accounts)
         if rowCount is not 0:
@@ -267,17 +307,27 @@ class MainWindow(QtGui.QMainWindow):
         # self.ui.gBListName.setTitle(unicode(task.taskName))
         self.taskTableWidget.setRowCount(rowCount)
         row = 0
-        for count in accounts:
+        for account in accounts:
             item = QtGui.QTableWidgetItem()
-            item.setText(count['appleid'])
+            item.setText(account['appleid'])
             self.taskTableWidget.setItem(row, 0, item)
 
             item = QtGui.QTableWidgetItem()
             item.setText("0")
             self.taskTableWidget.setItem(row, 1, item)
-            self.appleIdToProgresscell[count['appleid']] = item
+            self.appleIdToProgresscell[account['appleid']] = item
             item = QtGui.QTableWidgetItem()
-            item.setText(task.proxyServer)
+
+            if 'proxyserver' not in account.keys():
+                account['proxyserver'] = ''
+
+            tmpserver = account['proxyserver']
+            if not tmpserver:
+                if task.proxyServer:
+                    tmpserver = task.proxyServer+':'+task.proxyPort
+                    account['proxyserver'] = tmpserver
+
+            item.setText(tmpserver)
             self.taskTableWidget.setItem(row, 2, item)
 
             item = QtGui.QTableWidgetItem()
@@ -326,9 +376,11 @@ class MainWindow(QtGui.QMainWindow):
         self.preSelectedRow = row
 
     def getTasksInfo(self, geniusBar=True):
-        taskName = self.appContext.getCurrentTaskName()
-        task = self.appContext.taskManageDLG.tasks[str(taskName)]
+        self.updateCurrentTaskInfo()
+        task = self.appContext.getCurrentTask()
         accounts = task.getAccounts()
+        if not accounts:
+            return
         storeName = task.storeName
         reservType = task.reservType
         suburl = self.store_suburl[unicode(storeName)]
@@ -338,7 +390,6 @@ class MainWindow(QtGui.QMainWindow):
             url = AppleGeniusBarReservation.Get_suppport_url(storeUrl)
         else:
             url = AppleGeniusBarReservation.Get_workshops_url(storeUrl)
-
         loginDatas = []
         for account in accounts:
             loginData = {}
@@ -351,16 +402,10 @@ class MainWindow(QtGui.QMainWindow):
             loginData['storeName'] = storeName
             loginData['enterUrl'] = url
             loginData['storeUrl'] = storeUrl
+            loginData['proxyServer'] = account['proxyserver']
             loginDatas.append(loginData)
 
         return loginDatas
-
-    def createOpener(self):
-        import urllib2
-        cookie = cookielib.CookieJar()
-        cookie_support = urllib2.HTTPCookieProcessor(cookie)
-        opener = urllib2.build_opener(cookie_support)
-        return opener
 
     def startTask(self):
         self.reserverResult.stopAllTask()
@@ -369,6 +414,8 @@ class MainWindow(QtGui.QMainWindow):
         self.disableStart()
         geniusBar = True
         loginDatas = self.getTasksInfo(geniusBar=geniusBar)
+        if not loginDatas:
+            return
         self.statusTasks = []
         self.finishedAppleId = []
         pool = self.getTaskPool()
@@ -384,7 +431,11 @@ class MainWindow(QtGui.QMainWindow):
             taskStatus['cmdStatus'] = None
             taskStatus['storeUrl'] = loginData['storeUrl']
             taskStatus['timeSlots'] = None
-            taskStatus['proxyServer'] = None
+            if loginData['proxyServer']:
+                taskStatus['proxyServer'] = loginData['proxyServer']
+            else:
+                taskStatus['proxyServer'] = None
+
             # timeslot id
             taskStatus['id'] = None
             self.statusTasks.append(taskStatus)
@@ -489,7 +540,7 @@ class MainWindow(QtGui.QMainWindow):
             for index, statusTask in enumerate(statusTasks):
                 progress = str(statusTask['taskProgress'])
                 appleId = statusTask['appleId']
-                debug.debug('checking %s %s' % (appleId, progress))
+                # debug.debug('checking %s %s' % (appleId, progress))
                 if progress == '100':
                     for status in finished:
                         if status['appleId'] == appleId:
@@ -631,9 +682,8 @@ class MainWindow(QtGui.QMainWindow):
             timer = 30
             while not taskStatus['cmdStatus'] and timer > 0:
                 time.sleep(1)
-                #debug.debug('check cmdStatus')
                 timer -= 1
-            print('end check cmdStatus')
+
             if taskStatus['cmdStatus'] == 'NOK':
                 debug.info('submit error')
                 debug.info(taskStatus['prompInfo'])

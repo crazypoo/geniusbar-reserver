@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/proxymanagedlg.ui'
 #
-# Created: Tue Dec 16 11:01:42 2014
+# Created: Wed Dec 17 15:54:02 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -59,13 +59,7 @@ class Ui_ProxyFinderDLG(object):
         self.tableWidget = QtGui.QTableWidget(self.groupBox)
         self.tableWidget.setObjectName(_fromUtf8("tableWidget"))
         self.tableWidget.setColumnCount(3)
-        self.tableWidget.setRowCount(3)
-        item = QtGui.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(0, item)
-        item = QtGui.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(1, item)
-        item = QtGui.QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(2, item)
+        self.tableWidget.setRowCount(0)
         item = QtGui.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(0, item)
         item = QtGui.QTableWidgetItem()
@@ -143,12 +137,6 @@ class Ui_ProxyFinderDLG(object):
         ProxyFinderDLG.setWindowTitle(_translate("ProxyFinderDLG", "代理管理", None))
         self.label.setText(_translate("ProxyFinderDLG", "地址：", None))
         self.pBUpdate.setText(_translate("ProxyFinderDLG", "更新", None))
-        item = self.tableWidget.verticalHeaderItem(0)
-        item.setText(_translate("ProxyFinderDLG", "新建行", None))
-        item = self.tableWidget.verticalHeaderItem(1)
-        item.setText(_translate("ProxyFinderDLG", "新建行", None))
-        item = self.tableWidget.verticalHeaderItem(2)
-        item.setText(_translate("ProxyFinderDLG", "新建行", None))
         item = self.tableWidget.horizontalHeaderItem(0)
         item.setText(_translate("ProxyFinderDLG", "地址", None))
         item = self.tableWidget.horizontalHeaderItem(1)
