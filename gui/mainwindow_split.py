@@ -284,6 +284,8 @@ class MainWindow(QtGui.QMainWindow):
         account id and proxyserver
         '''
         rowCount = self.taskTableWidget.rowCount()
+        if 0 == rowCount:
+            return
         task = self.appContext.getCurrentTask()
         accounts = task.getAccounts()
         ret = {}
@@ -378,6 +380,8 @@ class MainWindow(QtGui.QMainWindow):
     def getTasksInfo(self, geniusBar=True):
         self.updateCurrentTaskInfo()
         task = self.appContext.getCurrentTask()
+        if not task:
+            return
         accounts = task.getAccounts()
         if not accounts:
             return
