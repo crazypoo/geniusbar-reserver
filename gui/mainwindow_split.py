@@ -350,7 +350,8 @@ class MainWindow(QtGui.QMainWindow):
         # TODO:
 
     def proxyMgr(self):
-        self.appContext.proxyManagerDLG.exec_()
+
+        self.appContext.proxyManagerDLG.show()
 
     def taskManage(self):
         self.taskManageDLG.exec_()

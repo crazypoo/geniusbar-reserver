@@ -64,7 +64,6 @@ def Checker(ip, processData):
         index = processData['curIndex']
         total = processData['total']
         processData['progress'] = (index*100 / total)
-        # print('progress %s index %s total %s' % (processData['progress'], index, total))
         return result
 
 
@@ -93,3 +92,16 @@ class ProxyFinder():
             for ip, port in newips:
                 f.write('%s:%s\n' % (ip, port))
         return newips
+
+    def getAvaliable(self, proxyServers, procData):
+        restips = []
+        pool = Pool(processes=multiprocessing.cpu_count()*2)
+        for ip, port in proxyServers:
+            res = pool.apply_async(Checker, (ip, procData))
+            if res.get():
+                restips.append((ip, port))
+                pool.close()
+                pool.join()
+                newips = {}.fromkeys(restips).keys()
+        return newips
+
