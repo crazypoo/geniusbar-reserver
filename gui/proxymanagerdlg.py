@@ -57,6 +57,7 @@ class ProxyManagerDLG(QDialog):
 
             self.ui.tableWidget.setItem(row, 0, itemip)
             self.ui.tableWidget.setItem(row, 1, itemport)
+            row += 1
 
     def updateTable(self):
         self.fillResultTable(self.procData['ips'])
