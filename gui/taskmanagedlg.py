@@ -116,6 +116,7 @@ class TaskManageDLG(QtGui.QDialog):
                 return self.defultTask
         except Exception as e:
             debug.error('can not found %s %s' % (taskfile, str(e)))
+
         return None
 
     def _addAccount(self, task):
@@ -137,7 +138,7 @@ class TaskManageDLG(QtGui.QDialog):
     def _deleteTaskList(self, taskName):
         del self.tasks[taskName]
         self.updateTaskTableWidget()
-        #del taskfile
+        # del taskfile
         filedir = self.appContext.getTaskStoreDir()
         filedir = os.path.join(filedir, self.mkTaskListName(taskName))
         try:
@@ -154,7 +155,6 @@ class TaskManageDLG(QtGui.QDialog):
                 pickle.dump(task, f)
         except Exception as e:
             debug.error('Error write %s %s' % (taskfile, str(e)))
-
         self.setupViews()
 
     def getTasksFromdisk(self, taskfiles):
@@ -167,6 +167,7 @@ class TaskManageDLG(QtGui.QDialog):
                     tasks[task.taskName] = task
             except Exception as e:
                 debug.error('can not found %s %s' % (taskfile, str(e)))
+
         return tasks
 
     def mkTaskListName(self, taskname):
