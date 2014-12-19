@@ -14,11 +14,11 @@ p6
 S''
 sS'storeName'
 p7
-S'\xe8\xa5\xbf\xe5\x8d\x95\xe5\xa4\xa7\xe6\x82\xa6\xe5\x9f\x8e'
+S'\xe4\xb8\x8a\xe6\xb5\xb7\xe7\x8e\xaf\xe8\xb4\xb8 iapm'
 p8
 sS'reservType'
 p9
-S'serviceType_Mac'
+S'serviceType_iPhone'
 p10
 sS'proxyServer'
 p11
@@ -45,10 +45,9 @@ V13828465075
 p22
 sS'proxyserver'
 p23
-S'221.7.112.108:80'
-p24
+S''
 sasS'taskName'
-p25
+p24
 S'defultTask'
-p26
+p25
 sb.

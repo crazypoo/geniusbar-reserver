@@ -369,7 +369,8 @@ class AppleGeniusBarReservation(object):
         self.update_progress(80)
         text = smschallengePage.get_smschalleng_steps()
         if not text:
-            msg = 'Reserved failed %s' % self.taskStatus['appleId']
+            msg = smschallengePage.get_tag_text('p',
+                                                attrs={'id': "errorMessageC"})
             debug.error(msg)
             self.taskStatus['prompInfo'] = msg
             self.update_progress(100)
