@@ -180,10 +180,12 @@ class MainWindow(QtGui.QMainWindow):
         self.msgLabel = QLabel()
         self.statusBar().addWidget(self.msgLabel)
 
+        self.setWindowIcon(QtGui.QIcon('res/img/genius_bar.png'))
+
     def setupMenubar(self):
         self.act_save = QAction(QIcon('res/img/save.png'),
-                                   "&Save result",
-                                   self, statusTip='save result')
+                                "&Save result",
+                                self, statusTip='save result')
         self.ui.toolBarApp.addAction(self.act_save)
 
         self.act_start = QAction(QIcon('res/img/start.png'),

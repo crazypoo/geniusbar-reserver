@@ -48,6 +48,7 @@ class TaskManageDLG(QtGui.QDialog):
         # update twTasklist
         if self.tasks:
             self.filltWTasksView(self.tasks)
+        self.setWindowIcon(QtGui.QIcon('res/img/genius_bar.png'))
 
     def _removeAccout(self, applid):
         row = self.ui.tWTasks.currentRow()
