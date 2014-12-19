@@ -76,16 +76,20 @@ class AppleGeniusBarReservation(object):
         return url
 
     def post_reserv_page(self, prePage, rultype='TECHSUPPORT'):
-        postData = {}
-        postData['_formToken'] = prePage.get_formtoken_value()
-        attrs = {'selected': 'selected'}
-        postData['storeNumber'] = prePage.get_tag_value('option', attrs=attrs)
-        GeniusbarPage.storeNumber = postData['storeNumber']
-        postData['store'] = GeniusbarPage.storeNumber
-        postData['ruleType'] = rultype
-        page = GeniusbarPage(self.reservationUrl,
-                             urllib.urlencode(postData))
-        return page
+        try:
+            postData = {}
+            postData['_formToken'] = prePage.get_formtoken_value()
+            attrs = {'selected': 'selected'}
+            postData['storeNumber'] = prePage.get_tag_value('option',
+                                                            attrs=attrs)
+            GeniusbarPage.storeNumber = postData['storeNumber']
+            postData['store'] = GeniusbarPage.storeNumber
+            postData['ruleType'] = rultype
+            page = GeniusbarPage(self.reservationUrl,
+                                 urllib.urlencode(postData))
+            return page
+        except:
+            pass
 
     def get_geniusbar_page(self, prePage):
         headers = GeniusbarPage.headers
@@ -317,26 +321,34 @@ class AppleGeniusBarReservation(object):
         cookie = cookielib.LWPCookieJar()
         cookie_support = urllib2.HTTPCookieProcessor(cookie)
         if proxyServer:
+            debug.debug('create proxy %s' % proxyServer)
             proxyHandler = urllib2.ProxyHandler({'http': proxyServer})
-            opener = urllib2.build_opener(cookie_support, proxyHandler)
+            opener = urllib2.build_opener(proxyHandler,
+                                          cookie_support,
+                                          urllib2.HTTPHandler)
         else:
-            opener = urllib2.build_opener(cookie_support)
+            opener = urllib2.build_opener(cookie_support, urllib2.HTTPHandler)
         urllib2.install_opener(opener)
         debug.info('end build opener')
 
     def Jump_login_page(self, supporturl, taskStatus=None):
         self.initUrls()
-        if taskStatus['proxyServer']:
-            self.build_opener(proxy=taskStatus['proxyServer'])
+        proxyServer = taskStatus['proxyServer']
+        if proxyServer:
+            self.build_opener(proxyServer)
         else:
             self.build_opener()
-
         self.taskStatus = taskStatus
         self.update_progress(10)
         supportPage = self.get_techsupport_page(supporturl)
+        if not supportPage:
+            self.debugstep()
+            return
         self.update_progress(20)
         # get selected store
-        self.post_reserv_page(supportPage)
+        if not self.post_reserv_page(supportPage):
+            self.debugstep()
+            return
         # ###
         self.update_progress(30)
         getGeniusbarPage = self.get_geniusbar_page(supportPage)

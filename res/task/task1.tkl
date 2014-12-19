@@ -15,7 +15,7 @@ S'80'
 p7
 sS'storeName'
 p8
-S'\xe4\xb8\x8a\xe6\xb5\xb7\xe7\x8e\xaf\xe8\xb4\xb8 iapm'
+S'\xe7\x8e\x8b\xe5\xba\x9c\xe4\xba\x95'
 p9
 sS'reservType'
 p10
@@ -44,8 +44,11 @@ sVphonenumber
 p22
 V13828465075
 p23
-sasS'taskName'
+sS'proxyserver'
 p24
-S'task1'
+S''
+sasS'taskName'
 p25
+S'task1'
+p26
 sb.

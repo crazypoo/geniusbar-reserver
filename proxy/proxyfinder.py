@@ -88,6 +88,9 @@ class ProxyFinder():
             pool.close()
             pool.join()
         newips = {}.fromkeys(restips).keys()
+        with open('res/proxyservers.dat', 'w') as f:
+            for ip, port in newips:
+                f.write('%s:%s\n' % (ip, port))
         return newips
 
     def getAvaliable(self, proxyServers, procData):

@@ -30,6 +30,7 @@ class ProxyManagerDLG(QDialog):
         self.setupViews()
 
     def setupViews(self):
+        # test data
         ips = [('129.0.0.1', '8080'), ('127.0.1.1', '80')]
         self.fillResultTable(ips)
 
@@ -70,7 +71,6 @@ class ProxyManagerDLG(QDialog):
             itemip.setText(str(ip))
             itemport = QTableWidgetItem()
             itemport.setText(str(port))
-
             self.ui.tableWidget.setItem(row, 0, itemip)
             self.ui.tableWidget.setItem(row, 1, itemport)
             btitem = QPushButton()
