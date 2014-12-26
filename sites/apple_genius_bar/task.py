@@ -13,6 +13,8 @@ class Task(object):
         self.accounts = []
         self.proxyServer = proxyserver
         self.proxyPort = proxyport
+        # 0 is no changed ,1 have changed
+        self.status = 0
 
     def addAccount(self, accounts):
         self.accounts.extend(accounts)
@@ -29,6 +31,11 @@ class Task(object):
                 del self.accounts[index]
                 self.accounts.append(account)
                 break
+
+    def getAccount(self, appleId):
+        for index, ac in enumerate(self.accounts):
+            if ac['appleid'] == appleId:
+                return (ac, index)
 
     def store(self):
         pass

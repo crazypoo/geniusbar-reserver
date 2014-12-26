@@ -15,7 +15,7 @@ from utils import debug
 debug.setLevel(10)
 from gui import interface
 # init proxy servers
-from proxy.proxyfinder import ProxyFinder
+from proxy.proxyfinder import ProxyMgr
 from multiprocessing import freeze_support
 freeze_support()
 urls = ['http://www.proxy360.cn/Region/China']
@@ -23,8 +23,8 @@ urls = ['http://www.proxy360.cn/Region/China']
 
 
 def InitProxyServers():
-    proxyFinder = ProxyFinder(urls)
-    ips = proxyFinder.get_available_proxys()
+    proxyMgr = ProxyMgr(urls)
+    ips = proxyMgr.getAvailableProxys()
     with open('avalibeips.txt','w') as f:
         for ip ,port in ips:
             f.write('ip:%s\n' % (ip, port))

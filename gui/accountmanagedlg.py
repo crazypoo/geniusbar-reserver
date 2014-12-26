@@ -39,7 +39,6 @@ class AccountManagerDLG(QDialog):
         popMenu.addAction(self.act_addToTask)
         popMenu.exec_(self.cursor().pos())
 
-
     def _initUi(self):
         accounts = self.appContext.accountManager.getAccounts()
         self.updataAccountsTableView(accounts)

@@ -96,8 +96,12 @@ class WebPage(object):
 
     def get_page(self, data=None):
         if not data:
-            html = self._read_page()
-            data = self.encode_page_data(html)
+            try:
+                html = self._read_page()
+                data = self.encode_page_data(html)
+            except AttributeError as e:
+                debug.error('%s' % str(e))
+                return
         self.soup = BeautifulSoup(markup=data)
         return self.soup
 

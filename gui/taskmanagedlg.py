@@ -32,19 +32,21 @@ class TaskManageDLG(QtGui.QDialog):
         sig.connect(self.contextMenuEvent)
 
     def initUi(self, stores, reservType):
+        sig = self.ui.tWTasks.signalCellContextMenu
+        sig.connect(self.taskCellContextMenuEvent)
+
+        taskfiles = self.getTaskfiles()
+        self.tasks = self.getTasksFromdisk(taskfiles)
+        self.setupViews()
+
         self.ui.cBReservType.addItems(reservType)
         # for store in stores:
         self.ui.cBStoreName.addItems(stores)
         # self.ui.lEProxyIP.setText('')
         # self.ui.lEProxyPort.setText('')
-        self.ui.lETaskName.setText('task1')
-        self.setupViews()
-        sig = self.ui.tWTasks.signalCellContextMenu
-        sig.connect(self.taskCellContextMenuEvent)
+        self.ui.lETaskName.setText('task%s' % str(len(self.tasks)+1))
 
     def setupViews(self):
-        taskfiles = self.getTaskfiles()
-        self.tasks = self.getTasksFromdisk(taskfiles)
         # update twTasklist
         if self.tasks:
             self.filltWTasksView(self.tasks)
@@ -56,6 +58,7 @@ class TaskManageDLG(QtGui.QDialog):
         if not item:
             return
         task = self.tasks[str(item.text())]
+        task.status = 1
         for index, acount in enumerate(task.getAccounts()):
             if applid in acount.values():
                 del task.accounts[index]
@@ -112,11 +115,13 @@ class TaskManageDLG(QtGui.QDialog):
         # read from dump file
         taskfile = self.appContext.getDefaultTaskFile()
         try:
-            with open(taskfile, 'rb') as f:
-                self.defultTask = pickle.load(f)
+            with open(taskfile, 'r') as f:
+                defaultfile = f.readline().replace('\n', '')
+                with open(defaultfile, 'rb') as df:
+                    self.defultTask = pickle.load(df)
                 return self.defultTask
         except Exception as e:
-            debug.error('can not found %s %s' % (taskfile, str(e)))
+            debug.error('Error %s' % str(e))
 
         return None
 
@@ -134,6 +139,7 @@ class TaskManageDLG(QtGui.QDialog):
                 del accounts[index]
 
         task.accounts.extend(accounts)
+        task.status = 1
         self.updataAccountsView(task.accounts)
 
     def _deleteTaskList(self, taskName):
@@ -148,26 +154,34 @@ class TaskManageDLG(QtGui.QDialog):
         except Exception as e:
             debug.error('Can not del %s %s' % (filedir, str(e)))
 
-    def _storeToDefault(self, task):
+    def storeToDefault(self, task):
+        if not task:
+            debug.info('Info storeToDefault task is None')
+            return
         try:
-            taskfile = self.appContext.getDefaultTaskFile()
-            task.taskName = 'defultTask'
-            with open(taskfile, 'wb') as f:
-                pickle.dump(task, f)
+            dftaskfile = self.appContext.getDefaultTaskFile()
+            fileName = self.mkTaskListName(task.taskName)
+            debug.debug('save task %s to default' % fileName)
+            taskdir = self.appContext.getTaskStoreDir()
+            taskfile = os.path.join(taskdir, fileName)
+            with open(dftaskfile, 'w') as f:
+                f.write(taskfile)
         except Exception as e:
             debug.error('Error write %s %s' % (taskfile, str(e)))
         self.setupViews()
 
     def getTasksFromdisk(self, taskfiles):
-        debug.debug('read taskfiles %s' % taskfiles)
         tasks = {}
         for taskfile in taskfiles:
+            # debug.debug('read task from %s' % taskfile)
             try:
                 with open(taskfile, 'rb') as f:
                     task = pickle.load(f)
                     tasks[task.taskName] = task
             except Exception as e:
-                debug.error('can not found %s %s' % (taskfile, str(e)))
+                debug.error('Error %s' % str(e))
+            finally:
+                pass
 
         return tasks
 
@@ -176,10 +190,13 @@ class TaskManageDLG(QtGui.QDialog):
 
     def saveTask(self, tasks):
         for task in tasks:
+            if task.status == 0:
+                continue
             fileName = self.mkTaskListName(task.taskName)
             debug.debug('save task %s' % fileName)
             taskdir = self.appContext.getTaskStoreDir()
             taskfile = os.path.join(taskdir, fileName)
+            task.status = 0
             try:
                 with open(taskfile, 'wb') as f:
                     pickle.dump(task, f)
@@ -187,15 +204,15 @@ class TaskManageDLG(QtGui.QDialog):
                 debug.error('Error write %s %s' % (taskfile, str(e)))
 
     def taskCellContextMenuEvent(self, event):
-        item = self.ui.tWTasks.itemAt(event.pos())
-        if not item:
+
+        curRow = self.ui.tWTasks.currentRow()
+        if curRow == -1:
             return
-        taskName = str(item.text())
-        if taskName not in self.tasks.keys():
-            return
+        taskName = self.ui.tWTasks.item(curRow, 0).text()
+        taskName = str(taskName)
         #self.appContext.currentTaskList = self.tasks[taskName]
 
-        actfun = partial(self._storeToDefault, self.tasks[taskName])
+        actfun = partial(self.storeToDefault, self.tasks[taskName])
         self.act_storeTodefault = QAction(u'设置成默认', self, triggered=actfun)
 
         actfun = partial(self._addAccount, self.tasks[taskName])
@@ -219,10 +236,11 @@ class TaskManageDLG(QtGui.QDialog):
 
         task = Task(taskName, storeName,
                     reservType, proxyServer, proxyPort)
-
+        task.status = 1
         if task.taskName not in self.tasks.keys():
             self.tasks[taskName] = task
         self.updateTaskTableWidget()
+        self.ui.lETaskName.setText('task%s' % str(len(self.tasks)+1))
 
     def taskCellClicked(self, row, col):
         item = self.ui.tWTasks.item(row, 0)

@@ -6,14 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>486</width>
-    <height>513</height>
+    <width>489</width>
+    <height>518</height>
    </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>489</width>
+    <height>16777215</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>代理管理</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_4">
+  <layout class="QVBoxLayout" name="verticalLayout_5">
    <item>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
@@ -98,6 +104,111 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QLabel" name="label_2">
+              <property name="maximumSize">
+               <size>
+                <width>43</width>
+                <height>21</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>IP地址：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lEProxyIp">
+              <property name="maximumSize">
+               <size>
+                <width>173</width>
+                <height>20</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QLabel" name="label_3">
+              <property name="maximumSize">
+               <size>
+                <width>33</width>
+                <height>21</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>端口：</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lEPort">
+              <property name="maximumSize">
+               <size>
+                <width>183</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="inputMethodHints">
+               <set>Qt::ImhDigitsOnly</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QPushButton" name="pBAdd">
+            <property name="text">
+             <string>添加</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pBImport">
+            <property name="text">
+             <string>导入</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
       <spacer name="horizontalSpacer">
@@ -113,65 +224,17 @@
       </spacer>
      </item>
      <item>
-      <widget class="QGroupBox" name="groupBox_4">
-       <property name="title">
-        <string/>
+      <widget class="QPushButton" name="pBCancel">
+       <property name="text">
+        <string>取消</string>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>端口：</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lEProxyIp"/>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
-          <item>
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>IP地址：</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lEPort"/>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_4">
-          <item>
-           <widget class="QPushButton" name="pBAdd">
-            <property name="text">
-             <string>添加</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pBImport">
-            <property name="text">
-             <string>导入</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pBCancel">
-            <property name="text">
-             <string>取消</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pBOk">
+       <property name="text">
+        <string>确定</string>
+       </property>
       </widget>
      </item>
     </layout>
@@ -219,8 +282,58 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pBAdd</sender>
+   <signal>clicked()</signal>
+   <receiver>ProxyFinderDLG</receiver>
+   <slot>addProxy()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>265</x>
+     <y>480</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>242</x>
+     <y>256</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pBImport</sender>
+   <signal>clicked()</signal>
+   <receiver>ProxyFinderDLG</receiver>
+   <slot>importProxys()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>346</x>
+     <y>480</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>242</x>
+     <y>256</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pBOk</sender>
+   <signal>clicked()</signal>
+   <receiver>ProxyFinderDLG</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>441</x>
+     <y>496</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>244</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>updateProxy()</slot>
+  <slot>addProxy()</slot>
+  <slot>importProxys()</slot>
  </slots>
 </ui>

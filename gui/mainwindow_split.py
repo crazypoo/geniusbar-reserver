@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 import PyQt4.QtGui as QtGui
-from PyQt4.QtGui import QSplitter, QLabel, QAction, QIcon
-from PyQt4.QtCore import pyqtSignal
-from PyQt4.QtCore import QSize, Qt, QString
+from PyQt4.QtGui import QSplitter, QLabel, QAction, QIcon, QMenu
+from PyQt4.QtCore import QSize, Qt, QString, pyqtSignal
 from utils import debug  # , WriteVerifyPic
 from uidesigner.ui_mainwindow_splitter import Ui_MainWindow
 from uidesigner import taskviewwidget
@@ -19,6 +18,7 @@ from multiprocessing import Manager, Pool
 import threading
 import time
 from tablewidget import TableWidget
+from functools import partial
 
 
 class ApplyTask(object):
@@ -90,12 +90,13 @@ class AppContext():
         self.currentTaskList = None
         self.accountListDLG = None
         self.proxyManagerDLG = None
+        self.proxyServerConfDB = None
         self.mainWindow = mainWindow
 
     def getDefaultTaskFile(self):
         return os.path.join(self.configurefileDir,
                             'res/task',
-                            'defaulttask.tkl')
+                            'defaulttask')
 
     def getAccountFile(self):
         return os.path.join(self.configurefileDir,
@@ -140,7 +141,60 @@ class MainWindow(QtGui.QMainWindow):
         self.signalCellContextMenu.connect(self.taskWidgetContextMenu)
 
     def taskWidgetContextMenu(self, event):
-        print(event.pos())
+        curRow = self.taskTableWidget.currentRow()
+        if curRow == -1:
+            debug.info('taskWidgetContextMenu clicked %s' % curRow)
+            actfun = partial(self.refreshCurTask)
+            self.act_refreshtask = QAction(u'刷新', self, triggered=actfun)
+            popMenu = QMenu()
+            popMenu.addAction(self.act_refreshtask)
+            popMenu.exec_(self.cursor().pos())
+            return
+        # context menus
+        actfun = partial(self.changeProxyServer)
+        self.act_chgprx = QAction(u'更改代理', self, triggered=actfun)
+        popMenu = QMenu()
+        popMenu.addAction(self.act_chgprx)
+
+        actfun = partial(self.cancelProxyServer)
+        self.act_cancelprx = QAction(u'取消代理', self, triggered=actfun)
+        popMenu = QMenu()
+
+        actfun = partial(self.refreshCurTask)
+        self.act_refreshtask = QAction(u'刷新', self, triggered=actfun)
+        popMenu = QMenu()
+
+        popMenu.addAction(self.act_refreshtask)
+        popMenu.addAction(self.act_chgprx)
+        popMenu.addAction(self.act_cancelprx)
+        popMenu.exec_(self.cursor().pos())
+
+    def refreshCurTask(self):
+        task = self.appContext.getCurrentTask()
+        if task:
+            self.fillTaskView(task)
+
+    def cancelProxyServer(self):
+        self.updateCurPrx('')
+
+    def updateCurPrx(self, prxServer):
+        curRow = self.taskTableWidget.currentRow()
+        appleId = self.taskTableWidget.itemAt(curRow, 0).text()
+        debug.debug('change prxserv %s' % appleId)
+        task = self.appContext.getCurrentTask()
+        ac, _ = task.getAccount(appleId)
+        ac['proxyserver'] = prxServer
+        item = QtGui.QTableWidgetItem()
+        item.setText(prxServer)
+        self.taskTableWidget.setItem(curRow, 2, item)
+        self.appContext.taskManageDLG.saveTask([task])
+        debug.debug('update %s, prx: %s' % (appleId, prxServer))
+
+    def changeProxyServer(self):
+        prxServer = self.appContext.proxyManagerDLG.select()
+        if not prxServer:
+            return
+        self.updateCurPrx(prxServer)
 
     def setupResultTable(self):
         headers = [
@@ -163,7 +217,7 @@ class MainWindow(QtGui.QMainWindow):
         self.statusBar().addWidget(self.msgLabel)
 
     def contextMenuEvent(self, event):
-        print('contextMenuEvent')
+        print('main window contextMenuEvent')
 
     def setupViews2(self):
         self.setupTaskTable()
@@ -209,17 +263,14 @@ class MainWindow(QtGui.QMainWindow):
                                    "&Tasks",
                                    self, statusTip='tasks manager')
         self.act_proxymgr = QAction(QIcon('res/img/proxymgr.png'),
-                                   "&ProxyManage",
-                                   self, statusTip='proxy manage')
+                                    "&ProxyManage",
+                                    self, statusTip='proxy manage')
         self.act_proxymgr.triggered.connect(self.proxyMgr)
         self.act_acntmgr.triggered.connect(self.accountManage)
         self.act_taskmgr.triggered.connect(self.taskManage)
         self.ui.toolBarMgr.addAction(self.act_taskmgr)
         self.ui.toolBarMgr.addAction(self.act_acntmgr)
         self.ui.toolBarMgr.addAction(self.act_proxymgr)
-
-
-
 
     def __init__(self, abscwd, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -247,10 +298,10 @@ class MainWindow(QtGui.QMainWindow):
         self.taskManageDLG = TaskManageDLG(self.appContext,
                                            self.storelist,
                                            self.reservTypes)
+        self.appContext.proxyServerConfDB = 'res/prxconf/proxyserver.prx'
         self.appContext.proxyManagerDLG = ProxyManagerDLG(self.appContext)
         self.appContext.taskManageDLG = self.taskManageDLG
         self.appContext.tasklistDLG = TaskListDLG(self.appContext)
-
         # the apply process
         self.applyTasks = []
         self.appleIdToProgresscell = {}  # = {id, item}
@@ -356,7 +407,8 @@ class MainWindow(QtGui.QMainWindow):
         self.appContext.proxyManagerDLG.show()
 
     def taskManage(self):
-        self.taskManageDLG.exec_()
+        if 1 == self.taskManageDLG.exec_():
+            self.refreshCurTask()
         # TODO:
 
     def getTaskTable(self):
@@ -579,7 +631,7 @@ class MainWindow(QtGui.QMainWindow):
         save the current task list
         '''
         task = self.appContext.getCurrentTask()
-        self.appContext.taskManageDLG._storeToDefault(task)
+        self.appContext.taskManageDLG.storeToDefault(task)
 
     def importTask(self):
         ret = self.appContext.tasklistDLG.exec_()

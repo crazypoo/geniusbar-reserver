@@ -22,7 +22,13 @@ class TaskViewWidget(QWidget):
         self.sigSubmit.emit()
 
     def __getattr__(self, name):
-        return getattr(self.ui, name)
+        attr = None
+        try:
+            attr = getattr(self.ui, name)
+        except AttributeError:
+            attr = getattr(self.ui.tableWidget, name)
+        finally:
+            return attr
 
     def fillTableWidget(self, data, rowmax):
         self.ui.tableWidget.setColumnCount(len(data))

@@ -2,6 +2,8 @@
 from utils.webpage import WebPage
 import subprocess
 import re
+import urllib2
+import cookielib
 from multiprocessing import Pool
 import multiprocessing
 from utils import debug
@@ -67,11 +69,51 @@ def Checker(ip, processData):
         return result
 
 
-class ProxyFinder():
+def build_opener(proxyServer=None):
+        cookie = cookielib.LWPCookieJar()
+        cookie_support = urllib2.HTTPCookieProcessor(cookie)
+        if proxyServer:
+            debug.debug('create proxy %s' % proxyServer)
+            proxyHandler = urllib2.ProxyHandler({'http': proxyServer})
+            opener = urllib2.build_opener(proxyHandler,
+                                          cookie_support,
+                                          urllib2.HTTPHandler)
+        else:
+            opener = urllib2.build_opener(cookie_support, urllib2.HTTPHandler)
+        urllib2.install_opener(opener)
+
+
+def CheckerSingle(address):
+    cmd = 'ping -n 2 -w 2 %s' % address[0]
+    ret = False
+    try:
+        res = subprocess.check_output(cmd)
+        if not -1 == res.find('TTL='):
+            debug.debug('find %s' % address[0])
+            ret = True
+    except Exception as e:
+        debug.debug(str(e))
+    finally:
+        debug.debug(cmd)
+
+    # More check
+    build_opener("%s:%s" % (address[0], address[1]))
+    page = WebPage('http://www.163.com')
+    try:
+        page = page.get_page()
+        tag = page.find('title')
+        if tag:
+            ret = True
+            return ret
+    except:
+        return False
+
+
+class ProxyMgr():
     def __init__(self, urls):
         self.urls = urls
 
-    def get_available_proxys(self, procData):
+    def getAvailableProxys(self, procData):
         restips = []
         for url in self.urls:
             tmppage = ProxyPage(url)
@@ -88,9 +130,7 @@ class ProxyFinder():
             pool.close()
             pool.join()
         newips = {}.fromkeys(restips).keys()
-        with open('res/proxyservers.dat', 'w') as f:
-            for ip, port in newips:
-                f.write('%s:%s\n' % (ip, port))
+        newips = self.getAvaliable(newips, procData)
         return newips
 
     def getAvaliable(self, proxyServers, procData):
