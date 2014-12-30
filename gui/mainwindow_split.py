@@ -19,6 +19,7 @@ import threading
 import time
 from tablewidget import TableWidget
 from functools import partial
+from PyQt4.QtGui import QFileDialog
 
 
 class ApplyTask(object):
@@ -92,6 +93,7 @@ class AppContext():
         self.proxyManagerDLG = None
         self.proxyServerConfDB = None
         self.mainWindow = mainWindow
+        self.reservInfodir = None
 
     def getDefaultTaskFile(self):
         return os.path.join(self.configurefileDir,
@@ -199,7 +201,8 @@ class MainWindow(QtGui.QMainWindow):
     def setupResultTable(self):
         headers = [
             u'账号',
-            u'预约信息'
+            u'预约信息',
+            u'日期'
             ]
         self.reservResultTable = TableWidget(headers=headers)
 
@@ -240,6 +243,7 @@ class MainWindow(QtGui.QMainWindow):
         self.act_save = QAction(QIcon('res/img/save.png'),
                                 "&Save result",
                                 self, statusTip='save result')
+        self.act_save.triggered.connect(self.saveReservData)
         self.ui.toolBarApp.addAction(self.act_save)
 
         self.act_start = QAction(QIcon('res/img/start.png'),
@@ -299,6 +303,7 @@ class MainWindow(QtGui.QMainWindow):
                                            self.storelist,
                                            self.reservTypes)
         self.appContext.proxyServerConfDB = 'res/prxconf/proxyserver.prx'
+        self.appContext.reservInfodir = 'res/reserv'
         self.appContext.proxyManagerDLG = ProxyManagerDLG(self.appContext)
         self.appContext.taskManageDLG = self.taskManageDLG
         self.appContext.tasklistDLG = TaskListDLG(self.appContext)
@@ -321,16 +326,24 @@ class MainWindow(QtGui.QMainWindow):
         self.taskTableWidget.cellClicked.connect(self.twTasklistCellClicked)
 
     def initStoreData(self):
+        self.stores = None
+        self.reservTypes = ["serviceType_iPhone",
+                            "serviceType_iPad",
+                            "serviceType_iPod",
+                            "serviceType_Mac"]
+
+        initer = threading.Thread(target=self.doInitStoreData, args=())
+        initer.start()
+        initer.join(timeout=20)
+        if not self.stores:
+            self.statusBar().showMessage(u'读取网站信息失败请重试')
+
+    def doInitStoreData(self):
         # the store name of each url
         self.stores = AppleGeniusBarReservation.Init_stores_list()
         for index, item in self.stores.items():
             self.store_suburl[item[0]] = item[1]
             self.storelist.append(item[0])
-
-        self.reservTypes = ["serviceType_iPhone",
-                            "serviceType_iPad",
-                            "serviceType_iPod",
-                            "serviceType_Mac"]
 
     def updateCurrentTaskInfo(self):
         '''
@@ -626,6 +639,9 @@ class MainWindow(QtGui.QMainWindow):
                     'verifyCodeData': status['verifyCodeData']}
                 self.reserverResult.add(curTask, result)
 
+    def exit(self):
+        self.close()
+
     def closeEvent(self, event):
         '''
         save the current task list
@@ -725,6 +741,74 @@ class MainWindow(QtGui.QMainWindow):
         item.setText(QString(info))
         self.reservResultTable.ui.tableWidget.setItem(row-1, 0, accountitem)
         self.reservResultTable.ui.tableWidget.setItem(row-1, 1, item)
+        timestr = time.strftime('%Y:%m:%d', time.localtime(time.time()))
+        item = QtGui.QTableWidgetItem()
+        item.setText(QString(timestr))
+        self.reservResultTable.ui.tableWidget.setItem(row-1, 2, item)
+
+    def saveReservData(self):
+        fileName = time.strftime('%Y%m%d%H%I%M.rsv',
+                                 time.localtime(time.time()))
+        tmpdir = os.path.join(self.appContext.reservInfodir, fileName)
+        debug.debug('Save %s' % tmpdir)
+        self.doSaveReservInfo(tmpdir)
+
+    def saveAsReservData(self):
+        filter = "Rev(*.rsv);;All(*)"
+        fileName = QFileDialog.getSaveFileName(self,
+                                               caption=u"另存为...",
+                                               directory='./res',
+                                               filter=filter)
+        if not fileName:
+            return
+        self.doSaveReservInfo(fileName)
+
+    def doSaveReservInfo(self, fileName):
+        rowCount = self.reservResultTable.ui.tableWidget.rowCount()
+        if rowCount == 0:
+            debug.debug('No data have saved')
+            return
+        tw = self.reservResultTable.ui.tableWidget
+        with open(fileName, 'w') as f:
+            for i in range(rowCount):
+                appleId = tw.item(i, 0).text()
+                reserInfo = tw.item(i, 1).text()
+                dt = tw.item(i, 2).text()
+                f.write('%s;%s;%s\n' % (appleId, reserInfo, dt))
+
+    def fillReservDataView(self, data):
+        tw = self.reservResultTable.ui.tableWidget
+        tw.clear()
+        tw.setRowCount(len(data))
+        for row, d in enumerate(data):
+            item = QtGui.QTableWidgetItem()
+            item.setText(QString(d[0]))
+            tw.setItem(row, 0, item)
+            item = QtGui.QTableWidgetItem()
+            item.setText(QString(d[1]))
+            tw.setItem(row, 1, item)
+            item = QtGui.QTableWidgetItem()
+            item.setText(QString(d[2]))
+            tw.setItem(row, 2, item)
+
+    def loadReservData(self, filename):
+        reserdata = []
+        with open(filename, 'r') as f:
+            for line in f.readlines():
+                line = line.replace('\n', '').split(';')
+                reserdata.append(line)
+        return reserdata
+
+    def viewReservInfo(self):
+        filter = "Rev(*.rsv);;All(*)"
+        fileName = QFileDialog.getOpenFileName(self,
+                                               caption=u"查看",
+                                               directory='./res',
+                                               filter=filter)
+        if not fileName:
+            return
+        data = self.loadReservData(fileName)
+        self.fillReservDataView(data)
 
     def submit(self):
         taskStatus = self._getCurrentTaskStatus()

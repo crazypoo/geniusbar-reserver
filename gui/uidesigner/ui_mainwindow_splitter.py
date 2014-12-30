@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'uitemplate/mainwindow_splitter.ui'
 #
-# Created: Fri Dec 26 14:09:48 2014
+# Created: Mon Dec 29 14:52:09 2014
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -87,8 +87,24 @@ class Ui_MainWindow(object):
         self.action_stop_task.setObjectName(_fromUtf8("action_stop_task"))
         self.action_view_detail = QtGui.QAction(MainWindow)
         self.action_view_detail.setObjectName(_fromUtf8("action_view_detail"))
+        self.action_save_reservinfo = QtGui.QAction(MainWindow)
+        self.action_save_reservinfo.setObjectName(_fromUtf8("action_save_reservinfo"))
+        self.action_save_as_reservinfo = QtGui.QAction(MainWindow)
+        self.action_save_as_reservinfo.setObjectName(_fromUtf8("action_save_as_reservinfo"))
+        self.action_view_reservinfo = QtGui.QAction(MainWindow)
+        self.action_view_reservinfo.setObjectName(_fromUtf8("action_view_reservinfo"))
+        self.action_3 = QtGui.QAction(MainWindow)
+        self.action_3.setObjectName(_fromUtf8("action_3"))
+        self.action_exit = QtGui.QAction(MainWindow)
+        self.action_exit.setObjectName(_fromUtf8("action_exit"))
         self.menu.addAction(self.action)
         self.menu.addAction(self.action_7)
+        self.menu.addSeparator()
+        self.menu.addAction(self.action_save_reservinfo)
+        self.menu.addAction(self.action_save_as_reservinfo)
+        self.menu.addAction(self.action_view_reservinfo)
+        self.menu.addSeparator()
+        self.menu.addAction(self.action_exit)
         self.menu_2.addAction(self.action_start_task)
         self.menu_2.addAction(self.action_import_task)
         self.menu_2.addAction(self.action_stop_task)
@@ -96,7 +112,9 @@ class Ui_MainWindow(object):
         self.menu_3.addAction(self.action_4)
         self.menu_4.addAction(self.action_task_manage)
         self.menu_4.addAction(self.action_accountmanage)
+        self.menu_4.addSeparator()
         self.menu_4.addAction(self.action_proxy_manager)
+        self.menu_4.addAction(self.action_3)
         self.menu_5.addAction(self.action_6)
         self.menubar.addAction(self.menu.menuAction())
         self.menubar.addAction(self.menu_2.menuAction())
@@ -112,6 +130,10 @@ class Ui_MainWindow(object):
         QtCore.QObject.connect(self.action_import_task, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.importTask)
         QtCore.QObject.connect(self.action_view_detail, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.viewDetail)
         QtCore.QObject.connect(self.action_proxy_manager, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.proxyMgr)
+        QtCore.QObject.connect(self.action_view_reservinfo, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.viewReservInfo)
+        QtCore.QObject.connect(self.action_save_as_reservinfo, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.saveAsReservData)
+        QtCore.QObject.connect(self.action_save_reservinfo, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.saveReservData)
+        QtCore.QObject.connect(self.action_exit, QtCore.SIGNAL(_fromUtf8("triggered()")), MainWindow.exit)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -139,4 +161,9 @@ class Ui_MainWindow(object):
         self.action_12.setText(_translate("MainWindow", "账号管理", None))
         self.action_stop_task.setText(_translate("MainWindow", "停止任务", None))
         self.action_view_detail.setText(_translate("MainWindow", "查看", None))
+        self.action_save_reservinfo.setText(_translate("MainWindow", "保存", None))
+        self.action_save_as_reservinfo.setText(_translate("MainWindow", "另存为...", None))
+        self.action_view_reservinfo.setText(_translate("MainWindow", "查看预订", None))
+        self.action_3.setText(_translate("MainWindow", "预订管理", None))
+        self.action_exit.setText(_translate("MainWindow", "退出", None))
 

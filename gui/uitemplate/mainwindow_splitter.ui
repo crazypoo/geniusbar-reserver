@@ -29,6 +29,12 @@
     </property>
     <addaction name="action"/>
     <addaction name="action_7"/>
+    <addaction name="separator"/>
+    <addaction name="action_save_reservinfo"/>
+    <addaction name="action_save_as_reservinfo"/>
+    <addaction name="action_view_reservinfo"/>
+    <addaction name="separator"/>
+    <addaction name="action_exit"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -51,7 +57,9 @@
     </property>
     <addaction name="action_task_manage"/>
     <addaction name="action_accountmanage"/>
+    <addaction name="separator"/>
     <addaction name="action_proxy_manager"/>
+    <addaction name="action_3"/>
    </widget>
    <widget class="QMenu" name="menu_5">
     <property name="title">
@@ -177,6 +185,31 @@
     <string>查看</string>
    </property>
   </action>
+  <action name="action_save_reservinfo">
+   <property name="text">
+    <string>保存</string>
+   </property>
+  </action>
+  <action name="action_save_as_reservinfo">
+   <property name="text">
+    <string>另存为...</string>
+   </property>
+  </action>
+  <action name="action_view_reservinfo">
+   <property name="text">
+    <string>查看预订</string>
+   </property>
+  </action>
+  <action name="action_3">
+   <property name="text">
+    <string>预订管理</string>
+   </property>
+  </action>
+  <action name="action_exit">
+   <property name="text">
+    <string>退出</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>
@@ -292,6 +325,70 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_view_reservinfo</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>viewReservInfo()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>499</x>
+     <y>326</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_save_as_reservinfo</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>saveAsReservData()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>499</x>
+     <y>326</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_save_reservinfo</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>saveReservData()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>499</x>
+     <y>326</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_exit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>exit()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>499</x>
+     <y>326</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onOk()</slot>
@@ -304,5 +401,9 @@
   <slot>submit()</slot>
   <slot>viewDetail()</slot>
   <slot>proxyMgr()</slot>
+  <slot>viewReservInfo()</slot>
+  <slot>saveAsReservData()</slot>
+  <slot>saveReservData()</slot>
+  <slot>exit()</slot>
  </slots>
 </ui>
